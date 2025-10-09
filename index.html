@@ -2,7 +2,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Multiplier Assessment - TEST</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Multiplier Assessment</title>
     <style>
         body { 
             font-family: Arial, sans-serif; 
@@ -30,6 +31,7 @@
             width: 100%;
             margin-top: 20px;
             font-weight: bold;
+            transition: all 0.3s;
         }
         .button:hover:not(:disabled) { 
             transform: translateY(-2px);
@@ -47,7 +49,7 @@
             transition: all 0.2s;
         }
         .option:hover { border-color: #667eea; background: #f7fafc; }
-        .option.selected { border-color: #667eea; background: #edf2f7; }
+        .option.selected { border-color: #667eea; background: #edf2f7; font-weight: 500; }
         h1 { color: #667eea; text-align: center; margin-bottom: 10px; }
         h2 { color: #4a5568; margin-bottom: 20px; }
         .subtitle { text-align: center; color: #718096; margin-bottom: 30px; font-size: 1.1em; }
@@ -63,6 +65,24 @@
             background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); 
             border-radius: 10px;
             transition: width 0.3s;
+        }
+        .question-block {
+            margin: 40px 0;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 10px;
+        }
+        .question-number {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        .question-text {
+            font-size: 1.05em;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            color: #2d3748;
         }
         .results-circles {
             display: flex;
@@ -120,6 +140,13 @@
             font-weight: bold;
             cursor: pointer;
             font-size: 16px;
+            width: 100%;
+        }
+        .progress-text {
+            text-align: center;
+            color: #718096;
+            margin-top: 10px;
+            font-size: 0.9em;
         }
     </style>
 </head>
@@ -129,12 +156,20 @@
         <div id="welcome">
             <h1>The Multiplier Assessment</h1>
             <p class="subtitle">Navigate Transition with Clarity</p>
-            <p style="margin: 15px 0;">Your capacity to navigate transition depends on three factors:</p>
+            <p style="margin: 15px 0; line-height: 1.6;">Why does transition feel so difficult—even when you're doing everything "right"?</p>
+            <p style="margin: 15px 0; line-height: 1.6;">Because your capacity to navigate transition depends on three factors working together:</p>
             <p style="margin: 10px 0;"><strong>🔷 MOTIVATION</strong> - Your brain's reward system</p>
             <p style="margin: 10px 0;"><strong>🔷 LEARNING</strong> - Your adaptive capacity</p>
             <p style="margin: 10px 0;"><strong>🔷 IDENTITY</strong> - Your sense of self</p>
-            <p style="margin: 20px 0; font-weight: bold;">These multiply: Success = M × L × I</p>
-            <p>12 questions. 5 minutes. Complete clarity.</p>
+            <p style="margin: 20px 0; font-weight: bold; text-align: center; background: #edf2f7; padding: 15px; border-radius: 8px;">These multiply: Success = M × L × I</p>
+            <p style="margin: 15px 0;">This free 5-minute assessment will:</p>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li>Measure your M×L×I score</li>
+                <li>Identify your constraint (what's holding you back)</li>
+                <li>Reveal your transition pattern</li>
+                <li>Show you exactly where to focus</li>
+            </ul>
+            <p style="margin: 20px 0; font-weight: bold;">12 questions. 5 minutes. Complete clarity.</p>
             <button type="button" class="button" onclick="start()">Begin Assessment →</button>
         </div>
 
@@ -143,138 +178,16 @@
             <div class="progress-bar">
                 <div class="progress-fill" id="prog" style="width:0%"></div>
             </div>
+            <div class="progress-text" id="prog-text">Question 1 of 12</div>
         </div>
 
-        <!-- SECTION 1 -->
-        <div id="s1" class="hidden">
-            <h2>Section 1: Motivation</h2>
-            <p><em>Think about the PAST 7 DAYS...</em></p>
+        <!-- QUESTIONS -->
+        <div id="questions" class="hidden">
+            <p style="text-align: center; color: #718096; margin-bottom: 30px;"><em>Think about the PAST 7 DAYS as you answer each question...</em></p>
+            
+            <div id="question-container"></div>
 
-            <div style="margin:30px 0">
-                <p style="font-weight:bold; margin-bottom:10px">1. I felt genuinely curious or interested in what I was doing.</p>
-                <label class="option" onclick="ans('q1',1)"><input type="radio" name="q1"> 1 - Not true at all</label>
-                <label class="option" onclick="ans('q1',2)"><input type="radio" name="q1"> 2 - Slightly true</label>
-                <label class="option" onclick="ans('q1',3)"><input type="radio" name="q1"> 3 - Moderately true</label>
-                <label class="option" onclick="ans('q1',4)"><input type="radio" name="q1"> 4 - Mostly true</label>
-                <label class="option" onclick="ans('q1',5)"><input type="radio" name="q1"> 5 - Very true</label>
-            </div>
-
-            <div style="margin:30px 0">
-                <p style="font-weight:bold; margin-bottom:10px">2. I looked forward to aspects of my day or week.</p>
-                <label class="option" onclick="ans('q2',1)"><input type="radio" name="q2"> 1 - Not true at all</label>
-                <label class="option" onclick="ans('q2',2)"><input type="radio" name="q2"> 2 - Slightly true</label>
-                <label class="option" onclick="ans('q2',3)"><input type="radio" name="q2"> 3 - Moderately true</label>
-                <label class="option" onclick="ans('q2',4)"><input type="radio" name="q2"> 4 - Mostly true</label>
-                <label class="option" onclick="ans('q2',5)"><input type="radio" name="q2"> 5 - Very true</label>
-            </div>
-
-            <div style="margin:30px 0">
-                <p style="font-weight:bold; margin-bottom:10px">3. When I completed something, I felt satisfaction or accomplishment.</p>
-                <label class="option" onclick="ans('q3',1)"><input type="radio" name="q3"> 1 - Not true at all</label>
-                <label class="option" onclick="ans('q3',2)"><input type="radio" name="q3"> 2 - Slightly true</label>
-                <label class="option" onclick="ans('q3',3)"><input type="radio" name="q3"> 3 - Moderately true</label>
-                <label class="option" onclick="ans('q3',4)"><input type="radio" name="q3"> 4 - Mostly true</label>
-                <label class="option" onclick="ans('q3',5)"><input type="radio" name="q3"> 5 - Very true</label>
-            </div>
-
-            <div style="margin:30px 0">
-                <p style="font-weight:bold; margin-bottom:10px">4. I pursued activities because I wanted to, not because I "should."</p>
-                <label class="option" onclick="ans('q4',1)"><input type="radio" name="q4"> 1 - Not true at all</label>
-                <label class="option" onclick="ans('q4',2)"><input type="radio" name="q4"> 2 - Slightly true</label>
-                <label class="option" onclick="ans('q4',3)"><input type="radio" name="q4"> 3 - Moderately true</label>
-                <label class="option" onclick="ans('q4',4)"><input type="radio" name="q4"> 4 - Mostly true</label>
-                <label class="option" onclick="ans('q4',5)"><input type="radio" name="q4"> 5 - Very true</label>
-            </div>
-
-            <button type="button" class="button" id="b1" onclick="go(2)" disabled>Continue to Learning →</button>
-        </div>
-
-        <!-- SECTION 2 -->
-        <div id="s2" class="hidden">
-            <h2>Section 2: Learning</h2>
-            <p><em>Think about the PAST 7 DAYS...</em></p>
-
-            <div style="margin:30px 0">
-                <p style="font-weight:bold; margin-bottom:10px">5. When faced with something unfamiliar, I felt curious rather than threatened.</p>
-                <label class="option" onclick="ans('q5',1)"><input type="radio" name="q5"> 1 - Not true at all</label>
-                <label class="option" onclick="ans('q5',2)"><input type="radio" name="q5"> 2 - Slightly true</label>
-                <label class="option" onclick="ans('q5',3)"><input type="radio" name="q5"> 3 - Moderately true</label>
-                <label class="option" onclick="ans('q5',4)"><input type="radio" name="q5"> 4 - Mostly true</label>
-                <label class="option" onclick="ans('q5',5)"><input type="radio" name="q5"> 5 - Very true</label>
-            </div>
-
-            <div style="margin:30px 0">
-                <p style="font-weight:bold; margin-bottom:10px">6. I adapted my approach when circumstances changed.</p>
-                <label class="option" onclick="ans('q6',1)"><input type="radio" name="q6"> 1 - Not true at all</label>
-                <label class="option" onclick="ans('q6',2)"><input type="radio" name="q6"> 2 - Slightly true</label>
-                <label class="option" onclick="ans('q6',3)"><input type="radio" name="q6"> 3 - Moderately true</label>
-                <label class="option" onclick="ans('q6',4)"><input type="radio" name="q6"> 4 - Mostly true</label>
-                <label class="option" onclick="ans('q6',5)"><input type="radio" name="q6"> 5 - Very true</label>
-            </div>
-
-            <div style="margin:30px 0">
-                <p style="font-weight:bold; margin-bottom:10px">7. I was comfortable not knowing or being a beginner.</p>
-                <label class="option" onclick="ans('q7',1)"><input type="radio" name="q7"> 1 - Not true at all</label>
-                <label class="option" onclick="ans('q7',2)"><input type="radio" name="q7"> 2 - Slightly true</label>
-                <label class="option" onclick="ans('q7',3)"><input type="radio" name="q7"> 3 - Moderately true</label>
-                <label class="option" onclick="ans('q7',4)"><input type="radio" name="q7"> 4 - Mostly true</label>
-                <label class="option" onclick="ans('q7',5)"><input type="radio" name="q7"> 5 - Very true</label>
-            </div>
-
-            <div style="margin:30px 0">
-                <p style="font-weight:bold; margin-bottom:10px">8. I questioned my assumptions or tried doing things differently.</p>
-                <label class="option" onclick="ans('q8',1)"><input type="radio" name="q8"> 1 - Not true at all</label>
-                <label class="option" onclick="ans('q8',2)"><input type="radio" name="q8"> 2 - Slightly true</label>
-                <label class="option" onclick="ans('q8',3)"><input type="radio" name="q8"> 3 - Moderately true</label>
-                <label class="option" onclick="ans('q8',4)"><input type="radio" name="q8"> 4 - Mostly true</label>
-                <label class="option" onclick="ans('q8',5)"><input type="radio" name="q8"> 5 - Very true</label>
-            </div>
-
-            <button type="button" class="button" id="b2" onclick="go(3)" disabled>Continue to Identity →</button>
-        </div>
-
-        <!-- SECTION 3 -->
-        <div id="s3" class="hidden">
-            <h2>Section 3: Identity</h2>
-            <p><em>Think about the PAST 7 DAYS...</em></p>
-
-            <div style="margin:30px 0">
-                <p style="font-weight:bold; margin-bottom:10px">9. I had a clear sense of who I am beyond my job title.</p>
-                <label class="option" onclick="ans('q9',1)"><input type="radio" name="q9"> 1 - Not true at all</label>
-                <label class="option" onclick="ans('q9',2)"><input type="radio" name="q9"> 2 - Slightly true</label>
-                <label class="option" onclick="ans('q9',3)"><input type="radio" name="q9"> 3 - Moderately true</label>
-                <label class="option" onclick="ans('q9',4)"><input type="radio" name="q9"> 4 - Mostly true</label>
-                <label class="option" onclick="ans('q9',5)"><input type="radio" name="q9"> 5 - Very true</label>
-            </div>
-
-            <div style="margin:30px 0">
-                <p style="font-weight:bold; margin-bottom:10px">10. I felt comfortable with who I'm becoming.</p>
-                <label class="option" onclick="ans('q10',1)"><input type="radio" name="q10"> 1 - Not true at all</label>
-                <label class="option" onclick="ans('q10',2)"><input type="radio" name="q10"> 2 - Slightly true</label>
-                <label class="option" onclick="ans('q10',3)"><input type="radio" name="q10"> 3 - Moderately true</label>
-                <label class="option" onclick="ans('q10',4)"><input type="radio" name="q10"> 4 - Mostly true</label>
-                <label class="option" onclick="ans('q10',5)"><input type="radio" name="q10"> 5 - Very true</label>
-            </div>
-
-            <div style="margin:30px 0">
-                <p style="font-weight:bold; margin-bottom:10px">11. I could identify things that remain true about me despite changes.</p>
-                <label class="option" onclick="ans('q11',1)"><input type="radio" name="q11"> 1 - Not true at all</label>
-                <label class="option" onclick="ans('q11',2)"><input type="radio" name="q11"> 2 - Slightly true</label>
-                <label class="option" onclick="ans('q11',3)"><input type="radio" name="q11"> 3 - Moderately true</label>
-                <label class="option" onclick="ans('q11',4)"><input type="radio" name="q11"> 4 - Mostly true</label>
-                <label class="option" onclick="ans('q11',5)"><input type="radio" name="q11"> 5 - Very true</label>
-            </div>
-
-            <div style="margin:30px 0">
-                <p style="font-weight:bold; margin-bottom:10px">12. I felt like "myself" in how I spent my time and energy.</p>
-                <label class="option" onclick="ans('q12',1)"><input type="radio" name="q12"> 1 - Not true at all</label>
-                <label class="option" onclick="ans('q12',2)"><input type="radio" name="q12"> 2 - Slightly true</label>
-                <label class="option" onclick="ans('q12',3)"><input type="radio" name="q12"> 3 - Moderately true</label>
-                <label class="option" onclick="ans('q12',4)"><input type="radio" name="q12"> 4 - Mostly true</label>
-                <label class="option" onclick="ans('q12',5)"><input type="radio" name="q12"> 5 - Very true</label>
-            </div>
-
-            <button type="button" class="button" id="b3" onclick="results()" disabled>See My Results →</button>
+            <button type="button" class="button" id="continue-btn" disabled>Continue →</button>
         </div>
 
         <!-- RESULTS -->
@@ -292,59 +205,4 @@
                     <div class="circle-score" id="rl"></div>
                 </div>
                 <div class="multiply">×</div>
-                <div class="circle circle-i">
-                    <div style="font-size:0.9em">Identity</div>
-                    <div class="circle-score" id="ri"></div>
-                </div>
-            </div>
-
-            <div style="text-align:center; font-size:1.5em; font-weight:bold; margin:20px 0; color:#667eea" id="formula"></div>
-            
-            <div class="result-box">
-                <h3 style="color:#667eea">Your Zone: <span id="rzone"></span></h3>
-            </div>
-
-            <div class="result-box">
-                <h3 style="color:#764ba2">Your Pattern: <span id="rpat"></span></h3>
-                <p id="rpatdesc"></p>
-            </div>
-
-            <div class="cta-box">
-                <h3>Ready to Transform Your Transition?</h3>
-                <p>The 8-week Navigate Transition with Flow programme helps you strengthen all three multipliers.</p>
-                <input type="email" id="em" placeholder="Enter your email for detailed results">
-                <button onclick="capture()">Get Programme Info →</button>
-            </div>
-
-            <button type="button" class="button" onclick="restart()">Retake Assessment</button>
-        </div>
-    </div>
-
-    <script>
-        let d={};
-        function start(){hide('welcome');show('progress');show('s1');}
-        function ans(q,v){d[q]=v;document.querySelectorAll(`input[name="${q}"]`).forEach(r=>r.closest('.option').classList.remove('selected'));event.target.closest('.option').classList.add('selected');check();document.getElementById('prog').style.width=(Object.keys(d).length/12*100)+'%';}
-        function check(){if(d.q1&&d.q2&&d.q3&&d.q4)document.getElementById('b1').disabled=false;if(d.q5&&d.q6&&d.q7&&d.q8)document.getElementById('b2').disabled=false;if(d.q9&&d.q10&&d.q11&&d.q12)document.getElementById('b3').disabled=false;}
-        function go(n){hide('s'+(n-1));show('s'+n);window.scrollTo(0,0);}
-        function results(){
-            let M=(d.q1+d.q2+d.q3+d.q4)/2,L=(d.q5+d.q6+d.q7+d.q8)/2,I=(d.q9+d.q10+d.q11+d.q12)/2;
-            let mult=M*L*I,cap=((mult/1000)*100).toFixed(1);
-            let zone=mult<300?'Struggle Zone':mult<400?'Growth Zone':'Flow-Accessible Zone';
-            let pat=I<5&&M>=6&&L>=6?'The Lost Expert':M<5&&L>=6&&I>=6?'The Burned Out Achiever':L<5&&M>=6&&I>=6?'The Rigid Enthusiast':'Balanced';
-            document.getElementById('rm').textContent=M.toFixed(1);
-            document.getElementById('rl').textContent=L.toFixed(1);
-            document.getElementById('ri').textContent=I.toFixed(1);
-            document.getElementById('formula').textContent=`${M.toFixed(1)} × ${L.toFixed(1)} × ${I.toFixed(1)} = ${mult.toFixed(0)} (${cap}% capacity)`;
-            document.getElementById('rzone').textContent=zone;
-            document.getElementById('rpat').textContent=pat;
-            document.getElementById('rpatdesc').textContent='Your transition pattern has been identified based on your M×L×I scores.';
-            window.r={M,L,I,mult,cap,zone,pat};
-            hide('s3');hide('progress');show('res');window.scrollTo(0,0);
-        }
-        function capture(){alert('Thank you! We\'ll send results to '+document.getElementById('em').value);console.log('Email:',document.getElementById('em').value,window.r);}
-        function restart(){d={};document.querySelectorAll('input').forEach(r=>r.checked=false);document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));hide('res');show('welcome');window.scrollTo(0,0);}
-        function hide(id){document.getElementById(id).classList.add('hidden');}
-        function show(id){document.getElementById(id).classList.remove('hidden');}
-    </script>
-</body>
-</html>
+                <div class="circle circle-
