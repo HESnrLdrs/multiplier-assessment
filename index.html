@@ -205,4 +205,319 @@
                     <div class="circle-score" id="rl"></div>
                 </div>
                 <div class="multiply">×</div>
-                <div class="circle circle-
+                <div class="circle circle-i">
+                    <div style="font-size:0.9em">Identity</div>
+                    <div class="circle-score" id="ri"></div>
+                </div>
+            </div>
+
+            <div style="text-align:center; font-size:1.5em; font-weight:bold; margin:20px 0; color:#667eea" id="formula"></div>
+            
+            <div class="result-box">
+                <h3 style="color:#667eea; margin-bottom: 10px;">Your Zone</h3>
+                <p style="font-size: 1.2em; font-weight: bold;" id="rzone"></p>
+            </div>
+
+            <div class="result-box">
+                <h3 style="color:#764ba2; margin-bottom: 10px;">Your Transition Pattern</h3>
+                <p style="font-size: 1.2em; font-weight: bold; margin-bottom: 10px;" id="rpat"></p>
+                <p id="rpatdesc" style="line-height: 1.6;"></p>
+            </div>
+
+            <div class="result-box">
+                <h3 style="color:#667eea; margin-bottom: 10px;">Your Constraint</h3>
+                <p id="rconstraint" style="line-height: 1.6;"></p>
+            </div>
+
+            <div class="result-box">
+                <h3 style="color:#667eea; margin-bottom: 10px;">Why This Matters</h3>
+                <p id="rmatters" style="line-height: 1.6;"></p>
+            </div>
+
+            <div class="cta-box">
+                <h3>Ready to Transform Your Transition?</h3>
+                <p style="margin: 15px 0; line-height: 1.6;">The 8-week Navigate Transition with Flow programme helps you strengthen all three multipliers and move into the Flow-Accessible Zone.</p>
+                <input type="email" id="em" placeholder="Enter your email for detailed results">
+                <button onclick="capture()">Get Programme Info →</button>
+                <p style="margin-top: 15px; font-size: 0.9em; opacity: 0.9;">We'll send you detailed information about your pattern and how the programme can help.</p>
+            </div>
+
+            <button type="button" class="button" onclick="downloadResults()" style="background: white; color: #667eea; border: 2px solid #667eea;">📄 Download My Results</button>
+            <button type="button" class="button" onclick="restart()" style="background: transparent; border: 2px solid #667eea; color: #667eea; margin-top: 10px;">🔄 Retake Assessment</button>
+        </div>
+    </div>
+
+    <script>
+        // Question bank - will be shuffled
+        const questions = [
+            {id: 'q1', type: 'M', text: 'In the past week, I felt genuinely curious or interested in what I was doing.'},
+            {id: 'q2', type: 'M', text: 'I looked forward to aspects of my day or week.'},
+            {id: 'q3', type: 'M', text: 'When I completed something, I felt a sense of satisfaction or accomplishment.'},
+            {id: 'q4', type: 'M', text: 'I pursued activities because I wanted to, not because I felt I "should."'},
+            {id: 'q5', type: 'L', text: 'When faced with something unfamiliar, I felt curious rather than threatened or resistant.'},
+            {id: 'q6', type: 'L', text: 'I adapted my approach when circumstances changed or when my usual method wasn\'t working.'},
+            {id: 'q7', type: 'L', text: 'I was comfortable not knowing or being a beginner at something.'},
+            {id: 'q8', type: 'L', text: 'I questioned my usual assumptions or tried doing things differently.'},
+            {id: 'q9', type: 'I', text: 'I had a clear sense of who I am beyond my job title or role.'},
+            {id: 'q10', type: 'I', text: 'I felt comfortable with who I\'m becoming, even if I\'m uncertain about specifics.'},
+            {id: 'q11', type: 'I', text: 'I could identify things that remain true about me despite changes in my circumstances.'},
+            {id: 'q12', type: 'I', text: 'I felt like "myself" in how I spent my time and energy.'}
+        ];
+
+        // Shuffle function
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        let shuffledQuestions = shuffle([...questions]);
+        let answers = {};
+        let currentQ = 0;
+
+        function start() {
+            hide('welcome');
+            show('progress');
+            show('questions');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = shuffledQuestions[currentQ];
+            const container = document.getElementById('question-container');
+            
+            container.innerHTML = `
+                <div class="question-block">
+                    <div class="question-number">Question ${currentQ + 1} of 12</div>
+                    <div class="question-text">${q.text}</div>
+                    <label class="option" onclick="selectAnswer('${q.id}', 1, event)">
+                        <input type="radio" name="${q.id}" value="1"> 
+                        <span>1 - Not true at all</span>
+                    </label>
+                    <label class="option" onclick="selectAnswer('${q.id}', 2, event)">
+                        <input type="radio" name="${q.id}" value="2"> 
+                        <span>2 - Slightly true</span>
+                    </label>
+                    <label class="option" onclick="selectAnswer('${q.id}', 3, event)">
+                        <input type="radio" name="${q.id}" value="3"> 
+                        <span>3 - Moderately true</span>
+                    </label>
+                    <label class="option" onclick="selectAnswer('${q.id}', 4, event)">
+                        <input type="radio" name="${q.id}" value="4"> 
+                        <span>4 - Mostly true</span>
+                    </label>
+                    <label class="option" onclick="selectAnswer('${q.id}', 5, event)">
+                        <input type="radio" name="${q.id}" value="5"> 
+                        <span>5 - Very true</span>
+                    </label>
+                </div>
+            `;
+
+            // Update button
+            const btn = document.getElementById('continue-btn');
+            if (currentQ === 11) {
+                btn.textContent = 'See My Results →';
+                btn.onclick = results;
+            } else {
+                btn.textContent = 'Continue →';
+                btn.onclick = nextQuestion;
+            }
+
+            // Pre-select if already answered
+            if (answers[q.id]) {
+                const radio = container.querySelector(`input[value="${answers[q.id]}"]`);
+                if (radio) {
+                    radio.checked = true;
+                    radio.closest('.option').classList.add('selected');
+                    btn.disabled = false;
+                }
+            } else {
+                btn.disabled = true;
+            }
+
+            updateProgress();
+        }
+
+        function selectAnswer(qid, val, event) {
+            answers[qid] = val;
+            
+            const block = event.target.closest('.question-block');
+            block.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            event.target.closest('.option').classList.add('selected');
+            
+            document.getElementById('continue-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            currentQ++;
+            renderQuestion();
+            window.scrollTo(0, 0);
+        }
+
+        function updateProgress() {
+            const pct = ((currentQ + 1) / 12) * 100;
+            document.getElementById('prog').style.width = pct + '%';
+            document.getElementById('prog-text').textContent = `Question ${currentQ + 1} of 12`;
+        }
+
+        function results() {
+            let mTotal = 0, lTotal = 0, iTotal = 0;
+            
+            questions.forEach(q => {
+                const val = answers[q.id] || 0;
+                if (q.type === 'M') mTotal += val;
+                if (q.type === 'L') lTotal += val;
+                if (q.type === 'I') iTotal += val;
+            });
+
+            const M = mTotal / 2;
+            const L = lTotal / 2;
+            const I = iTotal / 2;
+            const mult = M * L * I;
+            const cap = ((mult / 1000) * 100).toFixed(1);
+
+            let zone;
+            if (mult < 200) zone = 'Crisis Zone';
+            else if (mult < 300) zone = 'Struggle Zone';
+            else if (mult < 400) zone = 'Growth Zone';
+            else if (mult < 600) zone = 'Flow-Accessible Zone';
+            else if (mult < 800) zone = 'Thriving Zone';
+            else zone = 'Peak Performance';
+
+            const scores = [
+                {name: 'Motivation', value: M},
+                {name: 'Learning', value: L},
+                {name: 'Identity', value: I}
+            ].sort((a, b) => a.value - b.value);
+            
+            const constraint = scores[0].name;
+            let pattern, patDesc, whyMatters;
+            
+            if (I < 5 && M >= 6 && L >= 6) {
+                pattern = 'The Lost Expert';
+                patDesc = 'You have capability (Learning is reasonable) and can generate some motivation, but your sense of identity feels lost or frozen without your previous role.';
+                whyMatters = `Your Identity (${I.toFixed(1)}/10) is significantly lower than your other multipliers. This creates a bottleneck that collapses your entire system to just ${cap}% capacity. Even small improvements in Identity will dramatically increase your overall multiplier because of the multiplication effect.`;
+            } else if (M < 5 && L >= 6 && I >= 6) {
+                pattern = 'The Burned Out Achiever';
+                patDesc = 'You understand transition intellectually and have reasonable identity clarity, but you\'re completely flat energetically. Nothing feels interesting or worth doing.';
+                whyMatters = `Your Motivation (${M.toFixed(1)}/10) is critically low, creating a bottleneck that reduces your capacity to ${cap}%. Your brain\'s reward system needs rebuilding through micro-wins, genuine curiosity, and positive anticipation.`;
+            } else if (L < 5 && M >= 6 && I >= 6) {
+                pattern = 'The Rigid Enthusiast';
+                patDesc = 'You have motivation and know who you are, but you\'re rigidly attached to familiar approaches. You can\'t open your thinking to genuinely new possibilities.';
+                whyMatters = `Your Learning (${L.toFixed(1)}/10) is your constraint, limiting your capacity to ${cap}%. Your rigidity prevents adaptation even when you\'re motivated and clear about identity. Building flexibility is key.`;
+            } else if (M < 5 && L < 5 && I < 5) {
+                pattern = 'The Overwhelmed';
+                patDesc = 'All three multipliers are struggling simultaneously. Transition is hitting you from all sides. This isn\'t failure—it\'s a normal response to overwhelming change.';
+                whyMatters = `With all three multipliers below 5/10, your capacity is just ${cap}%. This requires immediate support and focusing on lifting ALL three factors simultaneously, starting with small, achievable steps.`;
+            } else if (M >= 5 && M <= 7 && L >= 5 && L <= 7 && I >= 5 && I <= 7) {
+                pattern = 'The Coasting';
+                patDesc = 'You\'re navigating transition reasonably well. Nothing is critically low, nothing is fully strong. You\'re in a moderate holding pattern.';
+                whyMatters = `Your capacity is ${cap}%. You\'re not in crisis, but you\'re also not thriving. Small improvements across all three multipliers will create compound growth toward the Flow-Accessible Zone (400+).`;
+            } else {
+                pattern = `${constraint}-Focused`;
+                patDesc = `Your primary challenge right now is ${constraint}. This is the factor that needs the most attention.`;
+                whyMatters = `Your ${constraint} (${scores[0].value.toFixed(1)}/10) is your constraint, limiting your overall capacity to ${cap}%. Focus here first while maintaining your other multipliers.`;
+            }
+
+            document.getElementById('rm').textContent = M.toFixed(1);
+            document.getElementById('rl').textContent = L.toFixed(1);
+            document.getElementById('ri').textContent = I.toFixed(1);
+            document.getElementById('formula').textContent = `${M.toFixed(1)} × ${L.toFixed(1)} × ${I.toFixed(1)} = ${mult.toFixed(0)} (${cap}% capacity)`;
+            document.getElementById('rzone').textContent = zone;
+            document.getElementById('rpat').textContent = pattern;
+            document.getElementById('rpatdesc').textContent = patDesc;
+            document.getElementById('rconstraint').textContent = `Your constraint is ${constraint} (${scores[0].value.toFixed(1)}/10). This is the bottleneck limiting your overall capacity.`;
+            document.getElementById('rmatters').textContent = whyMatters;
+
+            window.r = {M, L, I, mult, cap, zone, pattern, patDesc, constraint, whyMatters};
+
+            hide('questions');
+            hide('progress');
+            show('res');
+            window.scrollTo(0, 0);
+        }
+
+        function capture() {
+            const email = document.getElementById('em').value;
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            alert(`Thank you! We'll send detailed information about your ${window.r.pattern} pattern to ${email}.`);
+            console.log('Email captured:', email, window.r);
+        }
+
+        function downloadResults() {
+            const r = window.r;
+            const text = `
+THE MULTIPLIER ASSESSMENT RESULTS
+Generated: ${new Date().toLocaleString('en-GB')}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+YOUR SCORES:
+
+Motivation:  ${r.M.toFixed(1)}/10
+Learning:    ${r.L.toFixed(1)}/10
+Identity:    ${r.I.toFixed(1)}/10
+
+M×L×I = ${r.mult.toFixed(0)}/1000
+Overall Capacity: ${r.cap}%
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+YOUR ZONE: ${r.zone}
+
+YOUR PATTERN: ${r.pattern}
+
+${r.patDesc}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+YOUR CONSTRAINT: ${r.constraint}
+
+${r.whyMatters}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+NEXT STEPS:
+
+The Navigate Transition with Flow programme helps you:
+- Strengthen all three multipliers
+- Move from ${r.zone} to Flow-Accessible Zone
+- Build sustainable practices that last
+- Experience flow states regularly
+
+For more information:
+http://academicleadershiptransformations.co.uk
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            `;
+
+            const blob = new Blob([text], {type: 'text/plain'});
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'multiplier-assessment-results.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        function restart() {
+            answers = {};
+            currentQ = 0;
+            shuffledQuestions = shuffle([...questions]);
+            hide('res');
+            show('welcome');
+            window.scrollTo(0, 0);
+        }
+
+        function hide(id) { document.getElementById(id).classList.add('hidden'); }
+        function show(id) { document.getElementById(id).classList.remove('hidden'); }
+    </script>
+</body>
+</html>
