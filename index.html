@@ -1,19 +1,493 @@
-<!DOCTYPE html>
-<html lang="en-GB">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Multiplier Assessment - Navigate Transition with Clarity</title>
-    
-    <meta name="description" content="Free 5-minute assessment to discover your transition pattern. Identify which factor—Motivation, Learning, or Identity—is blocking your progress.">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+<button type="button" class="button" id="btn-identity" disabled>See My Results →</button>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="hidden">
+            <div class="results-container">
+                <h1>Your Multiplier Profile</h1>
+                
+                <div class="multiplier-visual">
+                    <div class="multiplier-circle motivation">
+                        <div class="circle-label">Motivation</div>
+                        <div class="circle-score" id="m-visual"></div>
+                    </div>
+                    <div class="multiply-symbol">×</div>
+                    <div class="multiplier-circle learning">
+                        <div class="circle-label">Learning</div>
+                        <div class="circle-score" id="l-visual"></div>
+                    </div>
+                    <div class="multiply-symbol">×</div>
+                    <div class="multiplier-circle identity">
+                        <div class="circle-label">Identity</div>
+                        <div class="circle-score" id="i-visual"></div>
+                    </div>
+                </div>
+
+                <div class="formula-display">
+                    <span id="formula-calc"></span> = <span id="multiplier-value"></span>
+                </div>
+
+                <div class="multiplier-result">
+                    Overall Capacity: <span id="capacity-value"></span>%
+                </div>
+
+                <div style="margin: 30px 0;">
+                    <h3>Your Zone:</h3>
+                    <div class="zone-badge" id="zone-badge"></div>
+                </div>
+
+                <div class="score-card">
+                    <h3><span style="font-size: 1.5em;">🔷</span> Motivation: <span id="motivation-score"></span>/10</h3>
+                    <p id="motivation-label" style="margin-top: 5px; color: #718096; font-size: 1.1em;"></p>
+                </div>
+
+                <div class="score-card">
+                    <h3><span style="font-size: 1.5em;">🔷</span> Learning: <span id="learning-score"></span>/10</h3>
+                    <p id="learning-label" style="margin-top: 5px; color: #718096; font-size: 1.1em;"></p>
+                </div>
+
+                <div class="score-card">
+                    <h3><span style="font-size: 1.5em;">🔷</span> Identity: <span id="identity-score"></span>/10</h3>
+                    <p id="identity-label" style="margin-top: 5px; color: #718096; font-size: 1.1em;"></p>
+                </div>
+
+                <div class="pattern-name" id="pattern-name"></div>
+
+                <div class="insight-box">
+                    <h4>Your Constraint:</h4>
+                    <p id="constraint-text"></p>
+                </div>
+
+                <div class="insight-box">
+                    <h4>What This Pattern Means:</h4>
+                    <p id="pattern-description"></p>
+                </div>
+
+                <div class="insight-box">
+                    <h4>Why This Matters:</h4>
+                    <p id="why-matters"></p>
+                </div>
+
+                <div class="cta-box">
+                    <h3>Ready to Transform Your Transition?</h3>
+                    <p style="margin-bottom: 20px;">The 8-week Navigate Transition with Flow programme helps you strengthen all three multipliers and move into the Flow-Accessible Zone.</p>
+                    
+                    <div class="email-capture">
+                        <input type="email" id="email-input" placeholder="Enter your email for detailed results">
+                        <button type="button" id="email-submit-btn">Get Programme Info →</button>
+                    </div>
+                    
+                    <p style="margin-top: 15px; font-size: 0.9em; opacity: 0.9;">We'll send you detailed information about your pattern and how the programme can help.</p>
+                </div>
+
+                <button type="button" class="button" id="download-btn" style="background: white; color: #667eea; margin-top: 20px;">
+                    📄 Download My Results
+                </button>
+
+                <button type="button" class="button" id="restart-btn" style="background: transparent; border: 2px solid #667eea; color: #667eea; margin-top: 10px;">
+                    🔄 Retake Assessment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        const state = {
+            answers: {},
+            currentSection: 'welcome'
+        };
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing...');
+            init();
+        });
+
+        function init() {
+            // Set up start button
+            const startBtn = document.getElementById('start-button');
+            if (startBtn) {
+                startBtn.addEventListener('click', startAssessment);
+                console.log('Start button listener attached');
+            }
+
+            // Set up all option clicks
+            setupOptionListeners();
+
+            // Set up section buttons
+            const btnMotivation = document.getElementById('btn-motivation');
+            if (btnMotivation) {
+                btnMotivation.addEventListener('click', goToLearning);
+            }
+
+            const btnLearning = document.getElementById('btn-learning');
+            if (btnLearning) {
+                btnLearning.addEventListener('click', goToIdentity);
+            }
+
+            const btnIdentity = document.getElementById('btn-identity');
+            if (btnIdentity) {
+                btnIdentity.addEventListener('click', showResults);
+            }
+
+            // Set up results buttons
+            const emailSubmitBtn = document.getElementById('email-submit-btn');
+            if (emailSubmitBtn) {
+                emailSubmitBtn.addEventListener('click', captureEmail);
+            }
+
+            const downloadBtn = document.getElementById('download-btn');
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', downloadResults);
+            }
+
+            const restartBtn = document.getElementById('restart-btn');
+            if (restartBtn) {
+                restartBtn.addEventListener('click', restartAssessment);
+            }
+
+            console.log('Initialization complete');
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
-            background: linear
+        function setupOptionListeners() {
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input[type="radio"]');
+                    if (radio) {
+                        radio.checked = true;
+                        
+                        // Remove selected class from all options in this question
+                        const questionName = radio.name;
+                        document.querySelectorAll(`input[name="${questionName}"]`).forEach(r => {
+                            r.closest('.option').classList.remove('selected');
+                        });
+                        
+                        // Add selected class to clicked option
+                        this.classList.add('selected');
+                        
+                        // Store answer
+                        state.answers[questionName] = parseInt(radio.value);
+                        
+                        console.log('Answer recorded:', questionName, radio.value);
+                        
+                        // Check if section is complete
+                        checkSectionComplete();
+                        
+                        // Update progress
+                        updateProgress();
+                    }
+                });
+            });
+        }
+
+        function startAssessment() {
+            console.log('Starting assessment...');
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('progress-container').classList.remove('hidden');
+            document.getElementById('section-motivation').classList.remove('hidden');
+            state.currentSection = 'motivation';
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function checkSectionComplete() {
+            if (state.currentSection === 'motivation') {
+                const complete = state.answers.q1 && state.answers.q2 && state.answers.q3 && state.answers.q4;
+                const btn = document.getElementById('btn-motivation');
+                if (btn) {
+                    btn.disabled = !complete;
+                }
+            } else if (state.currentSection === 'learning') {
+                const complete = state.answers.q5 && state.answers.q6 && state.answers.q7 && state.answers.q8;
+                const btn = document.getElementById('btn-learning');
+                if (btn) {
+                    btn.disabled = !complete;
+                }
+            } else if (state.currentSection === 'identity') {
+                const complete = state.answers.q9 && state.answers.q10 && state.answers.q11 && state.answers.q12;
+                const btn = document.getElementById('btn-identity');
+                if (btn) {
+                    btn.disabled = !complete;
+                }
+            }
+        }
+
+        function updateProgress() {
+            const totalQuestions = 12;
+            const answeredQuestions = Object.keys(state.answers).length;
+            const percentage = (answeredQuestions / totalQuestions) * 100;
+            const progressFill = document.getElementById('progress-fill');
+            if (progressFill) {
+                progressFill.style.width = percentage + '%';
+            }
+        }
+
+        function goToLearning() {
+            console.log('Moving to Learning section');
+            document.getElementById('section-motivation').classList.add('hidden');
+            document.getElementById('section-learning').classList.remove('hidden');
+            state.currentSection = 'learning';
+            window.scrollTo(0, 0);
+        }
+
+        function goToIdentity() {
+            console.log('Moving to Identity section');
+            document.getElementById('section-learning').classList.add('hidden');
+            document.getElementById('section-identity').classList.remove('hidden');
+            state.currentSection = 'identity';
+            window.scrollTo(0, 0);
+        }
+
+        function showResults() {
+            console.log('Calculating results...');
+            
+            // Calculate scores
+            const motivationRaw = state.answers.q1 + state.answers.q2 + state.answers.q3 + state.answers.q4;
+            const learningRaw = state.answers.q5 + state.answers.q6 + state.answers.q7 + state.answers.q8;
+            const identityRaw = state.answers.q9 + state.answers.q10 + state.answers.q11 + state.answers.q12;
+
+            const M = motivationRaw / 2;
+            const L = learningRaw / 2;
+            const I = identityRaw / 2;
+
+            const multiplier = M * L * I;
+            const capacity = ((multiplier / 1000) * 100).toFixed(1);
+
+            console.log('Scores:', {M, L, I, multiplier, capacity});
+
+            // Determine zone
+            let zone, zoneBadgeClass;
+            if (multiplier < 200) {
+                zone = "Crisis Zone";
+                zoneBadgeClass = "zone-struggle";
+            } else if (multiplier < 300) {
+                zone = "Struggle Zone";
+                zoneBadgeClass = "zone-struggle";
+            } else if (multiplier < 400) {
+                zone = "Growth Zone";
+                zoneBadgeClass = "zone-growth";
+            } else if (multiplier < 600) {
+                zone = "Flow-Accessible Zone";
+                zoneBadgeClass = "zone-flow";
+            } else if (multiplier < 800) {
+                zone = "Thriving Zone";
+                zoneBadgeClass = "zone-flow";
+            } else {
+                zone = "Peak Performance";
+                zoneBadgeClass = "zone-flow";
+            }
+
+            // Determine pattern
+            let pattern, patternDesc, constraint, whyMatters;
+
+            // Identify constraint
+            const scores = [
+                { name: "Motivation", value: M },
+                { name: "Learning", value: L },
+                { name: "Identity", value: I }
+            ];
+            scores.sort((a, b) => a.value - b.value);
+            constraint = scores[0].name;
+
+            // Determine pattern based on scores
+            if (I < 5 && M >= 6 && L >= 6) {
+                pattern = "The Lost Expert";
+                patternDesc = "You have capability (Learning is reasonable) and can generate some motivation, but your sense of identity feels lost or frozen without your previous role.";
+                whyMatters = `Your Identity (${I.toFixed(1)}/10) is significantly lower than your other multipliers. This creates a bottleneck that collapses your entire system to just ${capacity}% capacity. Even small improvements in Identity will dramatically increase your overall multiplier because of the multiplication effect.`;
+            } else if (M < 5 && L >= 6 && I >= 6) {
+                pattern = "The Burned Out Achiever";
+                patternDesc = "You understand transition intellectually and have reasonable identity clarity, but you're completely flat energetically. Nothing feels interesting or worth doing.";
+                whyMatters = `Your Motivation (${M.toFixed(1)}/10) is critically low, creating a bottleneck that reduces your capacity to ${capacity}%. Your brain's reward system needs rebuilding through micro-wins, genuine curiosity, and positive anticipation.`;
+            } else if (L < 5 && M >= 6 && I >= 6) {
+                pattern = "The Rigid Enthusiast";
+                patternDesc = "You have motivation and know who you are, but you're rigidly attached to familiar approaches. You can't open your thinking to genuinely new possibilities.";
+                whyMatters = `Your Learning (${L.toFixed(1)}/10) is your constraint, limiting your capacity to ${capacity}%. Your rigidity prevents adaptation even when you're motivated and clear about identity. Building flexibility is key.`;
+            } else if (M < 5 && L < 5 && I < 5) {
+                pattern = "The Overwhelmed";
+                patternDesc = "All three multipliers are struggling simultaneously. Transition is hitting you from all sides. This isn't failure—it's a normal response to overwhelming change.";
+                whyMatters = `With all three multipliers below 5/10, your capacity is just ${capacity}%. This requires immediate support and focusing on lifting ALL three factors simultaneously, starting with small, achievable steps.`;
+            } else if (M >= 5 && M <= 7 && L >= 5 && L <= 7 && I >= 5 && I <= 7) {
+                pattern = "The Coasting";
+                patternDesc = "You're navigating transition reasonably well. Nothing is critically low, nothing is fully strong. You're in a moderate holding pattern.";
+                whyMatters = `Your capacity is ${capacity}%. You're not in crisis, but you're also not thriving. Small improvements across all three multipliers will create compound growth toward the Flow-Accessible Zone (400+).`;
+            } else {
+                pattern = `${constraint}-Focused`;
+                patternDesc = `Your primary challenge right now is ${constraint}. This is the factor that needs the most attention.`;
+                whyMatters = `Your ${constraint} (${scores[0].value.toFixed(1)}/10) is your constraint, limiting your overall capacity to ${capacity}%. Focus here first while maintaining your other multipliers.`;
+            }
+
+            // Populate visual circles
+            document.getElementById('m-visual').textContent = M.toFixed(1);
+            document.getElementById('l-visual').textContent = L.toFixed(1);
+            document.getElementById('i-visual').textContent = I.toFixed(1);
+
+            // Populate formula
+            document.getElementById('formula-calc').textContent = `${M.toFixed(1)} × ${L.toFixed(1)} × ${I.toFixed(1)}`;
+            document.getElementById('multiplier-value').textContent = multiplier.toFixed(0);
+            document.getElementById('capacity-value').textContent = capacity;
+
+            // Populate scores
+            document.getElementById('motivation-score').textContent = M.toFixed(1);
+            document.getElementById('learning-score').textContent = L.toFixed(1);
+            document.getElementById('identity-score').textContent = I.toFixed(1);
+            
+            document.getElementById('motivation-label').textContent = getScoreLabel(M);
+            document.getElementById('learning-label').textContent = getScoreLabel(L);
+            document.getElementById('identity-label').textContent = getScoreLabel(I);
+
+            const zoneBadge = document.getElementById('zone-badge');
+            zoneBadge.textContent = zone;
+            zoneBadge.className = `zone-badge ${zoneBadgeClass}`;
+
+            document.getElementById('pattern-name').textContent = `Your Pattern: ${pattern}`;
+            document.getElementById('constraint-text').textContent = `Your constraint is ${constraint} (${scores[0].value.toFixed(1)}/10). This is the bottleneck limiting your overall capacity.`;
+            document.getElementById('pattern-description').textContent = patternDesc;
+            document.getElementById('why-matters').textContent = whyMatters;
+
+            // Store results globally
+            window.assessmentResults = {
+                M, L, I, multiplier, capacity, zone, pattern, patternDesc, constraint, whyMatters
+            };
+
+            // Hide sections and show results
+            document.getElementById('section-identity').classList.add('hidden');
+            document.getElementById('progress-container').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function getScoreLabel(score) {
+            if (score < 4) return "🔴 Critical - Needs immediate attention";
+            if (score < 6) return "🟠 Needs Attention - Requires focus";
+            if (score < 8) return "🟡 Moderate - Room for improvement";
+            if (score < 9) return "🟢 Strong - Functioning well";
+            return "✅ Excellent - High capacity";
+        }
+
+        function captureEmail() {
+            const emailInput = document.getElementById('email-input');
+            const email = emailInput ? emailInput.value : '';
+            
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            // Store email with results
+            const data = {
+                email: email,
+                results: window.assessmentResults,
+                timestamp: new Date().toISOString()
+            };
+
+            // Log to console
+            console.log('Assessment results captured:', data);
+
+            // Show confirmation
+            alert(`Thank you! We'll send detailed information about your ${window.assessmentResults.pattern} pattern to ${email}.`);
+            
+            // TODO: Replace with your actual email capture service
+            // Example: Send to Zapier webhook
+            /*
+            fetch('YOUR_ZAPIER_WEBHOOK_URL', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(response => {
+                console.log('Email captured successfully');
+            }).catch(error => {
+                console.error('Error capturing email:', error);
+            });
+            */
+        }
+
+        function downloadResults() {
+            const results = window.assessmentResults;
+            const text = `
+THE MULTIPLIER ASSESSMENT RESULTS
+Generated: ${new Date().toLocaleString('en-GB')}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+YOUR SCORES:
+
+Motivation:  ${results.M.toFixed(1)}/10
+Learning:    ${results.L.toFixed(1)}/10
+Identity:    ${results.I.toFixed(1)}/10
+
+M×L×I = ${results.multiplier.toFixed(0)}/1000
+Overall Capacity: ${results.capacity}%
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+YOUR ZONE: ${results.zone}
+
+YOUR PATTERN: ${results.pattern}
+
+${results.patternDesc}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+YOUR CONSTRAINT: ${results.constraint}
+
+${results.whyMatters}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+NEXT STEPS:
+
+The Navigate Transition with Flow programme helps you:
+- Strengthen all three multipliers
+- Move from ${results.zone} to Flow-Accessible Zone
+- Build sustainable practices that last
+- Experience flow states regularly
+
+For more information:
+http://academicleadershiptransformations.co.uk
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            `;
+
+            // Create and download file
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'multiplier-assessment-results.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        function restartAssessment() {
+            // Reset state
+            state.answers = {};
+            state.currentSection = 'welcome';
+            
+            // Reset all radio buttons
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.checked = false;
+            });
+            
+            // Remove all selected classes
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Reset progress
+            const progressFill = document.getElementById('progress-fill');
+            if (progressFill) {
+                progressFill.style.width = '0%';
+            }
+            
+            // Hide results, show welcome
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('welcome-screen').classList.remove('hidden');
+            
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
