@@ -51,7 +51,6 @@
         .option:hover { border-color: #667eea; background: #f7fafc; }
         .option.selected { border-color: #667eea; background: #edf2f7; font-weight: 500; }
         h1 { color: #667eea; text-align: center; margin-bottom: 10px; }
-        h2 { color: #4a5568; margin-bottom: 20px; }
         .subtitle { text-align: center; color: #718096; margin-bottom: 30px; font-size: 1.1em; }
         .progress-bar { 
             width: 100%; 
@@ -152,7 +151,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- WELCOME -->
         <div id="welcome">
             <h1>The Multiplier Assessment</h1>
             <p class="subtitle">Navigate Transition with Clarity</p>
@@ -173,7 +171,6 @@
             <button type="button" class="button" onclick="start()">Begin Assessment →</button>
         </div>
 
-        <!-- PROGRESS -->
         <div id="progress" class="hidden">
             <div class="progress-bar">
                 <div class="progress-fill" id="prog" style="width:0%"></div>
@@ -181,16 +178,12 @@
             <div class="progress-text" id="prog-text">Question 1 of 12</div>
         </div>
 
-        <!-- QUESTIONS -->
         <div id="questions" class="hidden">
             <p style="text-align: center; color: #718096; margin-bottom: 30px;"><em>Think about the PAST 7 DAYS as you answer each question...</em></p>
-            
             <div id="question-container"></div>
-
             <button type="button" class="button" id="continue-btn" disabled>Continue →</button>
         </div>
 
-        <!-- RESULTS -->
         <div id="res" class="hidden">
             <h1>Your Multiplier Profile</h1>
             
@@ -248,8 +241,7 @@
     </div>
 
     <script>
-        // Question bank - will be shuffled
-        const questions = [
+        const allQuestions = [
             {id: 'q1', type: 'M', text: 'In the past week, I felt genuinely curious or interested in what I was doing.'},
             {id: 'q2', type: 'M', text: 'I looked forward to aspects of my day or week.'},
             {id: 'q3', type: 'M', text: 'When I completed something, I felt a sense of satisfaction or accomplishment.'},
@@ -264,8 +256,8 @@
             {id: 'q12', type: 'I', text: 'I felt like "myself" in how I spent my time and energy.'}
         ];
 
-        // Shuffle function
-        function shuffle(array) {
+        function shuffle(arr) {
+            const array = [...arr];
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [array[i], array[j]] = [array[j], array[i]];
@@ -273,7 +265,7 @@
             return array;
         }
 
-        let shuffledQuestions = shuffle([...questions]);
+        let questions = shuffle(allQuestions);
         let answers = {};
         let currentQ = 0;
 
@@ -285,47 +277,45 @@
         }
 
         function renderQuestion() {
-            const q = shuffledQuestions[currentQ];
+            const q = questions[currentQ];
             const container = document.getElementById('question-container');
             
             container.innerHTML = `
                 <div class="question-block">
                     <div class="question-number">Question ${currentQ + 1} of 12</div>
                     <div class="question-text">${q.text}</div>
-                    <label class="option" onclick="selectAnswer('${q.id}', 1, event)">
+                    <label class="option" onclick="selectAnswer('${q.id}', 1)">
                         <input type="radio" name="${q.id}" value="1"> 
                         <span>1 - Not true at all</span>
                     </label>
-                    <label class="option" onclick="selectAnswer('${q.id}', 2, event)">
+                    <label class="option" onclick="selectAnswer('${q.id}', 2)">
                         <input type="radio" name="${q.id}" value="2"> 
                         <span>2 - Slightly true</span>
                     </label>
-                    <label class="option" onclick="selectAnswer('${q.id}', 3, event)">
+                    <label class="option" onclick="selectAnswer('${q.id}', 3)">
                         <input type="radio" name="${q.id}" value="3"> 
                         <span>3 - Moderately true</span>
                     </label>
-                    <label class="option" onclick="selectAnswer('${q.id}', 4, event)">
+                    <label class="option" onclick="selectAnswer('${q.id}', 4)">
                         <input type="radio" name="${q.id}" value="4"> 
                         <span>4 - Mostly true</span>
                     </label>
-                    <label class="option" onclick="selectAnswer('${q.id}', 5, event)">
+                    <label class="option" onclick="selectAnswer('${q.id}', 5)">
                         <input type="radio" name="${q.id}" value="5"> 
                         <span>5 - Very true</span>
                     </label>
                 </div>
             `;
 
-            // Update button
             const btn = document.getElementById('continue-btn');
             if (currentQ === 11) {
                 btn.textContent = 'See My Results →';
-                btn.onclick = results;
+                btn.onclick = showResults;
             } else {
                 btn.textContent = 'Continue →';
                 btn.onclick = nextQuestion;
             }
 
-            // Pre-select if already answered
             if (answers[q.id]) {
                 const radio = container.querySelector(`input[value="${answers[q.id]}"]`);
                 if (radio) {
@@ -340,13 +330,11 @@
             updateProgress();
         }
 
-        function selectAnswer(qid, val, event) {
+        function selectAnswer(qid, val) {
             answers[qid] = val;
-            
-            const block = event.target.closest('.question-block');
+            const block = document.querySelector('.question-block');
             block.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
             event.target.closest('.option').classList.add('selected');
-            
             document.getElementById('continue-btn').disabled = false;
         }
 
@@ -362,10 +350,10 @@
             document.getElementById('prog-text').textContent = `Question ${currentQ + 1} of 12`;
         }
 
-        function results() {
+        function showResults() {
             let mTotal = 0, lTotal = 0, iTotal = 0;
             
-            questions.forEach(q => {
+            allQuestions.forEach(q => {
                 const val = answers[q.id] || 0;
                 if (q.type === 'M') mTotal += val;
                 if (q.type === 'L') lTotal += val;
@@ -446,19 +434,15 @@
                 return;
             }
             alert(`Thank you! We'll send detailed information about your ${window.r.pattern} pattern to ${email}.`);
-            console.log('Email captured:', email, window.r);
+            console.log('Email:', email, window.r);
         }
 
         function downloadResults() {
             const r = window.r;
-            const text = `
-THE MULTIPLIER ASSESSMENT RESULTS
+            const text = `THE MULTIPLIER ASSESSMENT RESULTS
 Generated: ${new Date().toLocaleString('en-GB')}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
 YOUR SCORES:
-
 Motivation:  ${r.M.toFixed(1)}/10
 Learning:    ${r.L.toFixed(1)}/10
 Identity:    ${r.I.toFixed(1)}/10
@@ -466,41 +450,21 @@ Identity:    ${r.I.toFixed(1)}/10
 M×L×I = ${r.mult.toFixed(0)}/1000
 Overall Capacity: ${r.cap}%
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
 YOUR ZONE: ${r.zone}
-
 YOUR PATTERN: ${r.pattern}
 
 ${r.patDesc}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
 YOUR CONSTRAINT: ${r.constraint}
-
 ${r.whyMatters}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-NEXT STEPS:
-
-The Navigate Transition with Flow programme helps you:
-- Strengthen all three multipliers
-- Move from ${r.zone} to Flow-Accessible Zone
-- Build sustainable practices that last
-- Experience flow states regularly
-
-For more information:
-http://academicleadershiptransformations.co.uk
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-            `;
+For more information: http://academicleadershiptransformations.co.uk`;
 
             const blob = new Blob([text], {type: 'text/plain'});
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'multiplier-assessment-results.txt';
+            a.download = 'multiplier-results.txt';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -510,7 +474,7 @@ http://academicleadershiptransformations.co.uk
         function restart() {
             answers = {};
             currentQ = 0;
-            shuffledQuestions = shuffle([...questions]);
+            questions = shuffle(allQuestions);
             hide('res');
             show('welcome');
             window.scrollTo(0, 0);
