@@ -954,26 +954,38 @@
                         {
                             label: 'Motivation',
                             data: motivationData,
-                            borderColor: '#f5576c',
-                            backgroundColor: 'rgba(245, 87, 108, 0.1)',
+                            borderColor: '#667eea',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
                             tension: 0.3,
-                            fill: true
+                            fill: true,
+                            pointRadius: 6,
+                            pointBackgroundColor: '#667eea',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2
                         },
                         {
                             label: 'Learning',
                             data: learningData,
-                            borderColor: '#00f2fe',
-                            backgroundColor: 'rgba(0, 242, 254, 0.1)',
+                            borderColor: '#00bcd4',
+                            backgroundColor: 'rgba(0, 188, 212, 0.1)',
                             tension: 0.3,
-                            fill: true
+                            fill: true,
+                            pointRadius: 6,
+                            pointBackgroundColor: '#00bcd4',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2
                         },
                         {
                             label: 'Identity',
                             data: identityData,
-                            borderColor: '#38f9d7',
-                            backgroundColor: 'rgba(56, 249, 215, 0.1)',
+                            borderColor: '#3f51b5',
+                            backgroundColor: 'rgba(63, 81, 181, 0.1)',
                             tension: 0.3,
-                            fill: true
+                            fill: true,
+                            pointRadius: 6,
+                            pointBackgroundColor: '#3f51b5',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2
                         }
                     ]
                 },
@@ -983,7 +995,11 @@
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'top'
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
                         }
                     },
                     scales: {
