@@ -656,7 +656,37 @@
         showError(error.message);
     }
 }
+        async function handleSignup(e) {
+    e.preventDefault();
+    console.log("🔵 Signup started");
+    
+    const name = document.getElementById('signup-name').value;
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    
+    console.log("📧 Email:", email);
+    
+    try {
+        console.log("🟡 Creating account...");
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
         
+        console.log("✅ Account created!");
+        
+        // Save user data to database
+        await database.ref('users/' + userCredential.user.uid).set({
+            name: name,
+            email: email,
+            createdAt: new Date().toISOString()
+        });
+        
+        console.log("✅ User data saved!");
+        // Auth observer will automatically show dashboard
+        
+    } catch (error) {
+        console.log("❌ Signup failed:", error.message);
+        showError(error.message);
+    }
+}
         function handleLogout() {
             auth.signOut();
         }
