@@ -586,6 +586,7 @@
         
         let currentUser = null;
         let progressChart = null;
+        let storedAssessments = [];
         
         // Assessment Questions (shuffled, no dimension headers)
         const questions = [
@@ -634,59 +635,36 @@
             hideError();
         }
         
-       async function handleLogin(e) {
-    e.preventDefault();
-    console.log("🔵 Login started");
-    
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    
-    console.log("📧 Email:", email);
-    
-    try {
-        console.log("🟡 Calling Firebase...");
-        await auth.signInWithEmailAndPassword(email, password);
-        console.log("✅ Login successful!");
-        console.log("🚀 Redirecting to admin.html...");
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+            } catch (error) {
+                showError(error.message);
+            }
+        }
         
-    
-        
-    } catch (error) {
-        console.log("❌ Login failed:", error.message);
-        showError(error.message);
-    }
-}
         async function handleSignup(e) {
-    e.preventDefault();
-    console.log("🔵 Signup started");
-    
-    const name = document.getElementById('signup-name').value;
-    const email = document.getElementById('signup-email').value;
-    const password = document.getElementById('signup-password').value;
-    
-    console.log("📧 Email:", email);
-    
-    try {
-        console.log("🟡 Creating account...");
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                await database.ref('users/' + userCredential.user.uid).set({
+                    name: name,
+                    email: email,
+                    createdAt: new Date().toISOString()
+                });
+            } catch (error) {
+                showError(error.message);
+            }
+        }
         
-        console.log("✅ Account created!");
-        
-        // Save user data to database
-        await database.ref('users/' + userCredential.user.uid).set({
-            name: name,
-            email: email,
-            createdAt: new Date().toISOString()
-        });
-        
-        console.log("✅ User data saved!");
-        // Auth observer will automatically show dashboard
-        
-    } catch (error) {
-        console.log("❌ Signup failed:", error.message);
-        showError(error.message);
-    }
-}
         function handleLogout() {
             auth.signOut();
         }
@@ -796,7 +774,6 @@
         }
         
         async function submitAssessment() {
-            // Check all questions answered
             const allAnswered = questions.every(q => 
                 document.querySelector(`input[name="${q.id}"]:checked`)
             );
@@ -806,7 +783,6 @@
                 return;
             }
             
-            // Calculate scores
             let motivationRaw = 0, learningRaw = 0, identityRaw = 0;
             
             questions.forEach(q => {
@@ -816,15 +792,12 @@
                 if (q.dimension === 'identity') identityRaw += value;
             });
             
-            // Convert to /10 scale (raw is 5-25, convert to 2.0-10.0)
             const motivation = ((motivationRaw / 25) * 10).toFixed(1);
             const learning = ((learningRaw / 25) * 10).toFixed(1);
             const identity = ((identityRaw / 25) * 10).toFixed(1);
             
-            // Calculate capacity score
             const capacityScore = Math.round(parseFloat(motivation) * parseFloat(learning) * parseFloat(identity));
             
-            // Determine constraint and traffic lights
             const scores = {
                 motivation: parseFloat(motivation),
                 learning: parseFloat(learning),
@@ -835,7 +808,6 @@
                 scores[a] < scores[b] ? a : b
             );
             
-            // Assign traffic lights
             function getTrafficLight(score) {
                 if (score <= 6.0) return { emoji: '🔴', status: 'CRITICAL PRIORITY', color: 'red' };
                 if (score <= 7.5) return { emoji: '🟡', status: 'Development Opportunity', color: 'amber' };
@@ -848,7 +820,6 @@
                 identity: getTrafficLight(scores.identity)
             };
             
-            // Save to database
             const assessmentData = {
                 timestamp: new Date().toISOString(),
                 motivationRaw,
@@ -872,82 +843,84 @@
         }
         
         function displayResults(data) {
-    const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
-    
-    let resultsHTML = `
-        <h2 style="margin-bottom: 30px; color: #333; text-align: center;">Your Results</h2>
-        
-        <div class="dimension-score ${data.constraint === 'motivation' ? 'highlighted' : ''}">
-            <span class="dimension-name">Motivation (M):</span>
-            <span class="score">${data.motivationDisplay}/10</span>
-            <span class="traffic-light">${data.trafficLights.motivation.emoji}</span>
-            <span class="status">${data.trafficLights.motivation.status}</span>
-            ${data.constraint === 'motivation' ? '<span class="constraint-marker">← What\'s holding you back</span>' : ''}
-        </div>
-        
-        <div class="dimension-score ${data.constraint === 'learning' ? 'highlighted' : ''}">
-            <span class="dimension-name">Learning (L):</span>
-            <span class="score">${data.learningDisplay}/10</span>
-            <span class="traffic-light">${data.trafficLights.learning.emoji}</span>
-            <span class="status">${data.trafficLights.learning.status}</span>
-            ${data.constraint === 'learning' ? '<span class="constraint-marker">← What\'s holding you back</span>' : ''}
-        </div>
-        
-        <div class="dimension-score ${data.constraint === 'identity' ? 'highlighted' : ''}">
-            <span class="dimension-name">Identity (I):</span>
-            <span class="score">${data.identityDisplay}/10</span>
-            <span class="traffic-light">${data.trafficLights.identity.emoji}</span>
-            <span class="status">${data.trafficLights.identity.status}</span>
-            ${data.constraint === 'identity' ? '<span class="constraint-marker">← What\'s holding you back</span>' : ''}
-        </div>
-        
-        <div class="capacity-score">
-            <strong>Transition Capacity Score: ${data.capacityScore}</strong>
-            <p style="font-size: 0.9em; margin-top: 10px; opacity: 0.95;">
-                (Calculated as ${data.motivationDisplay} × ${data.learningDisplay} × ${data.identityDisplay})
-            </p>
-            <p style="font-size: 0.85em; margin-top: 10px; opacity: 0.9;">
-                Because we multiply these dimensions together, your lowest score has the 
-                biggest limiting effect. This is why focusing on ${capitalizeFirst(data.constraint)} 
-                will have the greatest impact on building your capacity.
-            </p>
-        </div>
-        
-        <div class="traffic-light-explanation">
-           <h3 style="margin: 50px 0 20px 0; color: #333; padding-top: 30px; border-top: 2px solid #e0e0e0;">What Your Traffic Lights Mean</h3>
+            const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
             
-            <div class="light-meaning ${data.trafficLights[data.constraint].color}">
-                <span class="light-icon">${data.trafficLights[data.constraint].emoji}</span>
-                <strong>${capitalizeFirst(data.constraint)}: ${data.trafficLights[data.constraint].status} (${data[data.constraint + 'Display']}/10)</strong>
-                <p>This is what's holding you back most right now. By focusing on ${capitalizeFirst(data.constraint)} in the programme, 
-                you'll build the capacity needed to move forward in your transition.</p>
-            </div>
-            
-            ${['motivation', 'learning', 'identity'].filter(d => d !== data.constraint).map(dim => `
-                <div class="light-meaning ${data.trafficLights[dim].color}">
-                    <span class="light-icon">${data.trafficLights[dim].emoji}</span>
-                    <strong>${capitalizeFirst(dim)}: ${data.trafficLights[dim].status}</strong>
-                    <p>${data.trafficLights[dim].status === 'Strength' ? 
-                        'This area is working well. Use it to support your development in other areas.' :
-                        'This area has room for growth. Keep awareness here as you work on your primary focus.'
-                    }</p>
+            let resultsHTML = `
+                <h2 style="margin-bottom: 30px; color: #333; text-align: center;">Your Results</h2>
+                
+                <div class="dimension-score ${data.constraint === 'motivation' ? 'highlighted' : ''}">
+                    <span class="dimension-name">Motivation (M):</span>
+                    <span class="score">${data.motivationDisplay}/10</span>
+                    <span class="traffic-light">${data.trafficLights.motivation.emoji}</span>
+                    <span class="status">${data.trafficLights.motivation.status}</span>
+                    ${data.constraint === 'motivation' ? '<span class="constraint-marker">← What\'s holding you back</span>' : ''}
                 </div>
-            `).join('')}
-        </div>
-    `;
-    resultsHTML += `
-    <div style="margin-top: 30px; text-align: center;">
-        <button class="btn" onclick="showView('progress-view')" style="background: #666;">
-            ← Back to Progress
-        </button>
-        <button class="btn" onclick="showView('dashboard-view')" style="margin-left: 10px;">
-            Back to Dashboard
-        </button>
-    </div>
-`;
-    document.getElementById('results-summary').innerHTML = resultsHTML;
-    showView('results-view');
-}
+                
+                <div class="dimension-score ${data.constraint === 'learning' ? 'highlighted' : ''}">
+                    <span class="dimension-name">Learning (L):</span>
+                    <span class="score">${data.learningDisplay}/10</span>
+                    <span class="traffic-light">${data.trafficLights.learning.emoji}</span>
+                    <span class="status">${data.trafficLights.learning.status}</span>
+                    ${data.constraint === 'learning' ? '<span class="constraint-marker">← What\'s holding you back</span>' : ''}
+                </div>
+                
+                <div class="dimension-score ${data.constraint === 'identity' ? 'highlighted' : ''}">
+                    <span class="dimension-name">Identity (I):</span>
+                    <span class="score">${data.identityDisplay}/10</span>
+                    <span class="traffic-light">${data.trafficLights.identity.emoji}</span>
+                    <span class="status">${data.trafficLights.identity.status}</span>
+                    ${data.constraint === 'identity' ? '<span class="constraint-marker">← What\'s holding you back</span>' : ''}
+                </div>
+                
+                <div class="capacity-score">
+                    <strong>Transition Capacity Score: ${data.capacityScore}</strong>
+                    <p style="font-size: 0.9em; margin-top: 10px; opacity: 0.95;">
+                        (Calculated as ${data.motivationDisplay} × ${data.learningDisplay} × ${data.identityDisplay})
+                    </p>
+                    <p style="font-size: 0.85em; margin-top: 10px; opacity: 0.9;">
+                        Because we multiply these dimensions together, your lowest score has the 
+                        biggest limiting effect. This is why focusing on ${capitalizeFirst(data.constraint)} 
+                        will have the greatest impact on building your capacity.
+                    </p>
+                </div>
+                
+                <div class="traffic-light-explanation">
+                   <h3 style="margin: 50px 0 20px 0; color: #333; padding-top: 30px; border-top: 2px solid #e0e0e0;">What Your Traffic Lights Mean</h3>
+                    
+                    <div class="light-meaning ${data.trafficLights[data.constraint].color}">
+                        <span class="light-icon">${data.trafficLights[data.constraint].emoji}</span>
+                        <strong>${capitalizeFirst(data.constraint)}: ${data.trafficLights[data.constraint].status} (${data[data.constraint + 'Display']}/10)</strong>
+                        <p>This is what's holding you back most right now. By focusing on ${capitalizeFirst(data.constraint)} in the programme, 
+                        you'll build the capacity needed to move forward in your transition.</p>
+                    </div>
+                    
+                    ${['motivation', 'learning', 'identity'].filter(d => d !== data.constraint).map(dim => `
+                        <div class="light-meaning ${data.trafficLights[dim].color}">
+                            <span class="light-icon">${data.trafficLights[dim].emoji}</span>
+                            <strong>${capitalizeFirst(dim)}: ${data.trafficLights[dim].status}</strong>
+                            <p>${data.trafficLights[dim].status === 'Strength' ? 
+                                'This area is working well. Use it to support your development in other areas.' :
+                                'This area has room for growth. Keep awareness here as you work on your primary focus.'
+                            }</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            resultsHTML += `
+                <div style="margin-top: 30px; text-align: center;">
+                    <button class="btn" onclick="showView('progress-view')" style="background: #666;">
+                        ← Back to Progress
+                    </button>
+                    <button class="btn" onclick="showView('dashboard-view')" style="margin-left: 10px;">
+                        Back to Dashboard
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('results-summary').innerHTML = resultsHTML;
+            showView('results-view');
+        }
         
         // Progress View
         async function loadProgressView() {
@@ -965,10 +938,7 @@
                     id: key
                 })).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
                 
-                // Render chart
                 renderProgressChart(assessmentArray);
-                
-                // Render history
                 renderHistory(assessmentArray);
                 
             } catch (error) {
@@ -1062,56 +1032,51 @@
             });
         }
         
-
-function renderHistory(assessments) {
-    storedAssessments = assessments; // ADD THIS LINE
-    const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
-    
-    const historyHTML = assessments.reverse().map((assessment, index) => {
-        const assessmentNum = assessments.length - index;
-        const date = new Date(assessment.timestamp).toLocaleDateString();
-        return `
-            <div class="history-item">
-                <h4>Assessment ${assessmentNum} - ${date}</h4>
-                <p style="margin: 10px 0; color: #666;">
-                    <strong>What's holding you back:</strong> ${capitalizeFirst(assessment.constraint)} 
-                    (${assessment[assessment.constraint + 'Display']}/10) ${assessment.trafficLights[assessment.constraint].emoji}
-                </p>
-                <div class="score-grid">
-                    <div class="score-item">
-                        <div class="score-label">Motivation ${assessment.trafficLights.motivation.emoji}</div>
-                        <div class="score-value">${assessment.motivationDisplay}/10</div>
+        function renderHistory(assessments) {
+            storedAssessments = assessments;
+            const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
+            
+            const historyHTML = assessments.reverse().map((assessment, index) => {
+                const assessmentNum = assessments.length - index;
+                const date = new Date(assessment.timestamp).toLocaleDateString();
+                
+                return `
+                    <div class="history-item">
+                        <h4>Assessment ${assessmentNum} - ${date}</h4>
+                        <p style="margin: 10px 0; color: #666;">
+                            <strong>What's holding you back:</strong> ${capitalizeFirst(assessment.constraint)} 
+                            (${assessment[assessment.constraint + 'Display']}/10) ${assessment.trafficLights[assessment.constraint].emoji}
+                        </p>
+                        <div class="score-grid">
+                            <div class="score-item">
+                                <div class="score-label">Motivation ${assessment.trafficLights.motivation.emoji}</div>
+                                <div class="score-value">${assessment.motivationDisplay}/10</div>
+                            </div>
+                            <div class="score-item">
+                                <div class="score-label">Learning ${assessment.trafficLights.learning.emoji}</div>
+                                <div class="score-value">${assessment.learningDisplay}/10</div>
+                            </div>
+                            <div class="score-item">
+                                <div class="score-label">Identity ${assessment.trafficLights.identity.emoji}</div>
+                                <div class="score-value">${assessment.identityDisplay}/10</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 15px; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; text-align: center;">
+                            <strong>Transition Capacity Score: ${assessment.capacityScore}</strong>
+                        </div>
+                        <div style="margin-top: 15px; text-align: center;">
+                            <button class="btn" onclick="viewFullResults(${index})">View Full Results</button>
+                        </div>
                     </div>
-                    <div class="score-item">
-                        <div class="score-label">Learning ${assessment.trafficLights.learning.emoji}</div>
-                        <div class="score-value">${assessment.learningDisplay}/10</div>
-                    </div>
-                    <div class="score-item">
-                        <div class="score-label">Identity ${assessment.trafficLights.identity.emoji}</div>
-                        <div class="score-value">${assessment.identityDisplay}/10</div>
-                    </div>
-                </div>
-                <div style="margin-top: 15px; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; text-align: center;">
-                    <strong>Transition Capacity Score: ${assessment.capacityScore}</strong>
-                </div>
-                <div style="margin-top: 15px; text-align: center;">
-                    <button class="btn" onclick="viewFullResults(${index})" style="margin-top: 10px;">
-    View Full Results
-</button>
-                </div>
-            </div>
-        `;
-    }).join('');
-    
-   document.getElementById('history-container').innerHTML = historyHTML;
-}
-
-let storedAssessments = [];
-
-function viewFullResults(index) {
-    displayResults(storedAssessments[index]);
-}
-
-    </script>
+                `;
+            }).join('');
+            
+            document.getElementById('history-container').innerHTML = historyHTML;
+        }
+        
+        function viewFullResults(index) {
+            displayResults(storedAssessments[index]);
+        }
+</script>
 </body>
 </html>
