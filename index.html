@@ -634,35 +634,43 @@
             hideError();
         }
         
-        async function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-            } catch (error) {
-                showError(error.message);
-            }
-        }
+       async function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    
+    try {
+        await auth.signInWithEmailAndPassword(email, password);
         
-        async function handleSignup(e) {
-            e.preventDefault();
-            const name = document.getElementById('signup-name').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            
-            try {
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                await database.ref('users/' + userCredential.user.uid).set({
-                    name: name,
-                    email: email,
-                    createdAt: new Date().toISOString()
-                });
-            } catch (error) {
-                showError(error.message);
-            }
-        }
+        // ADD THIS LINE - Redirect to dashboard after successful login
+        window.location.href = 'dashboard.html';
+        
+    } catch (error) {
+        showError(error.message);
+    }
+}
+
+async function handleSignup(e) {
+    e.preventDefault();
+    const name = document.getElementById('signup-name').value;
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    
+    try {
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        await database.ref('users/' + userCredential.user.uid).set({
+            name: name,
+            email: email,
+            createdAt: new Date().toISOString()
+        });
+        
+        // ADD THIS LINE - Redirect to dashboard after successful signup
+        window.location.href = 'dashboard.html';
+        
+    } catch (error) {
+        showError(error.message);
+    }
+}
         
         function handleLogout() {
             auth.signOut();
