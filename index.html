@@ -1062,13 +1062,15 @@
             });
         }
         
-       function renderHistory(assessments) {
+       let storedAssessments = []; // ADD THIS LINE ABOVE THE FUNCTION
+
+function renderHistory(assessments) {
+    storedAssessments = assessments; // ADD THIS LINE
     const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
     
     const historyHTML = assessments.reverse().map((assessment, index) => {
         const assessmentNum = assessments.length - index;
         const date = new Date(assessment.timestamp).toLocaleDateString();
-        
         return `
             <div class="history-item">
                 <h4>Assessment ${assessmentNum} - ${date}</h4>
@@ -1094,7 +1096,7 @@
                     <strong>Transition Capacity Score: ${assessment.capacityScore}</strong>
                 </div>
                 <div style="margin-top: 15px; text-align: center;">
-                    <button class="btn" onclick='viewFullResults(${JSON.stringify(assessment).replace(/'/g, "\\'")})'  style="margin-top: 10px;">
+                    <button class="btn" onclick="viewFullResults(${index})" style="margin-top: 10px;">
     View Full Results
 </button>
                 </div>
@@ -1105,8 +1107,10 @@
    document.getElementById('history-container').innerHTML = historyHTML;
 }
 
-function viewFullResults(assessment) {
-    displayResults(assessment);
+let storedAssessments = [];
+
+function viewFullResults(index) {
+    displayResults(storedAssessments[index]);
 }
 
     </script>
