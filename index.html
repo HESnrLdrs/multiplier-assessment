@@ -1030,43 +1030,49 @@
             });
         }
         
-        function renderHistory(assessments) {
-            const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
-            
-            const historyHTML = assessments.reverse().map((assessment, index) => {
-                const assessmentNum = assessments.length - index;
-                const date = new Date(assessment.timestamp).toLocaleDateString();
-                
-                return `
-                    <div class="history-item">
-                        <h4>Assessment ${assessmentNum} - ${date}</h4>
-                        <p style="margin: 10px 0; color: #666;">
-                            <strong>Constraint:</strong> ${capitalizeFirst(assessment.constraint)} 
-                            (${assessment[assessment.constraint + 'Display']}/10) ${assessment.trafficLights[assessment.constraint].emoji}
-                        </p>
-                        <div class="score-grid">
-                            <div class="score-item">
-                                <div class="score-label">Motivation ${assessment.trafficLights.motivation.emoji}</div>
-                                <div class="score-value">${assessment.motivationDisplay}/10</div>
-                            </div>
-                            <div class="score-item">
-                                <div class="score-label">Learning ${assessment.trafficLights.learning.emoji}</div>
-                                <div class="score-value">${assessment.learningDisplay}/10</div>
-                            </div>
-                            <div class="score-item">
-                                <div class="score-label">Identity ${assessment.trafficLights.identity.emoji}</div>
-                                <div class="score-value">${assessment.identityDisplay}/10</div>
-                            </div>
-                        </div>
-                        <div style="margin-top: 15px; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; text-align: center;">
-                            <strong>Transition Capacity Score: ${assessment.capacityScore}</strong>
-                        </div>
+       function renderHistory(assessments) {
+    const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
+    
+    const historyHTML = assessments.reverse().map((assessment, index) => {
+        const assessmentNum = assessments.length - index;
+        const date = new Date(assessment.timestamp).toLocaleDateString();
+        
+        return `
+            <div class="history-item">
+                <h4>Assessment ${assessmentNum} - ${date}</h4>
+                <p style="margin: 10px 0; color: #666;">
+                    <strong>What's holding you back:</strong> ${capitalizeFirst(assessment.constraint)} 
+                    (${assessment[assessment.constraint + 'Display']}/10) ${assessment.trafficLights[assessment.constraint].emoji}
+                </p>
+                <div class="score-grid">
+                    <div class="score-item">
+                        <div class="score-label">Motivation ${assessment.trafficLights.motivation.emoji}</div>
+                        <div class="score-value">${assessment.motivationDisplay}/10</div>
                     </div>
-                `;
-            }).join('');
-            
-            document.getElementById('history-container').innerHTML = historyHTML;
-        }
-    </script>
-</body>
-</html>
+                    <div class="score-item">
+                        <div class="score-label">Learning ${assessment.trafficLights.learning.emoji}</div>
+                        <div class="score-value">${assessment.learningDisplay}/10</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Identity ${assessment.trafficLights.identity.emoji}</div>
+                        <div class="score-value">${assessment.identityDisplay}/10</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; text-align: center;">
+                    <strong>Transition Capacity Score: ${assessment.capacityScore}</strong>
+                </div>
+                <div style="margin-top: 15px; text-align: center;">
+                    <button class="view-details-btn" onclick='viewFullResults(${JSON.stringify(assessment).replace(/'/g, "\\'")})'>
+                        View Full Results
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    document.getElementById('history-container').innerHTML = historyHTML;
+}
+
+function viewFullResults(assessment) {
+    displayResults(assessment);
+}
