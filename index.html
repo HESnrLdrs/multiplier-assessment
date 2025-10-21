@@ -1094,9 +1094,9 @@
                     <strong>Transition Capacity Score: ${assessment.capacityScore}</strong>
                 </div>
                 <div style="margin-top: 15px; text-align: center;">
-                    <button class="view-details-btn" onclick='viewFullResults(${JSON.stringify(assessment).replace(/'/g, "\\'")})'>
-                        View Full Results
-                    </button>
+                    <button class="btn" onclick='viewFullResults(${JSON.stringify(assessment).replace(/'/g, "\\'")})'  style="margin-top: 10px;">
+    View Full Results
+</button>
                 </div>
             </div>
         `;
