@@ -636,38 +636,23 @@
         
        async function handleLogin(e) {
     e.preventDefault();
+    console.log("🔵 Login started");
+    
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
     
-    try {
-        await auth.signInWithEmailAndPassword(email, password);
-        
-        // Redirect to admin dashboard
-        window.location.href = 'admin.html';
-        
-    } catch (error) {
-        showError(error.message);
-    }
-}
-
-async function handleSignup(e) {
-    e.preventDefault();
-    const name = document.getElementById('signup-name').value;
-    const email = document.getElementById('signup-email').value;
-    const password = document.getElementById('signup-password').value;
+    console.log("📧 Email:", email);
     
     try {
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        await database.ref('users/' + userCredential.user.uid).set({
-            name: name,
-            email: email,
-            createdAt: new Date().toISOString()
-        });
+        console.log("🟡 Calling Firebase...");
+        await auth.signInWithEmailAndPassword(email, password);
+        console.log("✅ Login successful!");
+        console.log("🚀 Redirecting to admin.html...");
         
-        // Redirect to admin dashboard
         window.location.href = 'admin.html';
         
     } catch (error) {
+        console.log("❌ Login failed:", error.message);
         showError(error.message);
     }
 }
