@@ -874,7 +874,7 @@
         function displayResults(data) {
     const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
     
-    let resultsHTML = `...`
+    let resultsHTML = `
         <h2 style="margin-bottom: 30px; color: #333; text-align: center;">Your Results</h2>
         
         <div class="dimension-score ${data.constraint === 'motivation' ? 'highlighted' : ''}">
