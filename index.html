@@ -642,8 +642,8 @@
     try {
         await auth.signInWithEmailAndPassword(email, password);
         
-        // ADD THIS LINE - Redirect to dashboard after successful login
-        window.location.href = 'dashboard.html';
+        // Redirect to admin dashboard
+        window.location.href = 'admin.html';
         
     } catch (error) {
         showError(error.message);
@@ -664,8 +664,8 @@ async function handleSignup(e) {
             createdAt: new Date().toISOString()
         });
         
-        // ADD THIS LINE - Redirect to dashboard after successful signup
-        window.location.href = 'dashboard.html';
+        // Redirect to admin dashboard
+        window.location.href = 'admin.html';
         
     } catch (error) {
         showError(error.message);
