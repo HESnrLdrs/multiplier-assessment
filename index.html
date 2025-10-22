@@ -615,7 +615,15 @@
         let progressChart = null;
         let storedAssessments = [];
         
-       // Assessment Questions (shuffled, no dimension headers)
+       // Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const database = firebase.database();
+
+let currentUser = null;
+let progressChart = null;
+let storedAssessments = [];
+
 // Assessment Questions (shuffled, no dimension headers)
 // Updated based on psychometric audit for 0.80+ reliability
 const questions = [
@@ -635,13 +643,13 @@ const questions = [
     { id: 'l5', dimension: 'learning', text: 'I can learn from setbacks and keep developing, rather than seeing them as proof I\'m on the wrong path.' },
     { id: 'm5', dimension: 'motivation', text: 'My daily activities feel purposeful and meaningful (not just going through the motions).' }
 ];
-        
-        // Auth State Observer
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                currentUser = user;
-                loadUserData();
-                showView('dashboard-view');
+
+// Auth State Observer
+auth.onAuthStateChanged(user => {
+    if (user) {
+        currentUser = user;
+        loadUserData();
+        showView('dashboard-view');
             } else {
                 currentUser = null;
                 showView('auth-view');
