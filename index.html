@@ -677,26 +677,26 @@ const questions = [
         }
         
         async function handleSignup(e) {
-            e.preventDefault();
-            const name = document.getElementById('signup-name').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            
-            try {
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-await database.ref('users/' + userCredential.user.uid).set({
-    name: name,
-    email: email,
-    createdAt: new Date().toISOString()
-});
-
-// Redirect to assessment page
-window.location.href = 'assessment.html';
-                });
-            } catch (error) {
-                showError(error.message);
-            }
-        }
+    e.preventDefault();
+    const name = document.getElementById('signup-name').value;
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    
+    try {
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        await database.ref('users/' + userCredential.user.uid).set({
+            name: name,
+            email: email,
+            createdAt: new Date().toISOString()
+        });
+        
+        // Redirect to assessment page
+        window.location.href = 'assessment.html';
+        
+    } catch (error) {
+        showError(error.message);
+    }
+}
         
         function handleLogout() {
             auth.signOut();
