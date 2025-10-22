@@ -684,10 +684,14 @@ const questions = [
             
             try {
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                await database.ref('users/' + userCredential.user.uid).set({
-                    name: name,
-                    email: email,
-                    createdAt: new Date().toISOString()
+await database.ref('users/' + userCredential.user.uid).set({
+    name: name,
+    email: email,
+    createdAt: new Date().toISOString()
+});
+
+// Redirect to assessment page
+window.location.href = 'assessment.html';
                 });
             } catch (error) {
                 showError(error.message);
