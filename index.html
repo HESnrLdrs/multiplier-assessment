@@ -615,24 +615,25 @@
         let progressChart = null;
         let storedAssessments = [];
         
-        // Assessment Questions (shuffled, no dimension headers)
-        const questions = [
-            { id: 'm1', dimension: 'motivation', text: 'I feel energized and engaged by the work I\'m currently doing.' },
-            { id: 'l1', dimension: 'learning', text: 'I feel confident in my ability to learn new skills when needed.' },
-            { id: 'i1', dimension: 'identity', text: 'I have a clear sense of who I am beyond my professional role.' },
-            { id: 'm2', dimension: 'motivation', text: 'I have clear goals that genuinely matter to me right now.' },
-            { id: 'l2', dimension: 'learning', text: 'I can adapt my approach when circumstances change.' },
-            { id: 'i2', dimension: 'identity', text: 'My values and priorities are clear to me right now.' },
-            { id: 'l3', dimension: 'learning', text: 'I\'m open to feedback and willing to adjust based on new information.' },
-            { id: 'i3', dimension: 'identity', text: 'I feel comfortable with the direction my life is taking.' },
-            { id: 'm3', dimension: 'motivation', text: 'I feel curious and interested in exploring new possibilities.' },
-            { id: 'i4', dimension: 'identity', text: 'I know what matters most to me in this phase of life.' },
-            { id: 'l4', dimension: 'learning', text: 'I seek out opportunities to develop new capabilities.' },
-            { id: 'm4', dimension: 'motivation', text: 'I can sustain effort on challenging tasks without burning out.' },
-            { id: 'i5', dimension: 'identity', text: 'I can describe my core strengths independently of my job title.' },
-            { id: 'l5', dimension: 'learning', text: 'I recover well from setbacks and continue developing.' },
-            { id: 'm5', dimension: 'motivation', text: 'My daily activities feel purposeful and meaningful.' }
-        ];
+       // Assessment Questions (shuffled, no dimension headers)
+// Updated based on psychometric audit for 0.80+ reliability
+const questions = [
+    { id: 'm1', dimension: 'motivation', text: 'I feel energized by what I'm working toward (rather than drained or stuck).' },
+    { id: 'l1', dimension: 'learning', text: 'I feel confident in my ability to learn new skills, even when it feels uncomfortable.' },
+    { id: 'i1', dimension: 'identity', text: 'I have a clear sense of who I am beyond my professional role (not just what I do).' },
+    { id: 'm2', dimension: 'motivation', text: 'I have clear goals that genuinely matter to me, and I feel able to pursue them.' },
+    { id: 'l2', dimension: 'learning', text: 'I can adapt my approach when circumstances change, rather than clinging to what used to work.' },
+    { id: 'i2', dimension: 'identity', text: 'My sense of who I am remains stable, even when facing uncertainty.' },
+    { id: 'l3', dimension: 'learning', text: 'I\'m open to feedback and can adjust based on new information, even when it challenges my assumptions.' },
+    { id: 'i3', dimension: 'identity', text: 'I feel aligned with the direction my life is taking (not just going where circumstances push me).' },
+    { id: 'm3', dimension: 'motivation', text: 'I feel curious and excited about new possibilities (rather than anxious or overwhelmed).' },
+    { id: 'i4', dimension: 'identity', text: 'I know what matters most to me in this phase of life, even if it\'s different from before.' },
+    { id: 'l4', dimension: 'learning', text: 'I seek out opportunities to develop new capabilities, even when it means being a beginner again.' },
+    { id: 'm4', dimension: 'motivation', text: 'I can sustain effort on challenging tasks, even when the outcome is uncertain.' },
+    { id: 'i5', dimension: 'identity', text: 'I can describe my core strengths independently of my job title or past achievements.' },
+    { id: 'l5', dimension: 'learning', text: 'I can learn from setbacks and keep developing, rather than seeing them as proof I\'m on the wrong path.' },
+    { id: 'm5', dimension: 'motivation', text: 'My daily activities feel purposeful and meaningful (not just going through the motions).' }
+];
         
         // Auth State Observer
         auth.onAuthStateChanged(user => {
