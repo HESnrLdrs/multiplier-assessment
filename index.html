@@ -689,8 +689,8 @@ auth.onAuthStateChanged(user => {
             createdAt: new Date().toISOString()
         });
         
-        // Redirect to assessment page
-        window.location.href = 'assessment.html';
+        // Start the assessment
+        startAssessment();
         
     } catch (error) {
         showError(error.message);
@@ -771,7 +771,7 @@ auth.onAuthStateChanged(user => {
         // Assessment Functions
         function startAssessment() {
             renderQuestions();
-            showView('assessment-view');
+            startAssessment();
         }
         
         function renderQuestions() {
