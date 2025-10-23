@@ -768,11 +768,11 @@ auth.onAuthStateChanged(user => {
             }
         }
         
-        // Assessment Functions
-        function startAssessment() {
-            renderQuestions();
-            startAssessment();
-        }
+       // Assessment Functions
+function startAssessment() {
+    renderQuestions();
+    showView('assessment-view');
+}
         
         function renderQuestions() {
             const container = document.getElementById('questions-container');
