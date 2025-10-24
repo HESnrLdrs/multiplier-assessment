@@ -521,6 +521,67 @@
             font-weight: 700;
             color: #667eea;
         }
+        /* Help Icons and Popups */
+.help-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: #667eea;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 8px;
+    position: relative;
+}
+
+.help-icon:hover {
+    background: #5568d3;
+}
+
+.help-popup {
+    display: none;
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border: 2px solid #667eea;
+    border-radius: 10px;
+    padding: 15px;
+    width: 280px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    z-index: 1000;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333;
+}
+
+.help-popup::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #667eea;
+}
+
+.help-icon:hover .help-popup {
+    display: block;
+}
+
+.help-popup strong {
+    color: #667eea;
+    display: block;
+    margin-bottom: 5px;
+}
     </style>
 </head>
 <body>
