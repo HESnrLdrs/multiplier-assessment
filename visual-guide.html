@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Guide - Navigate Transition Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        h2 {
+            color: #764ba2;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .guide-section {
+            margin-bottom: 50px;
+        }
+
+        .example-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .dimension-card {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 15px 0;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .dimension-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .dimension-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .dimension-card.motivation {
+            border-left: 5px solid #9333ea;
+        }
+
+        .dimension-card.learning {
+            border-left: 5px solid #06b6d4;
+        }
+
+        .dimension-card.identity {
+            border-left: 5px solid #f97316;
+        }
+
+        .score-example {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+        }
+
+        .score-bar {
+            flex-grow: 1;
+            height: 40px;
+            background: #e5e7eb;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .score-fill {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 15px;
+            color: white;
+            font-weight: bold;
+            transition: width 1s ease-in-out;
+        }
+
+        .score-fill.red { background: linear-gradient(90deg, #ef4444, #dc2626); }
+        .score-fill.amber { background: linear-gradient(90deg, #f59e0b, #d97706); }
+        .score-fill.green { background: linear-gradient(90deg, #10b981, #059669); }
+
+        .traffic-light {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .traffic-light-item {
+            flex: 1;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .traffic-light-item.red { background: #ef4444; }
+        .traffic-light-item.amber { background: #f59e0b; }
+        .traffic-light-item.green { background: #10b981; }
+
+        .multiplier-demo {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .multiplier-equation {
+            font-size: 1.5em;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-item {
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+        }
+
+        .comparison-item h4 {
+            margin-bottom: 15px;
+            color: #764ba2;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .back-link:hover {
+            background: #764ba2;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Visual Guide</h1>
+        <p class="subtitle">Understanding your assessment results through examples and visuals</p>
+
+        <div class="guide-section">
+            <h2>The Three Dimensions Explained</h2>
+            
+            <div class="dimension-card motivation">
+                <h3>🎯 Motivation (Purple)</h3>
+                <p><strong>What it measures:</strong> Your drive, energy, and sense of purpose during the transition.</p>
+                <p><strong>Key indicators:</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px; line-height: 2;">
+                    <li>Clarity about why you're making this change</li>
+                    <li>Confidence that the transition is possible</li>
+                    <li>Ability to maintain momentum when things get difficult</li>
+                    <li>Connection to your deeper purpose</li>
+                </ul>
+            </div>
+
+            <div class="dimension-card learning">
+                <h3>📚 Learning (Cyan)</h3>
+                <p><strong>What it measures:</strong> Your openness to new information and ability to adapt.</p>
+                <p><strong>Key indicators:</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px; line-height: 2;">
+                    <li>Willingness to experiment and try new things</li>
+                    <li>Comfort with making mistakes as part of growth</li>
+                    <li>Ability to reflect on experiences and adjust</li>
+                    <li>Curiosity and openness to feedback</li>
+                </ul>
+            </div>
+
+            <div class="dimension-card identity">
+                <h3>👤 Identity (Orange)</h3>
+                <p><strong>What it measures:</strong> Your comfort with your evolving sense of self.</p>
+                <p><strong>Key indicators:</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px; line-height: 2;">
+                    <li>Ability to let go of old professional identities</li>
+                    <li>Comfort with the "in-between" space</li>
+                    <li>Openness to seeing yourself in new ways</li>
+                    <li>Confidence in your evolving professional identity</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <h2>Understanding Traffic Light Indicators</h2>
+            
+            <div class="example-box">
+                <p style="margin-bottom: 20px;">Your results use a traffic light system to help you quickly understand which areas need attention:</p>
+                
+                <div class="traffic-light">
+                    <div class="traffic-light-item red">
+                        <div style="font-size: 2em; margin-bottom: 10px;">🔴</div>
+                        <div>RED - Priority</div>
+                        <div style="font-size: 0.9em; margin-top: 5px;">Your constraint</div>
+                        <div style="font-size: 0.9em;">Focus here first</div>
+                    </div>
+                    <div class="traffic-light-item amber">
+                        <div style="font-size: 2em; margin-bottom: 10px;">🟡</div>
+                        <div>AMBER - Monitor</div>
+                        <div style="font-size: 0.9em; margin-top: 5px;">Room for growth</div>
+                        <div style="font-size: 0.9em;">Keep an eye on this</div>
+                    </div>
+                    <div class="traffic-light-item green">
+                        <div style="font-size: 2em; margin-bottom: 10px;">🟢</div>
+                        <div>GREEN - Strong</div>
+                        <div style="font-size: 0.9em; margin-top: 5px;">You're doing well</div>
+                        <div style="font-size: 0.9em;">Maintain this strength</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <h2>Example Score Visualization</h2>
+            
+            <div class="example-box">
+                <h3 style="margin-bottom: 20px;">Sample Results:</h3>
+                
+                <div class="score-example">
+                    <strong style="min-width: 120px;">Motivation:</strong>
+                    <div class="score-bar">
+                        <div class="score-fill green" style="width: 75%;">75/100</div>
+                    </div>
+                </div>
+
+                <div class="score-example">
+                    <strong style="min-width: 120px;">Learning:</strong>
+                    <div class="score-bar">
+                        <div class="score-fill amber" style="width: 68%;">68/100</div>
+                    </div>
+                </div>
+
+                <div class="score-example">
+                    <strong style="min-width: 120px;">Identity:</strong>
+                    <div class="score-bar">
+                        <div class="score-fill red" style="width: 42%;">42/100</div>
+                    </div>
+                </div>
+
+                <p style="margin-top: 30px; padding: 20px; background: white; border-radius: 8px; border-left: 4px solid #ef4444;">
+                    <strong>Your Constraint: Identity</strong><br>
+                    In this example, Identity is the lowest score (42/100), making it your primary constraint. This is where you should focus your energy first.
+                </p>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <h2>The Multiplier Effect</h2>
+            
+            <div class="multiplier-demo">
+                <p style="margin-bottom: 20px;">Your Transition Capacity Score is calculated by multiplying the three dimensions together. This means improving your weakest area has the biggest impact.</p>
+                
+                <div class="multiplier-equation">
+                    Motivation × Learning × Identity = Transition Capacity
+                </div>
+
+                <div class="comparison-grid">
+                    <div class="comparison-item" style="background: #fef2f2;">
+                        <h4>❌ Before Improvement</h4>
+                        <p style="margin: 15px 0;">75 × 68 × 42 = 214,200</p>
+                        <p style="color: #666; font-size: 0.95em;">Weakest link limits overall capacity</p>
+                    </div>
+
+                    <div class="comparison-item" style="background: #f0fdf4;">
+                        <h4>✅ After Improving Identity</h4>
+                        <p style="margin: 15px 0;">75 × 68 × 60 = 306,000</p>
+                        <p style="color: #666; font-size: 0.95em;">+43% improvement by focusing on constraint!</p>
+                    </div>
+                </div>
+
+                <p style="margin-top: 20px; padding: 15px; background: #eff6ff; border-radius: 8px;">
+                    <strong>Key Insight:</strong> Improving your constraint from 42 to 60 increased your overall capacity by 43%. That's the power of focusing on your weakest link!
+                </p>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <h2>Score Ranges Explained</h2>
+            
+            <div class="example-box">
+                <h3 style="margin-bottom: 20px;">Individual Dimension Scores (0-100)</h3>
+                
+                <div style="margin: 15px 0; padding: 15px; background: white; border-radius: 8px; border-left: 4px solid #ef4444;">
+                    <strong>0-50: Needs Attention</strong><br>
+                    This dimension is significantly limiting your progress. Priority focus area.
+                </div>
+
+                <div style="margin: 15px 0; padding: 15px; background: white; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                    <strong>51-70: Room for Growth</strong><br>
+                    You're making progress but there's opportunity for improvement.
+                </div>
+
+                <div style="margin: 15px 0; padding: 15px; background: white; border-radius: 8px; border-left: 4px solid #10b981;">
+                    <strong>71-100: Strong</strong><br>
+                    This is a strength. Maintain this level while focusing on lower areas.
+                </div>
+            </div>
+
+            <div class="example-box" style="margin-top: 30px;">
+                <h3 style="margin-bottom: 20px;">Transition Capacity Score (0-1,000,000)</h3>
+                
+                <div style="margin: 15px 0; padding: 15px; background: white; border-radius: 8px;">
+                    <strong>0-200,000: Building Foundation</strong><br>
+                    You're in the early stages. Focus on addressing your constraint.
+                </div>
+
+                <div style="margin: 15px 0; padding: 15px; background: white; border-radius: 8px;">
+                    <strong>200,001-500,000: Gaining Traction</strong><br>
+                    You're making progress. Keep building momentum.
+                </div>
+
+                <div style="margin: 15px 0; padding: 15px; background: white; border-radius: 8px;">
+                    <strong>500,001+: Making Progress</strong><br>
+                    Strong capacity for transition. Continue refining and advancing.
+                </div>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <h2>How to Use Your Results</h2>
+            
+            <div class="example-box">
+                <ol style="line-height: 2.5; margin-left: 20px;">
+                    <li><strong>Identify your constraint</strong> - This is the dimension marked in red</li>
+                    <li><strong>Review specific questions</strong> - Look at which questions in that dimension scored lowest</li>
+                    <li><strong>Create an action plan</strong> - Focus on concrete steps to improve that area</li>
+                    <li><strong>Track progress</strong> - Retake the assessment every 4 weeks to see improvement</li>
+                    <li><strong>Celebrate wins</strong> - Notice when your scores improve and your capacity increases</li>
+                </ol>
+            </div>
+        </div>
+
+        <a href="index.html" class="back-link">← Back to Assessment</a>
+    </div>
+</body>
+</html>
