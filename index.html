@@ -15,6 +15,60 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     
     <style>
+        .resource-links {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid #e0e0e0;
+    text-align: center;
+}
+
+.resource-links h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.resource-links p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.resource-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.resource-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 30px;
+    background: white;
+    border: 2px solid #3498db;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #3498db;
+    transition: all 0.3s ease;
+    min-width: 150px;
+}
+
+.resource-btn:hover {
+    background: #3498db;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn-icon {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.btn-text {
+    font-weight: 600;
+    font-size: 1em;
+}
         /* Loading Screen */
 #loading-screen {
     position: fixed;
