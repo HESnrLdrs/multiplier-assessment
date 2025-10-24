@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Navigate Transition Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .search-box {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.1em;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            transition: border-color 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .faq-section {
+            margin-bottom: 40px;
+        }
+
+        .faq-section h2 {
+            color: #34495e;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            font-size: 1.8em;
+        }
+
+        .faq-item {
+            background: #f8f9fa;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+
+        .faq-question:hover {
+            background: #ecf0f1;
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5em;
+            color: #3498db;
+            transition: transform 0.3s;
+        }
+
+        .faq-question.active::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .faq-answer.active {
+            padding: 20px;
+            max-height: 500px;
+        }
+
+        .faq-answer p {
+            margin-bottom: 10px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .faq-answer ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .faq-answer li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 30px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            display: none;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .faq-question {
+                font-size: 1em;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Frequently Asked Questions</h1>
+        <p class="subtitle">Find answers to common questions about the Navigate Transition Assessment</p>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search for a question..." onkeyup="searchFAQ()">
+        </div>
+
+        <div class="no-results" id="noResults">
+            <p>No matching questions found. Try different keywords.</p>
+        </div>
+
+        <div class="faq-section">
+            <h2>About the Assessment</h2>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    What does this assessment measure?
+                </div>
+                <div class="faq-answer">
+                    <p>The Navigate Transition Assessment measures three critical dimensions that determine your capacity to successfully navigate a major life or career transition:</p>
+                    <ul>
+                        <li><strong>Motivation:</strong> Your drive and energy for the transition</li>
+                        <li><strong>Learning:</strong> Your capacity to acquire new skills and knowledge</li>
+                        <li><strong>Identity:</strong> Your sense of belonging and self in the new context</li>
+                    </ul>
+                    <p>It identifies which dimension is your "constraint" - the primary factor limiting your overall transition capacity.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    How long does the assessment take?
+                </div>
+                <div class="faq-answer">
+                    <p>The assessment takes approximately 5-7 minutes to complete. There are 15 questions total - 5 questions for each of the three dimensions (Motivation, Learning, and Identity).</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    Is my data confidential?
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, your assessment data is stored securely and confidentially. Only you can access your individual results through your personal account. Aggregate data may be used for research purposes, but individual responses are never shared or identified.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    Can I take the assessment more than once?
+                </div>
+                <div class="faq-answer">
+                    <p>Absolutely! In fact, we encourage you to retake the assessment periodically as you work through your transition. This allows you to:</p>
+                    <ul>
+                        <li>Track your progress over time</li>
+                        <li>See how your constraint changes</li>
+                        <li>Measure the impact of your development efforts</li>
+                        <li>Identify new areas that need attention</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-section">
+            <h2>Understanding Your Results</h2>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    What is a "constraint" and why does it matter?
+                </div>
+                <div class="faq-answer">
+                    <p>Your constraint is your lowest-scoring dimension - the area that's most holding you back. It matters because:</p>
+                    <ul>
+                        <li>Improving your constraint has the biggest impact on your overall transition capacity</li>
+                        <li>Your constraint explains why you might feel stuck, even when other things seem fine</li>
+                        <li>Focusing on your constraint is more effective than trying to improve everything at once</li>
+                    </ul>
+                    <p>Think of it like a chain - the weakest link determines the chain's strength. Your constraint is that weakest link in your transition capacity.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    What do the traffic light colors mean?
+                </div>
+                <div class="faq-answer">
+                    <p>We use a traffic light system to help you prioritize:</p>
+                    <ul>
+                        <li><strong>🔴 RED (1.0-5.9):</strong> Priority area - This is your constraint and needs immediate attention</li>
+                        <li><strong>🟡 AMBER (6.0-7.9):</strong> Monitor - Room for improvement, but not your primary focus</li>
+                        <li><strong>🟢 GREEN (8.0-10):</strong> Strong - This area is working well for you</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    What's a good Transition Capacity Score?
+                </div>
+                <div class="faq-answer">
+                    <p>There's no universal "good" score - it depends on your starting point and your goals. However:</p>
+                    <ul>
+                        <li>Scores are calculated by multiplying your three dimension scores (1-10 each)</li>
+                        <li>Total scores range from 1 to 1,000</li>
+                        <li>Having balanced scores (e.g., 7-7-7 = 343) is often better than having one very low score (e.g., 9-9-2 = 162)</li>
+                        <li>Focus on improvement over time rather than comparing to others</li>
+                    </ul>
+                    <p>The most important thing is identifying your constraint and working to improve it.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    Why are my scores multiplied instead of added?
+                </div>
+                <div class="faq-answer">
+                    <p>Multiplication reveals what addition hides - your constraint matters more than your strengths. When scores are multiplied:</p>
+                    <ul>
+                        <li>A single low score dramatically reduces your overall capacity</li>
+                        <li>This mirrors real life - you can have all the motivation and learning in the world, but if you don't feel like you belong, your transition will struggle</li>
+                        <li>It shows why addressing your constraint is so powerful</li>
+                    </ul>
+                    <p>See the "How Scoring Works" page for detailed examples of why multiplication is used.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    How often should I retake the assessment?
+                </div>
+                <div class="faq-answer">
+                    <p>We recommend retaking the assessment:</p>
+                    <ul>
+                        <li>After making significant efforts to address your constraint (e.g., 4-6 weeks)</li>
+                        <li>When you experience a major shift or change in your transition</li>
+                        <li>Every 2-3 months during active transition periods</li>
+                        <li>When you want to check if a new constraint has emerged</li>
+                    </ul>
+                    <p>Avoid taking it too frequently (daily or weekly) as meaningful change takes time to develop.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-section">
+            <h2>The Three Dimensions Explained</h2>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    What is Motivation and why does it matter?
+                </div>
+                <div class="faq-answer">
+                    <p><strong>Motivation</strong> is your drive and emotional energy for the transition. It's about whether you have the fuel to push through challenges.</p>
+                    <p>Low motivation might show up as:</p>
+                    <ul>
+                        <li>Feeling drained or stuck rather than energized</li>
+                        <li>Avoiding taking action on your transition</li>
+                        <li>Struggling to maintain momentum</li>
+                        <li>Questioning whether it's worth the effort</li>
+                    </ul>
+                    <p>When motivation is your constraint, you might know what to do but lack the drive to do it.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    What is Learning and why does it matter?
+                </div>
+                <div class="faq-answer">
+                    <p><strong>Learning</strong> is your capacity to acquire the new skills and knowledge you need for your transition.</p>
+                    <p>Low learning capacity might show up as:</p>
+                    <ul>
+                        <li>Struggling to develop needed competencies</li>
+                        <li>Feeling overwhelmed by what you need to learn</li>
+                        <li>Not making progress in building new skills</li>
+                        <li>Avoiding situations where you need to demonstrate new capabilities</li>
+                    </ul>
+                    <p>When learning is your constraint, you want to move forward but lack the skills or knowledge to do so effectively.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    What is Identity and why does it matter?
+                </div>
+                <div class="faq-answer">
+                    <p><strong>Identity</strong> is your sense of belonging and self in the new context. It's about whether you can see yourself fitting in and being authentic.</p>
+                    <p>Low identity alignment might show up as:</p>
+                    <ul>
+                        <li>Feeling like you don't belong or fit in</li>
+                        <li>Questioning whether this is really "you"</li>
+                        <li>Struggling to see yourself succeeding in the new context</li>
+                        <li>Feeling like you're pretending or being inauthentic</li>
+                    </ul>
+                    <p>When identity is your constraint, you might have the skills and motivation, but something feels fundamentally "off" about the fit.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    Can I have more than one constraint?
+                </div>
+                <div class="faq-answer">
+                    <p>Technically, your constraint is your single lowest-scoring dimension. However:</p>
+                    <ul>
+                        <li>If two dimensions have very similar low scores, both may be limiting you</li>
+                        <li>Your constraint can change as you improve - addressing one constraint may reveal another</li>
+                        <li>Multiple amber scores suggest you have room for improvement across several areas</li>
+                    </ul>
+                    <p>Start with your lowest score, but be aware that transitions often involve working on multiple dimensions over time.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-section">
+            <h2>Technical Support</h2>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    I'm having trouble logging in. What should I do?
+                </div>
+                <div class="faq-answer">
+                    <p>If you're having login issues:</p>
+                    <ul>
+                        <li>Make sure you're using the correct email address</li>
+                        <li>Try resetting your password using the "Forgot Password" link</li>
+                        <li>Clear your browser cache and try again</li>
+                        <li>Try a different browser</li>
+                    </ul>
+                    <p>If problems persist, contact support for assistance.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    Can I access this assessment on my phone?
+                </div>
+                <div class="faq-answer">
+                    <p>The assessment is optimized for tablets (iPad) and larger screens. While you can access it on a phone, we recommend using a tablet or desktop computer for the best experience when completing the assessment questions.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    Where can I find my previous assessment results?
+                </div>
+                <div class="faq-answer">
+                    <p>After logging in, go to your Dashboard. You'll see:</p>
+                    <ul>
+                        <li>Your complete assessment history</li>
+                        <li>A progress chart showing how your scores have changed over time</li>
+                        <li>The ability to view detailed results from any past assessment</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <a href="javascript:history.back()" class="back-button">← Back to Results</a>
+    </div>
+
+    <script>
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            const allQuestions = document.querySelectorAll('.faq-question');
+            const allAnswers = document.querySelectorAll('.faq-answer');
+
+            // Close all other FAQs
+            allQuestions.forEach(q => {
+                if (q !== element) {
+                    q.classList.remove('active');
+                }
+            });
+            allAnswers.forEach(a => {
+                if (a !== answer) {
+                    a.classList.remove('active');
+                }
+            });
+
+            // Toggle current FAQ
+            element.classList.toggle('active');
+            answer.classList.toggle('active');
+        }
+
+        function searchFAQ() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const faqItems = document.querySelectorAll('.faq-item');
+            const noResults = document.getElementById('noResults');
+            let hasResults = false;
+
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question').textContent.toLowerCase();
+                const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+                
+                if (question.includes(filter) || answer.includes(filter)) {
+                    item.style.display = '';
+                    hasResults = true;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            noResults.style.display = hasResults ? 'none' : 'block';
+        }
+    </script>
+</body>
+</html>
