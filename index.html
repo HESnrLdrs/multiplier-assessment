@@ -1009,47 +1009,75 @@ function startAssessment() {
             }
         }
         
-        function displayResults(data) {
-            const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
-            
-            let resultsHTML = `
-                <h2 style="margin-bottom: 30px; color: #333; text-align: center;">Your Results</h2>
-                
-                <div class="dimension-score ${data.constraint === 'motivation' ? 'highlighted' : ''}">
-                    <span class="dimension-name">Motivation (M):</span>
-                    <span class="score">${data.motivationDisplay}/10</span>
-                    <span class="traffic-light">${data.trafficLights.motivation.emoji}</span>
-                    <span class="status">${data.trafficLights.motivation.status}</span>
-                    ${data.constraint === 'motivation' ? '<span class="constraint-marker">← What\'s holding you back</span>' : ''}
+       function displayResults(data) {
+    const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
+    
+    let resultsHTML = `
+        <h2 style="margin-bottom: 30px; color: #333; text-align: center;">Your Results</h2>
+        
+        <div class="dimension-score ${data.constraint === 'motivation' ? 'highlighted' : ''}">
+            <span class="dimension-name">Motivation (M):</span>
+            <span class="score">${data.motivationDisplay}/10</span>
+            <span class="traffic-light">${data.trafficLights.motivation.emoji}</span>
+            <span class="status">${data.trafficLights.motivation.status}</span>
+            <span class="help-icon">?
+                <div class="help-popup">
+                    <strong>Motivation</strong>
+                    Measures your energy, purpose, and drive for change. Includes clarity of goals, curiosity about possibilities, and ability to sustain effort.
                 </div>
-                
-                <div class="dimension-score ${data.constraint === 'learning' ? 'highlighted' : ''}">
-                    <span class="dimension-name">Learning (L):</span>
-                    <span class="score">${data.learningDisplay}/10</span>
-                    <span class="traffic-light">${data.trafficLights.learning.emoji}</span>
-                    <span class="status">${data.trafficLights.learning.status}</span>
-                    ${data.constraint === 'learning' ? '<span class="constraint-marker">← What\'s holding you back</span>' : ''}
+            </span>
+            ${data.constraint === 'motivation' ? '<span class="constraint-marker">← What\'s holding you back</span>' : ''}
+        </div>
+        
+        <div class="dimension-score ${data.constraint === 'learning' ? 'highlighted' : ''}">
+            <span class="dimension-name">Learning (L):</span>
+            <span class="score">${data.learningDisplay}/10</span>
+            <span class="traffic-light">${data.trafficLights.learning.emoji}</span>
+            <span class="status">${data.trafficLights.learning.status}</span>
+            <span class="help-icon">?
+                <div class="help-popup">
+                    <strong>Learning</strong>
+                    Measures your ability to adapt, grow, and bounce back. Includes confidence learning new skills, openness to feedback, and resilience after setbacks.
                 </div>
-                
-                <div class="dimension-score ${data.constraint === 'identity' ? 'highlighted' : ''}">
-                    <span class="dimension-name">Identity (I):</span>
-                    <span class="score">${data.identityDisplay}/10</span>
-                    <span class="traffic-light">${data.trafficLights.identity.emoji}</span>
-                    <span class="status">${data.trafficLights.identity.status}</span>
-                    ${data.constraint === 'identity' ? '<span class="constraint-marker">← What\'s holding you back</span>' : ''}
+            </span>
+            ${data.constraint === 'learning' ? '<span class="constraint-marker">← What\'s holding you back</span>' : ''}
+        </div>
+        
+        <div class="dimension-score ${data.constraint === 'identity' ? 'highlighted' : ''}">
+            <span class="dimension-name">Identity (I):</span>
+            <span class="score">${data.identityDisplay}/10</span>
+            <span class="traffic-light">${data.trafficLights.identity.emoji}</span>
+            <span class="status">${data.trafficLights.identity.status}</span>
+            <span class="help-icon">?
+                <div class="help-popup">
+                    <strong>Identity</strong>
+                    Measures your clarity about who you are beyond roles. Includes sense of self, clarity of values, and knowing what matters in this life phase.
                 </div>
-                
-                <div class="capacity-score">
-                    <strong>Transition Capacity Score: ${data.capacityScore}</strong>
-                    <p style="font-size: 0.9em; margin-top: 10px; opacity: 0.95;">
-                        (Calculated as ${data.motivationDisplay} × ${data.learningDisplay} × ${data.identityDisplay})
-                    </p>
-                    <p style="font-size: 0.85em; margin-top: 10px; opacity: 0.9;">
-                        Because we multiply these dimensions together, your lowest score has the 
-                        biggest limiting effect. This is why focusing on ${capitalizeFirst(data.constraint)} 
-                        will have the greatest impact on building your capacity.
-                    </p>
+            </span>
+            ${data.constraint === 'identity' ? '<span class="constraint-marker">← What\'s holding you back</span>' : ''}
+        </div>
+        
+        <div class="capacity-score">
+            <strong>Transition Capacity Score: ${data.capacityScore}</strong>
+            <span class="help-icon">?
+                <div class="help-popup">
+                    <strong>Capacity Score</strong>
+                    This multiplies your three dimensions (M×L×I). Scores of 200-500 are typical during transitions. Your lowest dimension has the biggest limiting effect - that's why focusing there creates the most progress.
                 </div>
+            </span>
+            <p style="font-size: 0.9em; margin-top: 10px; opacity: 0.95;">
+                (Calculated as ${data.motivationDisplay} × ${data.learningDisplay} × ${data.identityDisplay})
+            </p>
+            <p style="font-size: 0.85em; margin-top: 10px; opacity: 0.9;">
+                Because we multiply these dimensions together, your lowest score has the 
+                biggest limiting effect. This is why focusing on ${capitalizeFirst(data.constraint)} 
+                will have the greatest impact on building your capacity.
+            </p>
+        </div>
+    `;
+    
+    document.getElementById('results-summary').innerHTML = resultsHTML;
+}
                 
                 <div class="traffic-light-explanation">
                    <h3 style="margin: 50px 0 20px 0; color: #333; padding-top: 30px; border-top: 2px solid #e0e0e0;">What Your Traffic Lights Mean</h3>
