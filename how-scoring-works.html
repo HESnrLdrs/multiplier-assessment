@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Scoring Works - Navigate Transition Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            font-size: 1.8em;
+        }
+
+        h3 {
+            color: #2c3e50;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 1.05em;
+        }
+
+        .highlight-box {
+            background: #ecf0f1;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border-left: 5px solid #3498db;
+        }
+
+        .dimension-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 2px solid #bdc3c7;
+            transition: transform 0.2s;
+        }
+
+        .dimension-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .dimension-box.motivation {
+            border-left: 5px solid #9b59b6;
+        }
+
+        .dimension-box.learning {
+            border-left: 5px solid #00bcd4;
+        }
+
+        .dimension-box.identity {
+            border-left: 5px solid #ff9800;
+        }
+
+        .dimension-box h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .formula {
+            background: #34495e;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 1.3em;
+            text-align: center;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .comparison-example {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .before-after {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .scenario {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+        }
+
+        .scenario h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .scenario p {
+            margin-bottom: 10px;
+        }
+
+        .scenario .score {
+            font-size: 1.5em;
+            color: #27ae60;
+            font-weight: bold;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #ecf0f1;
+        }
+
+        .key-points {
+            background: #fff3cd;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border-left: 5px solid #ffc107;
+        }
+
+        .key-points ul {
+            margin-left: 20px;
+            margin-top: 15px;
+        }
+
+        .key-points li {
+            margin-bottom: 10px;
+            font-size: 1.05em;
+        }
+
+        .traffic-light {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin: 5px;
+        }
+
+        .traffic-light.red {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .traffic-light.amber {
+            background: #fff8e1;
+            color: #f57c00;
+        }
+
+        .traffic-light.green {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 12px 30px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        strong {
+            color: #2c3e50;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            .before-after {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>How Scoring Works</h1>
+        <p class="subtitle">Understanding the Navigate Transition Assessment methodology</p>
+
+        <div class="highlight-box">
+            <p><strong>Your overall Transition Capacity Score can range from 1 to 1,000</strong>, calculated by multiplying your three dimension scores together. This multiplication approach reveals something crucial: <strong>your lowest score becomes your constraint</strong> - the primary factor limiting your overall capacity for successful transition.</p>
+        </div>
+
+        <h2>The Three Dimensions</h2>
+        
+        <div class="dimension-box motivation">
+            <h4>🔥 Motivation (Purple)</h4>
+            <p>Your drive and energy for the transition. Do you have the emotional fuel to push through challenges, or do you feel drained and stuck?</p>
+        </div>
+
+        <div class="dimension-box learning">
+            <h4>📚 Learning (Cyan)</h4>
+            <p>Your capacity to acquire new skills and knowledge. Are you actively developing what you need, or struggling to build competence in unfamiliar territory?</p>
+        </div>
+
+        <div class="dimension-box identity">
+            <h4>🎯 Identity (Orange)</h4>
+            <p>Your sense of belonging and self in the new context. Do you see yourself fitting in, or are you questioning whether this is really "you"?</p>
+        </div>
+
+        <h2>From Questions to Scores</h2>
+        
+        <h3>Step 1: Your Responses</h3>
+        <p>You answer 15 questions (5 per dimension) using a 5-point scale:</p>
+        <ul style="margin-left: 30px; margin-bottom: 20px;">
+            <li><strong>1</strong> = Strongly Disagree</li>
+            <li><strong>2</strong> = Disagree</li>
+            <li><strong>3</strong> = Neutral</li>
+            <li><strong>4</strong> = Agree</li>
+            <li><strong>5</strong> = Strongly Agree</li>
+        </ul>
+
+        <h3>Step 2: Calculating Dimension Scores</h3>
+        <p>Your five responses in each dimension are averaged and converted to a <strong>1-10 scale</strong>:</p>
+        
+        <div class="highlight-box">
+            <p><strong>Score = (Average of 5 responses) × 2</strong></p>
+            <ul style="margin-left: 20px; margin-top: 15px;">
+                <li><strong>Scale:</strong> 1-10 for each dimension</li>
+                <li><strong>Example:</strong> If you score 4, 5, 3, 4, 5 across five questions, your average is 4.2</li>
+                <li><strong>Converted:</strong> 4.2 × 2 = 8.4 out of 10</li>
+            </ul>
+        </div>
+
+        <h3>Step 3: The Multiplier Effect</h3>
+        <p>Your three dimension scores are <strong>multiplied together</strong> to create your Transition Capacity Score:</p>
+
+        <p class="formula">Motivation × Learning × Identity = Transition Capacity Score</p>
+
+        <p><strong>Example:</strong> If your scores are Motivation = 7.5, Learning = 6.0, Identity = 8.0:</p>
+        <p class="formula">7.5 × 6.0 × 8.0 = 360</p>
+
+        <h2>Why Multiplication Instead of Addition?</h2>
+
+        <div class="key-points">
+            <p><strong>Because your constraint matters more than your strengths.</strong></p>
+            <p>Multiplication reveals what addition hides. Here's why this matters:</p>
+        </div>
+
+        <div class="comparison-example">
+            <h3 style="margin-top: 0; color: #2c3e50;">Compare These Two Scenarios:</h3>
+            <div class="before-after">
+                <div class="scenario">
+                    <h4>Scenario A</h4>
+                    <p>Motivation: 9.0<br>Learning: 9.0<br>Identity: 2.0</p>
+                    <p class="score">Score: 162</p>
+                </div>
+                <div class="scenario">
+                    <h4>Scenario B</h4>
+                    <p>Motivation: 7.0<br>Learning: 7.0<br>Identity: 7.0</p>
+                    <p class="score">Score: 343</p>
+                </div>
+            </div>
+            <p style="margin-top: 25px; text-align: center; font-size: 1.1em; color: #2c3e50;">
+                <strong>Scenario B scores HIGHER despite having lower individual scores!</strong>
+            </p>
+        </div>
+
+        <div class="highlight-box">
+            <p><strong>Key Insight:</strong> Having one very low dimension (your constraint) dramatically reduces your overall capacity, even if your other dimensions are strong. This is exactly what people experience in real transitions - you can have all the motivation and learning in the world, but if you don't feel like you belong (Identity = 2.0), your transition will struggle.</p>
+        </div>
+
+        <h2>Identifying Your Constraint</h2>
+
+        <p>Your <strong>constraint</strong> is simply your lowest-scoring dimension. This is what's holding you back most.</p>
+
+        <h3>Traffic Light System</h3>
+        <p>We use a traffic light system to show you where to focus:</p>
+
+        <div style="margin: 20px 0;">
+            <div class="traffic-light red">
+                <span>🔴</span>
+                <span>RED (1.0-5.9): Priority - Your Constraint</span>
+            </div>
+            <div class="traffic-light amber">
+                <span>🟡</span>
+                <span>AMBER (6.0-7.9): Monitor - Could improve</span>
+            </div>
+            <div class="traffic-light green">
+                <span>🟢</span>
+                <span>GREEN (8.0-10): Strong - Keep going</span>
+            </div>
+        </div>
+
+        <div class="key-points">
+            <p><strong>Why This Matters:</strong></p>
+            <ul>
+                <li><strong>Focus your energy:</strong> Working on your constraint (red) has the biggest impact on your overall score</li>
+                <li><strong>Avoid wasted effort:</strong> Don't spend time perfecting green areas - they're already working for you</li>
+                <li><strong>See real progress:</strong> Small improvements to your constraint create outsized gains in your total score</li>
+                <li><strong>Understand your experience:</strong> Your constraint explains why you might feel stuck, even when other things seem to be going well</li>
+            </ul>
+        </div>
+
+        <h2>Example: The Power of Fixing Your Constraint</h2>
+
+        <div class="comparison-example">
+            <h3 style="margin-top: 0; color: #2c3e50;">Improving Your Constraint vs. Strengthening Your Strengths</h3>
+            <div class="before-after">
+                <div class="scenario">
+                    <h4>Starting Point</h4>
+                    <p>Motivation: 8.0<br>Learning: 8.0<br>Identity: 3.0</p>
+                    <p class="score">Score: 192</p>
+                </div>
+                <div class="scenario">
+                    <h4>Improve Constraint</h4>
+                    <p>Motivation: 8.0<br>Learning: 8.0<br>Identity: 5.0 (+2.0)</p>
+                    <p class="score">Score: 320 (+67%!)</p>
+                </div>
+            </div>
+            <p style="margin-top: 20px; text-align: center; font-style: italic;">Compare that to improving your strengths:</p>
+            <div class="before-after" style="margin-top: 15px;">
+                <div class="scenario">
+                    <h4>Starting Point</h4>
+                    <p>Motivation: 8.0<br>Learning: 8.0<br>Identity: 3.0</p>
+                    <p class="score">Score: 192</p>
+                </div>
+                <div class="scenario">
+                    <h4>Improve Strengths</h4>
+                    <p>Motivation: 10.0 (+2.0)<br>Learning: 10.0 (+2.0)<br>Identity: 3.0</p>
+                    <p class="score">Score: 300 (+56%)</p>
+                </div>
+            </div>
+            <p style="margin-top: 25px; text-align: center; font-size: 1.1em; color: #2c3e50;">
+                <strong>A +2 point improvement in your constraint has more impact than +4 points spread across your strengths!</strong>
+            </p>
+        </div>
+
+        <h2>Track Your Progress Over Time</h2>
+
+        <p>Taking the assessment multiple times lets you see how your dimensions and overall score change as you work on your transition. You'll be able to see:</p>
+
+        <ul style="margin-left: 30px; margin-bottom: 20px;">
+            <li>Which dimension is consistently your constraint</li>
+            <li>How your total capacity score improves over time</li>
+            <li>Whether your focused work on your constraint is paying off</li>
+            <li>When you've resolved one constraint and a different one emerges</li>
+        </ul>
+
+        <div class="highlight-box">
+            <p><strong>Remember:</strong> The goal isn't perfection across all three dimensions. The goal is to identify and address what's truly holding you back, so you can build the capacity you need to successfully navigate your transition.</p>
+        </div>
+
+        <a href="javascript:window.close()" class="back-button">✕ Close</a>
+    </div>
+</body>
+</html>
