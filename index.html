@@ -856,15 +856,30 @@ function showForgotPassword(event) {
     }
 }
         
-        async function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-            } catch (error) {
-                showError(error.message);
+       async function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    
+    try {
+        await auth.signInWithEmailAndPassword(email, password);
+    } catch (error) {
+        // Show friendly error messages
+        let friendlyMessage = 'An error occurred. Please try again.';
+        
+        if (error.code === 'auth/invalid-login-credentials' || 
+            error.code === 'auth/wrong-password' || 
+            error.code === 'auth/user-not-found') {
+            friendlyMessage = 'Incorrect email or password. Please try again.';
+        } else if (error.code === 'auth/invalid-email') {
+            friendlyMessage = 'Please enter a valid email address.';
+        } else if (error.code === 'auth/too-many-requests') {
+            friendlyMessage = 'Too many failed attempts. Please try again later or reset your password.';
+        }
+        
+        showError(friendlyMessage);
+    }
+}
             }
         }
         
