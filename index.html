@@ -606,19 +606,21 @@
                     
                     <div id="error-message" class="error-message"></div>
                     
-                    <!-- Login Form -->
-                    <form id="login-form" class="auth-form active" onsubmit="handleLogin(event)">
-                        <div class="form-group">
-                            <label for="login-email">Email</label>
-                            <input type="email" id="login-email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="login-password">Password</label>
-                            <input type="password" id="login-password" required>
-                        </div>
-                        <button type="submit" class="btn">Login</button>
-                    </form>
-                    
+                  <!-- Login Form -->
+<form id="login-form" class="auth-form active" onsubmit="handleLogin(event)">
+    <div class="form-group">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" required>
+    </div>
+    <div class="form-group">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" required>
+    </div>
+    <div style="text-align: right; margin-bottom: 15px;">
+        <a href="#" onclick="showForgotPassword(event)" style="color: #667eea; text-decoration: none; font-size: 0.9em;">Forgot Password?</a>
+    </div>
+    <button type="submit" class="btn">Login</button>
+</form>
                     <!-- Signup Form -->
                     <form id="signup-form" class="auth-form" onsubmit="handleSignup(event)">
                         <div class="form-group">
@@ -828,6 +830,31 @@ auth.onAuthStateChanged(user => {
             
             hideError();
         }
+        // Forgot Password Function
+function showForgotPassword(event) {
+    event.preventDefault();
+    const email = document.getElementById('login-email').value;
+    
+    if (!email) {
+        alert('Please enter your email address first, then click "Forgot Password?"');
+        document.getElementById('login-email').focus();
+        return;
+    }
+    
+    if (confirm(`Send password reset email to ${email}?`)) {
+        auth.sendPasswordResetEmail(email)
+            .then(() => {
+                alert('Password reset email sent! Check your inbox (and spam folder) for instructions.');
+            })
+            .catch((error) => {
+                if (error.code === 'auth/user-not-found') {
+                    alert('No account found with this email address.');
+                } else {
+                    alert('Error sending reset email: ' + error.message);
+                }
+            });
+    }
+}
         
         async function handleLogin(e) {
             e.preventDefault();
