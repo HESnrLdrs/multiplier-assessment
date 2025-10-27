@@ -609,8 +609,7 @@ function setupCTAHandlers(userId) {
     const freeCallButtons = document.querySelectorAll('[data-action="book-free-call"]');
     freeCallButtons.forEach(btn => {
         btn.addEventListener('click', function() {
-            // TODO: Replace with your actual Calendly link
-            window.open('https://calendly.com/yourname/free-results-review', '_blank');
+            window.open('https://calendar.app.google/Nc3urDDTvUYpXubeA', '_blank');
         });
     });
     
@@ -618,8 +617,7 @@ function setupCTAHandlers(userId) {
     const mentoringButtons = document.querySelectorAll('[data-action="book-mentoring"]');
     mentoringButtons.forEach(btn => {
         btn.addEventListener('click', function() {
-            // TODO: Replace with your actual Calendly link
-            window.open('https://calendly.com/yourname/mentoring-session', '_blank');
+            window.open('https://calendar.app.google/Nc3urDDTvUYpXubeA', '_blank');
         });
     });
     
