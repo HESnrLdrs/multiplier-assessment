@@ -153,7 +153,7 @@ function generateMotivationRedContent(scores) {
             
             <section class="not-alone">
                 <h2>You're Not Alone</h2>
-                <p><strong>42% of people in transition</strong> have Motivation as their primary constraint.</p>
+                <p>This is <strong>one of the most common constraints</strong> for people in transition, especially when change feels imposed.</p>
                 <p>This is particularly common for academics facing redundancy, senior professionals in forced career changes, and anyone where the transition wasn't their choice.</p>
                 <p class="good-news"><strong>The good news?</strong> Motivation can be rebuilt. It's not a fixed trait. It's a muscle you can strengthen.</p>
             </section>
@@ -244,8 +244,8 @@ function generateLearningRedContent(scores) {
             
             <section class="not-alone">
                 <h2>You're Not Alone</h2>
-                <p><strong>35% of people in transition</strong> have Learning as their primary constraint.</p>
-                <p>This is particularly common for academics moving outside traditional academia, senior professionals changing industries, and anyone facing significant skill gaps in their new direction.</p>
+                <p>This is <strong>very common</strong> for academics moving outside traditional academia and senior professionals changing industries.</p>
+                <p>It's particularly common for those who've been experts in one domain for decades and are now facing significant skill gaps in their new direction.</p>
                 <p class="good-news"><strong>The good news?</strong> Learning capability doesn't diminish with age. You just need the right approach and to break things down into manageable steps.</p>
             </section>
             
@@ -335,8 +335,8 @@ function generateIdentityRedContent(scores) {
             
             <section class="not-alone">
                 <h2>You're Not Alone</h2>
-                <p><strong>38% of people in transition</strong> have Identity as their primary constraint.</p>
-                <p>This is particularly common for academics leaving traditional academic roles, senior leaders stepping out of institutional positions, and professionals whose identity was fused with their title.</p>
+                <p>This is <strong>the most common constraint</strong> for senior academics and professionals who've spent decades building an identity around their role.</p>
+                <p>It's particularly common for academics leaving traditional academic roles, senior leaders stepping out of institutional positions, and professionals whose identity was fused with their title.</p>
                 <p class="good-news"><strong>The crucial truth:</strong> You're not losing yourself. You're expanding your expression. Your core self—your values, your capabilities, your way of thinking—all of that travels with you. Only the institutional container is changing.</p>
             </section>
             
@@ -415,7 +415,7 @@ function generateMultipleRedsContent(reds, scores) {
             
             <section class="not-alone">
                 <h2>You're Not Alone</h2>
-                <p><strong>15% of people in transition</strong> have two or more reds.</p>
+                <p>This is <strong>not uncommon</strong> for people experiencing significant imposed change, especially for those facing sudden redundancy or restructuring.</p>
                 <p>This is most common for academics facing sudden redundancy, senior professionals in forced career changes, and anyone experiencing significant imposed change.</p>
                 <p class="good-news"><strong>The good news:</strong> We address one constraint at a time, and fixing one often improves the others.</p>
             </section>
@@ -610,7 +610,7 @@ function setupCTAHandlers(userId) {
     freeCallButtons.forEach(btn => {
         btn.addEventListener('click', function() {
             // TODO: Replace with your actual Calendly link
-            wwindow.open('https://calendar.app.google/Nc3urDDTvUYpXubeA', '_blank');
+            window.open('https://calendly.com/yourname/free-results-review', '_blank');
         });
     });
     
@@ -619,7 +619,7 @@ function setupCTAHandlers(userId) {
     mentoringButtons.forEach(btn => {
         btn.addEventListener('click', function() {
             // TODO: Replace with your actual Calendly link
-           window.open('https://calendar.app.google/Nc3urDDTvUYpXubeA', '_blank');
+            window.open('https://calendly.com/yourname/mentoring-session', '_blank');
         });
     });
     
