@@ -1340,7 +1340,15 @@ window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
         function viewFullResults(index) {
-            displayResults(storedAssessments[index]);
+            const assessment = storedAssessments[index];
+            
+            if (USE_ENHANCED_RESULTS) {
+                // Redirect to enhanced results page with historical data
+                redirectToEnhancedResults(assessment);
+            } else {
+                // Show old results display
+                displayResults(assessment);
+            }
         }
 </script>
 </body>
