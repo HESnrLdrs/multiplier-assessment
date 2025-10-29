@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Navigate Transition Results | Academic Leadership Transformations</title>
+    <title>Your Navigate Transition Results | Navigating Transitions</title>
     <meta name="description" content="Your personalized Navigate Transition Assessment results and next steps">
     
     <!-- Existing styles from your assessment app -->
@@ -21,8 +21,7 @@
     <!-- Header -->
     <header class="results-header-nav">
         <div class="container">
-            <h1 class="site-title">Academic Leadership Transformations</h1>
-           
+            <h1 class="site-title">Navigating Transitions</h1>
         </div>
     </header>
 
@@ -73,13 +72,38 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Academic Leadership Transformations. All rights reserved.</p>
+                <p>&copy; 2025 Navigating Transitions. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top" onclick="scrollToTop()" title="Back to top">
+        ↑
+    </button>
+
     <!-- JavaScript -->
     <script src="firebase-config.js"></script>
     <script src="results.js"></script>
+    
+    <script>
+        // Back to Top button functionality
+        const backToTopButton = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('show');
+            } else {
+                backToTopButton.classList.remove('show');
+            }
+        });
+        
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
 </body>
 </html>
