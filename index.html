@@ -953,11 +953,19 @@ showView('welcome-view');
             try {
                 const snapshot = await database.ref('users/' + currentUser.uid).once('value');
                 const userData = snapshot.val();
-                document.getElementById('user-name').textContent = userData.name;
+                
+                if (userData && userData.name) {
+                    document.getElementById('user-name').textContent = userData.name;
+                } else {
+                    // Fallback to email if name not available
+                    document.getElementById('user-name').textContent = currentUser.email;
+                }
                 
                 loadDashboardSummary();
             } catch (error) {
                 console.error('Error loading user data:', error);
+                // Still try to load dashboard even if user data fails
+                loadDashboardSummary();
             }
         }
         
@@ -1340,12 +1348,17 @@ window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
         function viewFullResults(index) {
+            console.log('viewFullResults called with index:', index);
             const assessment = storedAssessments[index];
+            console.log('Assessment data:', assessment);
+            console.log('USE_ENHANCED_RESULTS flag:', USE_ENHANCED_RESULTS);
             
             if (USE_ENHANCED_RESULTS) {
+                console.log('Redirecting to enhanced results...');
                 // Redirect to enhanced results page with historical data
                 redirectToEnhancedResults(assessment);
             } else {
+                console.log('Showing old results display...');
                 // Show old results display
                 displayResults(assessment);
             }
