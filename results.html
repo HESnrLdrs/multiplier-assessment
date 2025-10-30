@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Navigate Transition Results | Navigating Transitions</title>
+    <meta name="description" content="Your personalized Navigate Transition Assessment results and next steps">
+    
+    <!-- Existing styles from your assessment app -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- New results-specific styles -->
+    <link rel="stylesheet" href="results.css">
+    
+    <!-- Firebase (if you need to load additional data) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="results-header-nav">
+        <div class="container">
+            <h1 class="site-title">Navigating Transitions</h1>
+        </div>
+    </header>
+
+    <!-- Main Results Container -->
+    <main class="results-main">
+        <div class="container">
+            <!-- Loading State -->
+            <div id="loading" class="loading-state">
+                <div class="spinner"></div>
+                <p>Loading your results...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="error" class="error-state" style="display: none;">
+                <h2>Unable to Load Results</h2>
+                <p>We couldn't find your assessment results. This might be because:</p>
+                <ul>
+                    <li>You haven't completed the assessment yet</li>
+                    <li>Your session has expired</li>
+                    <li>There was a technical error</li>
+                </ul>
+                <a href="/multiplier-assessment" class="btn btn-primary">Take Assessment</a>
+            </div>
+
+            <!-- Results Content (populated by JavaScript) -->
+            <div id="results-content" style="display: none;">
+                <!-- Content will be inserted here by results.js -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="results-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Navigating Transitions</h3>
+                    <p>Supporting senior professionals through career and life transitions.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p>Email: <a href="mailto:paul@paulthomascoaching.co.uk">paul@paulthomascoaching.co.uk</a></p>
+                    <p>Phone: <a href="tel:+447368621415">+44 7368 621415</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <p>Your assessment results are private and confidential.</p>
+                    <p><a href="privacy-policy.html">Privacy Policy</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Navigating Transitions. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top" onclick="scrollToTop()" title="Back to top">
+        ↑
+    </button>
+
+    <!-- JavaScript -->
+    <script src="firebase-config.js"></script>
+    <script src="results.js"></script>
+    
+    <script>
+        // Back to Top button functionality
+        const backToTopButton = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('show');
+            } else {
+                backToTopButton.classList.remove('show');
+            }
+        });
+        
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>
