@@ -1117,83 +1117,89 @@ function startAssessment() {
         }
         
         function displayResults(data) {
-            const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
-            
-            let resultsHTML = `
-                <h2 style="margin-bottom: 30px; color: #333; text-align: center;">Your Results</h2>
-                
-                <div class="dimension-score ${data.constraint === 'motivation' ? 'highlighted' : ''}">
-                    <span class="dimension-name">Motivation (M):</span>
-                    <span class="score">${data.motivationDisplay}/10</span>
-                    <span class="traffic-light">${data.trafficLights.motivation.emoji}</span>
-                    <span class="status">${data.trafficLights.motivation.status}</span>
-                    ${data.constraint === 'motivation' ? '<span class="constraint-marker">← What\'s holding you back</span>' : ''}
-                </div>
-                
-                <div class="dimension-score ${data.constraint === 'learning' ? 'highlighted' : ''}">
-                    <span class="dimension-name">Learning (L):</span>
-                    <span class="score">${data.learningDisplay}/10</span>
-                    <span class="traffic-light">${data.trafficLights.learning.emoji}</span>
-                    <span class="status">${data.trafficLights.learning.status}</span>
-                    ${data.constraint === 'learning' ? '<span class="constraint-marker">← What\'s holding you back</span>' : ''}
-                </div>
-                
-                <div class="dimension-score ${data.constraint === 'identity' ? 'highlighted' : ''}">
-                    <span class="dimension-name">Identity (I):</span>
-                    <span class="score">${data.identityDisplay}/10</span>
-                    <span class="traffic-light">${data.trafficLights.identity.emoji}</span>
-                    <span class="status">${data.trafficLights.identity.status}</span>
-                    ${data.constraint === 'identity' ? '<span class="constraint-marker">← What\'s holding you back</span>' : ''}
-                </div>
-                
-                <div class="capacity-score">
-                    <strong>Transition Capacity Score: ${data.capacityScore}</strong>
-                    <p style="font-size: 0.9em; margin-top: 10px; opacity: 0.95;">
-                        (Calculated as ${data.motivationDisplay} × ${data.learningDisplay} × ${data.identityDisplay})
-                    </p>
-                    <p style="font-size: 0.85em; margin-top: 10px; opacity: 0.9;">
-                        Because we multiply these dimensions together, your lowest score has the 
-                        biggest limiting effect. This is why focusing on ${capitalizeFirst(data.constraint)} 
-                        will have the greatest impact on building your capacity.
-                    </p>
-                </div>
-                
-                <div class="traffic-light-explanation">
-                   <h3 style="margin: 50px 0 20px 0; color: #333; padding-top: 30px; border-top: 2px solid #e0e0e0;">What Your Traffic Lights Mean</h3>
-                    
-                    <div class="light-meaning ${data.trafficLights[data.constraint].color}">
-                        <span class="light-icon">${data.trafficLights[data.constraint].emoji}</span>
-                        <strong>${capitalizeFirst(data.constraint)}: ${data.trafficLights[data.constraint].status} (${data[data.constraint + 'Display']}/10)</strong>
-                        <p>This is what's holding you back most right now. By focusing on ${capitalizeFirst(data.constraint)} in the programme, 
-                        you'll build the capacity needed to move forward in your transition.</p>
-                    </div>
-                    
-                    ${['motivation', 'learning', 'identity'].filter(d => d !== data.constraint).map(dim => `
-                        <div class="light-meaning ${data.trafficLights[dim].color}">
-                            <span class="light-icon">${data.trafficLights[dim].emoji}</span>
-                            <strong>${capitalizeFirst(dim)}: ${data.trafficLights[dim].status}</strong>
-                            <p>${data.trafficLights[dim].status === 'Strength' ? 
-                                'This area is working well. Use it to support your development in other areas.' :
-                                'This area has room for growth. Keep awareness here as you work on your primary focus.'
-                            }</p>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-            
-            resultsHTML += `
-    <div style="margin-top: 30px; text-align: center;">
-        <button class="btn" onclick="showView('dashboard-view')" style="background: #666;">
-            ← Back to Dashboard
-        </button>
+    // If using enhanced results, don't render - just return immediately
+    if (USE_ENHANCED_RESULTS) {
+        console.log('Enhanced results enabled, skipping old display');
+        return;
+    }
+    
+    const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1);
+    
+    let resultsHTML = `
+        <h2 style="margin-bottom: 30px; color: #333; text-align: center;">Your Results</h2>
         
-    </div>
-`;
+        <div class="dimension-score ${data.constraint === 'motivation' ? 'highlighted' : ''}">
+            <span class="dimension-name">Motivation (M):</span>
+            <span class="score">${data.motivationDisplay}/10</span>
+            <span class="traffic-light">${data.trafficLights.motivation.emoji}</span>
+            <span class="status">${data.trafficLights.motivation.status}</span>
+            ${data.constraint === 'motivation' ? '<span class="constraint-marker">← What\'s holding you back</span>' : ''}
+        </div>
+        
+        <div class="dimension-score ${data.constraint === 'learning' ? 'highlighted' : ''}">
+            <span class="dimension-name">Learning (L):</span>
+            <span class="score">${data.learningDisplay}/10</span>
+            <span class="traffic-light">${data.trafficLights.learning.emoji}</span>
+            <span class="status">${data.trafficLights.learning.status}</span>
+            ${data.constraint === 'learning' ? '<span class="constraint-marker">← What\'s holding you back</span>' : ''}
+        </div>
+        
+        <div class="dimension-score ${data.constraint === 'identity' ? 'highlighted' : ''}">
+            <span class="dimension-name">Identity (I):</span>
+            <span class="score">${data.identityDisplay}/10</span>
+            <span class="traffic-light">${data.trafficLights.identity.emoji}</span>
+            <span class="status">${data.trafficLights.identity.status}</span>
+            ${data.constraint === 'identity' ? '<span class="constraint-marker">← What\'s holding you back</span>' : ''}
+        </div>
+        
+        <div class="capacity-score">
+            <strong>Transition Capacity Score: ${data.capacityScore}</strong>
+            <p style="font-size: 0.9em; margin-top: 10px; opacity: 0.95;">
+                (Calculated as ${data.motivationDisplay} × ${data.learningDisplay} × ${data.identityDisplay})
+            </p>
+            <p style="font-size: 0.85em; margin-top: 10px; opacity: 0.9;">
+                Because we multiply these dimensions together, your lowest score has the 
+                biggest limiting effect. This is why focusing on ${capitalizeFirst(data.constraint)} 
+                will have the greatest impact on building your capacity.
+            </p>
+        </div>
+        
+        <div class="traffic-light-explanation">
+           <h3 style="margin: 50px 0 20px 0; color: #333; padding-top: 30px; border-top: 2px solid #e0e0e0;">What Your Traffic Lights Mean</h3>
             
-            document.getElementById('results-summary').innerHTML = resultsHTML;
-            showView('results-view');
-window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+            <div class="light-meaning ${data.trafficLights[data.constraint].color}">
+                <span class="light-icon">${data.trafficLights[data.constraint].emoji}</span>
+                <strong>${capitalizeFirst(data.constraint)}: ${data.trafficLights[data.constraint].status} (${data[data.constraint + 'Display']}/10)</strong>
+                <p>This is what's holding you back most right now. By focusing on ${capitalizeFirst(data.constraint)} in the programme, 
+                you'll build the capacity needed to move forward in your transition.</p>
+            </div>
+            
+            ${['motivation', 'learning', 'identity'].filter(d => d !== data.constraint).map(dim => `
+                <div class="light-meaning ${data.trafficLights[dim].color}">
+                    <span class="light-icon">${data.trafficLights[dim].emoji}</span>
+                    <strong>${capitalizeFirst(dim)}: ${data.trafficLights[dim].status}</strong>
+                    <p>${data.trafficLights[dim].status === 'Strength' ? 
+                        'This area is working well. Use it to support your development in other areas.' :
+                        'This area has room for growth. Keep awareness here as you work on your primary focus.'
+                    }</p>
+                </div>
+            `).join('')}
+        </div>
+    `;
+    
+    resultsHTML += `
+        <div style="margin-top: 30px; text-align: center;">
+            <button class="btn" onclick="showView('dashboard-view')" style="background: #666;">
+                ← Back to Dashboard
+            </button>
+            
+        </div>
+    `;
+    
+    document.getElementById('results-summary').innerHTML = resultsHTML;
+    showView('results-view');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
         
         // Progress View
         async function loadProgressView() {
