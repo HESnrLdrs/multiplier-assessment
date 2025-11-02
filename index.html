@@ -1182,13 +1182,13 @@ function startAssessment() {
             `;
             
             resultsHTML += `
-                <div style="margin-top: 30px; text-align: center;">
-                    <button class="btn" onclick="showView('progress-view')" style="background: #666;">
-                        ← Back to Progress
-                    </button>
-                    
-                </div>
-            `;
+    <div style="margin-top: 30px; text-align: center;">
+        <button class="btn" onclick="showView('dashboard-view')" style="background: #666;">
+            ← Back to Dashboard
+        </button>
+        
+    </div>
+`;
             
             document.getElementById('results-summary').innerHTML = resultsHTML;
             showView('results-view');
