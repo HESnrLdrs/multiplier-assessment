@@ -682,12 +682,10 @@ function setupCTAHandlers(userId) {
     });
     
     // Learn more
-    const learnMoreButtons = document.querySelectorAll('[data-action="learn-more"]');
-    learnMoreButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            // TODO: Create content pages
-            alert('Content pages coming soon!');
-            // Future: window.location.href = '/guides/motivation.html';
+const learnMoreButtons = document.querySelectorAll('[data-action="learn-more"]');
+learnMoreButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+        window.location.href = 'faq.html';
         });
     });
 }
