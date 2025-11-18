@@ -589,7 +589,7 @@ function generateQuestionsHTML() {
             <p>I read and respond to every message personally.</p>
             
             <div style="margin-top: 30px; text-align: center;">
-                <button class="btn btn-primary" onclick="window.location.href='dashboard.html'" style="max-width: 300px; margin: 0 auto;">
+                <button class="btn btn-primary" onclick="window.location.href='index.html'" style="max-width: 300px; margin: 0 auto;">
                     ← Back to Dashboard
                 </button>
             </div>
