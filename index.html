@@ -684,12 +684,40 @@
 </div>
             <!-- Assessment View -->
             <div id="assessment-view" class="view">
-                <h2 style="margin-bottom: 30px; color: #333;">Multiplier Assessment</h2>
-                <p style="margin-bottom: 30px; color: #666; line-height: 1.6;">
-                    This assessment measures three core dimensions that affect your ability to navigate transition:
-                    <strong>Motivation</strong>, <strong>Learning</strong>, and <strong>Identity</strong>.
-                    Answer honestly based on how you feel right now.
-                </p>
+    <h2 style="margin-bottom: 30px; color: #333;">Navigate Transition Assessment</h2>
+    
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 30px; border-left: 4px solid #667eea;">
+        <p style="margin: 0 0 15px 0; color: #333; font-weight: 600; font-size: 1.1em;">
+            How to answer:
+        </p>
+        <p style="margin: 0 0 10px 0; color: #666; line-height: 1.6;">
+            For each statement below, select the number that best matches your current experience:
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px;">
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 8px;">
+                <div style="font-size: 1.5em; font-weight: bold; color: #e74c3c;">0-3</div>
+                <div style="font-size: 0.9em; color: #666;">Not at all / Completely stuck</div>
+            </div>
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 8px;">
+                <div style="font-size: 1.5em; font-weight: bold; color: #f39c12;">4-6</div>
+                <div style="font-size: 0.9em; color: #666;">Somewhat / Struggling but managing</div>
+            </div>
+            <div style="text-align: center; padding: 10px; background: white; border-radius: 8px;">
+                <div style="font-size: 1.5em; font-weight: bold; color: #27ae60;">7-10</div>
+                <div style="font-size: 0.9em; color: #666;">Mostly / Flowing well</div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="questions-container">
+        <!-- Questions will be inserted here -->
+    </div>
+    
+    <div class="navigation-buttons">
+        <button class="nav-btn" onclick="showView('dashboard-view')">Cancel</button>
+        <button class="nav-btn" id="submit-assessment-btn" onclick="submitAssessment()">Submit Assessment</button>
+    </div>
+</div>
                 
                 <div id="questions-container">
                     <!-- Questions will be inserted here -->
