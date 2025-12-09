@@ -337,11 +337,12 @@
             font-weight: 500;
         }
         
-        .likert-scale {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
+       .likert-scale {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 8px;
+    margin-top: 15px;
+}
         
         .likert-option {
             flex: 1;
@@ -353,15 +354,19 @@
         }
         
         .likert-option label {
-            display: block;
-            padding: 12px 8px;
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.9em;
-        }
+    display: block;
+    padding: 12px 8px;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.9em;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
         
         .likert-option input[type="radio"]:checked + label {
             background: #667eea;
@@ -796,23 +801,27 @@
 // Assessment Questions (shuffled, no dimension headers)
 // Updated based on psychometric audit for 0.80+ reliability
 const questions = [
-    { id: 'm1', dimension: 'motivation', text: 'I feel energized by what I\'m working toward (rather than drained or stuck).' },
-    { id: 'l1', dimension: 'learning', text: 'I feel confident in my ability to learn new skills, even when it feels uncomfortable.' },
-    { id: 'i1', dimension: 'identity', text: 'I have a clear sense of who I am beyond my professional role (not just what I do).' },
-    { id: 'm2', dimension: 'motivation', text: 'I have clear goals that genuinely matter to me, and I feel able to pursue them.' },
-    { id: 'l2', dimension: 'learning', text: 'I can adapt my approach when circumstances change, rather than clinging to what used to work.' },
-    { id: 'i2', dimension: 'identity', text: 'My sense of who I am remains stable, even when facing uncertainty.' },
-    { id: 'l3', dimension: 'learning', text: 'I\'m open to feedback and can adjust based on new information, even when it challenges my assumptions.' },
-    { id: 'i3', dimension: 'identity', text: 'I feel aligned with the direction my life is taking (not just going where circumstances push me).' },
-    { id: 'm3', dimension: 'motivation', text: 'I feel curious and excited about new possibilities (rather than anxious or overwhelmed).' },
-    { id: 'i4', dimension: 'identity', text: 'I know what matters most to me in this phase of life, even if it\'s different from before.' },
-    { id: 'l4', dimension: 'learning', text: 'I seek out opportunities to develop new capabilities, even when it means being a beginner again.' },
-    { id: 'm4', dimension: 'motivation', text: 'I can sustain effort on challenging tasks, even when the outcome is uncertain.' },
-    { id: 'i5', dimension: 'identity', text: 'I can describe my core strengths independently of my job title or past achievements.' },
-    { id: 'l5', dimension: 'learning', text: 'I can learn from setbacks and keep developing, rather than seeing them as proof I\'m on the wrong path.' },
-    { id: 'm5', dimension: 'motivation', text: 'My daily activities feel purposeful and meaningful (not just going through the motions).' }
+    // MOTIVATION QUESTIONS
+    { id: 'm1', dimension: 'motivation', text: 'Over the past two weeks, when it comes to my career situation, I\'ve been:' },
+    { id: 'm2', dimension: 'motivation', text: 'When I wake up in the morning and remember my career situation:' },
+    { id: 'm3', dimension: 'motivation', text: 'When people ask me about my career situation:' },
+    { id: 'm4', dimension: 'motivation', text: 'When I think about the next concrete action I need to take:' },
+    { id: 'm5', dimension: 'motivation', text: 'Looking at the past month, my energy for dealing with my career situation has:' },
+    
+    // LEARNING QUESTIONS
+    { id: 'l1', dimension: 'learning', text: 'When I think about learning what I\'ll need for my next move:' },
+    { id: 'l2', dimension: 'learning', text: 'When there\'s a chance to learn something relevant, I:' },
+    { id: 'l3', dimension: 'learning', text: 'When I try to learn something new for my transition:' },
+    { id: 'l4', dimension: 'learning', text: 'When I compare my learning progress to others in similar transitions:' },
+    { id: 'l5', dimension: 'learning', text: 'My ability to learn from my transition experiences (successes and setbacks) is:' },
+    
+    // IDENTITY QUESTIONS
+    { id: 'i1', dimension: 'identity', text: 'These days, when I need to introduce myself or explain what I do:' },
+    { id: 'i2', dimension: 'identity', text: 'When I think about my previous professional identity:' },
+    { id: 'i3', dimension: 'identity', text: 'When I think about moving into something new:' },
+    { id: 'i4', dimension: 'identity', text: 'When I imagine myself six months from now:' },
+    { id: 'i5', dimension: 'identity', text: 'My sense of who I fundamentally am (beyond any job or title):' }
 ];
-
 // Auth State Observer
 // Auth State Observer
 auth.onAuthStateChanged(user => {
@@ -1010,35 +1019,25 @@ function startAssessment() {
 }
         
         function renderQuestions() {
-            const container = document.getElementById('questions-container');
-            container.innerHTML = questions.map((q, index) => `
-                <div class="question">
-                    <div class="question-text">${index + 1}. ${q.text}</div>
-                    <div class="likert-scale">
+    const container = document.getElementById('questions-container');
+    container.innerHTML = questions.map((q, index) => {
+        const options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        
+        return `
+            <div class="question">
+                <div class="question-text">${index + 1}. ${q.text}</div>
+                <div class="likert-scale">
+                    ${options.map(val => `
                         <div class="likert-option">
-                            <input type="radio" name="${q.id}" value="1" id="${q.id}-1">
-                            <label for="${q.id}-1">Strongly<br>Disagree</label>
+                            <input type="radio" name="${q.id}" value="${val}" id="${q.id}-${val}">
+                            <label for="${q.id}-${val}">${val}</label>
                         </div>
-                        <div class="likert-option">
-                            <input type="radio" name="${q.id}" value="2" id="${q.id}-2">
-                            <label for="${q.id}-2">Disagree</label>
-                        </div>
-                        <div class="likert-option">
-                            <input type="radio" name="${q.id}" value="3" id="${q.id}-3">
-                            <label for="${q.id}-3">Neutral</label>
-                        </div>
-                        <div class="likert-option">
-                            <input type="radio" name="${q.id}" value="4" id="${q.id}-4">
-                            <label for="${q.id}-4">Agree</label>
-                        </div>
-                        <div class="likert-option">
-                            <input type="radio" name="${q.id}" value="5" id="${q.id}-5">
-                            <label for="${q.id}-5">Strongly<br>Agree</label>
-                        </div>
-                    </div>
+                    `).join('')}
                 </div>
-            `).join('');
-        }
+            </div>
+        `;
+    }).join('');
+}
         
         async function submitAssessment() {
             const allAnswered = questions.every(q => 
@@ -1050,18 +1049,29 @@ function startAssessment() {
                 return;
             }
             
-            let motivationRaw = 0, learningRaw = 0, identityRaw = 0;
-            
-            questions.forEach(q => {
-                const value = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value);
-                if (q.dimension === 'motivation') motivationRaw += value;
-                if (q.dimension === 'learning') learningRaw += value;
-                if (q.dimension === 'identity') identityRaw += value;
-            });
-            
-            const motivation = ((motivationRaw / 25) * 10).toFixed(1);
-            const learning = ((learningRaw / 25) * 10).toFixed(1);
-            const identity = ((identityRaw / 25) * 10).toFixed(1);
+            let motivationSum = 0, learningSum = 0, identitySum = 0;
+let motivationCount = 0, learningCount = 0, identityCount = 0;
+
+questions.forEach(q => {
+    const value = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value);
+    if (q.dimension === 'motivation') {
+        motivationSum += value;
+        motivationCount++;
+    }
+    if (q.dimension === 'learning') {
+        learningSum += value;
+        learningCount++;
+    }
+    if (q.dimension === 'identity') {
+        identitySum += value;
+        identityCount++;
+    }
+});
+
+// Direct averaging - no conversion needed
+const motivation = (motivationSum / motivationCount).toFixed(1);
+const learning = (learningSum / learningCount).toFixed(1);
+const identity = (identitySum / identityCount).toFixed(1);
             
             const capacityScore = Math.round(parseFloat(motivation) * parseFloat(learning) * parseFloat(identity));
             
@@ -1076,10 +1086,10 @@ function startAssessment() {
             );
             
             function getTrafficLight(score) {
-                if (score <= 6.0) return { emoji: '🔴', status: 'CRITICAL PRIORITY', color: 'red' };
-                if (score <= 7.5) return { emoji: '🟡', status: 'Development Opportunity', color: 'amber' };
-                return { emoji: '🟢', status: 'Strength', color: 'green' };
-            }
+    if (score < 4.0) return { emoji: '🔴', status: 'CRITICAL PRIORITY', color: 'red' };
+    if (score < 7.0) return { emoji: '🟡', status: 'Development Opportunity', color: 'amber' };
+    return { emoji: '🟢', status: 'Strength', color: 'green' };
+}
             
             const trafficLights = {
                 motivation: getTrafficLight(scores.motivation),
