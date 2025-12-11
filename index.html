@@ -718,16 +718,6 @@
         <button class="nav-btn" id="submit-assessment-btn" onclick="submitAssessment()">Submit Assessment</button>
     </div>
 </div>
-                
-                <div id="questions-container">
-                    <!-- Questions will be inserted here -->
-                </div>
-                
-                <div class="navigation-buttons">
-                    <button class="nav-btn" onclick="showView('dashboard-view')">Cancel</button>
-                    <button class="nav-btn" id="submit-assessment-btn" onclick="submitAssessment()">Submit Assessment</button>
-                </div>
-            </div>
             
        <!-- Results View -->
 <div id="results-view" class="view">
@@ -790,7 +780,7 @@
         // Set to false to use old results display
         // Set to true to use new results page
         // ============================================
-        const USE_ENHANCED_RESULTS = true; // START WITH FALSE FOR SAFETY
+        const USE_ENHANCED_RESULTS = true;
         
         // ============================================
         // REDIRECT TO ENHANCED RESULTS PAGE
@@ -826,31 +816,33 @@
         let progressChart = null;
         let storedAssessments = [];
 
-// Assessment Questions (shuffled, no dimension headers)
-// Updated based on psychometric audit for 0.80+ reliability
+// =============================================================================
+// ORIGINAL PROVEN QUESTIONS - RESTORED FROM OCTOBER 29TH VERSION
+// These questions were working well and have been tested in practice
+// =============================================================================
 const questions = [
     // MOTIVATION QUESTIONS
-    { id: 'm1', dimension: 'motivation', text: 'How would you rate your ability to engage with your career situation over the past two weeks?' },
-    { id: 'm2', dimension: 'motivation', text: 'When you wake up and think about your career situation, how would you rate your overall feeling?' },
-    { id: 'm3', dimension: 'motivation', text: 'How comfortable are you discussing your career situation with others?' },
-    { id: 'm4', dimension: 'motivation', text: 'How clear and actionable does your next step feel right now?' },
-    { id: 'm5', dimension: 'motivation', text: 'How would you rate your energy for dealing with your career situation over the past month?' },
+    { id: 'm1', dimension: 'motivation', text: 'I feel energized by what I\'m working toward (rather than drained or stuck).' },
+    { id: 'm2', dimension: 'motivation', text: 'I have clear goals that genuinely matter to me, and I feel able to pursue them.' },
+    { id: 'm3', dimension: 'motivation', text: 'I feel curious and excited about new possibilities (rather than anxious or overwhelmed).' },
+    { id: 'm4', dimension: 'motivation', text: 'I can sustain effort on challenging tasks, even when the outcome is uncertain.' },
+    { id: 'm5', dimension: 'motivation', text: 'My daily activities feel purposeful and meaningful (not just going through the motions).' },
     
     // LEARNING QUESTIONS
-    { id: 'l1', dimension: 'learning', text: 'How confident do you feel about learning what you need for your next career move?' },
-    { id: 'l2', dimension: 'learning', text: 'How likely are you to engage with relevant learning opportunities when they arise?' },
-    { id: 'l3', dimension: 'learning', text: 'How effectively can you learn and retain new information for your transition?' },
-    { id: 'l4', dimension: 'learning', text: 'How would you rate your learning progress in this transition?' },
-    { id: 'l5', dimension: 'learning', text: 'How well can you learn from both your successes and setbacks?' },
+    { id: 'l1', dimension: 'learning', text: 'I feel confident in my ability to learn new skills, even when it feels uncomfortable.' },
+    { id: 'l2', dimension: 'learning', text: 'I can adapt my approach when circumstances change, rather than clinging to what used to work.' },
+    { id: 'l3', dimension: 'learning', text: 'I\'m open to feedback and can adjust based on new information, even when it challenges my assumptions.' },
+    { id: 'l4', dimension: 'learning', text: 'I seek out opportunities to develop new capabilities, even when it means being a beginner again.' },
+    { id: 'l5', dimension: 'learning', text: 'I can learn from setbacks and keep developing, rather than seeing them as proof I\'m on the wrong path.' },
     
     // IDENTITY QUESTIONS
-    { id: 'i1', dimension: 'identity', text: 'How do you feel when you need to introduce yourself or explain what you do?' },
-    { id: 'i2', dimension: 'identity', text: 'How would you describe your relationship with your previous professional identity?' },
-    { id: 'i3', dimension: 'identity', text: 'How confident do you feel about moving into something new?' },
-    { id: 'i4', dimension: 'identity', text: 'How clearly can you imagine who you will be six months from now?' },
-    { id: 'i5', dimension: 'identity', text: 'How strong is your sense of who you are beyond any job or title?' }
+    { id: 'i1', dimension: 'identity', text: 'I have a clear sense of who I am beyond my professional role (not just what I do).' },
+    { id: 'i2', dimension: 'identity', text: 'My sense of who I am remains stable, even when facing uncertainty.' },
+    { id: 'i3', dimension: 'identity', text: 'I feel aligned with the direction my life is taking (not just going where circumstances push me).' },
+    { id: 'i4', dimension: 'identity', text: 'I know what matters most to me in this phase of life, even if it\'s different from before.' },
+    { id: 'i5', dimension: 'identity', text: 'I can describe my core strengths independently of my job title or past achievements.' }
 ];
-// Auth State Observer
+
 // Auth State Observer
 auth.onAuthStateChanged(user => {
     // Hide loading screen after auth check completes
@@ -1078,28 +1070,28 @@ function startAssessment() {
             }
             
             let motivationSum = 0, learningSum = 0, identitySum = 0;
-let motivationCount = 0, learningCount = 0, identityCount = 0;
+            let motivationCount = 0, learningCount = 0, identityCount = 0;
 
-questions.forEach(q => {
-    const value = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value);
-    if (q.dimension === 'motivation') {
-        motivationSum += value;
-        motivationCount++;
-    }
-    if (q.dimension === 'learning') {
-        learningSum += value;
-        learningCount++;
-    }
-    if (q.dimension === 'identity') {
-        identitySum += value;
-        identityCount++;
-    }
-});
+            questions.forEach(q => {
+                const value = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value);
+                if (q.dimension === 'motivation') {
+                    motivationSum += value;
+                    motivationCount++;
+                }
+                if (q.dimension === 'learning') {
+                    learningSum += value;
+                    learningCount++;
+                }
+                if (q.dimension === 'identity') {
+                    identitySum += value;
+                    identityCount++;
+                }
+            });
 
-// Direct averaging - no conversion needed
-const motivation = (motivationSum / motivationCount).toFixed(1);
-const learning = (learningSum / learningCount).toFixed(1);
-const identity = (identitySum / identityCount).toFixed(1);
+            // Direct averaging - no conversion needed since we're already on 0-10 scale
+            const motivation = (motivationSum / motivationCount).toFixed(1);
+            const learning = (learningSum / learningCount).toFixed(1);
+            const identity = (identitySum / identityCount).toFixed(1);
             
             const capacityScore = Math.round(parseFloat(motivation) * parseFloat(learning) * parseFloat(identity));
             
@@ -1114,10 +1106,10 @@ const identity = (identitySum / identityCount).toFixed(1);
             );
             
             function getTrafficLight(score) {
-    if (score < 4.0) return { emoji: '🔴', status: 'CRITICAL PRIORITY', color: 'red' };
-    if (score < 7.0) return { emoji: '🟡', status: 'Development Opportunity', color: 'amber' };
-    return { emoji: '🟢', status: 'Strength', color: 'green' };
-}
+                if (score < 4.0) return { emoji: '🔴', status: 'CRITICAL PRIORITY', color: 'red' };
+                if (score < 7.0) return { emoji: '🟡', status: 'Development Opportunity', color: 'amber' };
+                return { emoji: '🟢', status: 'Strength', color: 'green' };
+            }
             
             const trafficLights = {
                 motivation: getTrafficLight(scores.motivation),
@@ -1127,9 +1119,6 @@ const identity = (identitySum / identityCount).toFixed(1);
             
             const assessmentData = {
                 timestamp: new Date().toISOString(),
-                motivationRaw,
-                learningRaw,
-                identityRaw,
                 motivationDisplay: motivation,
                 learningDisplay: learning,
                 identityDisplay: identity,
