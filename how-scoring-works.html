@@ -71,6 +71,14 @@
             border-left: 5px solid #3498db;
         }
 
+        .warning-box {
+            background: #ffebee;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border-left: 5px solid #e74c3c;
+        }
+
         .dimension-box {
             background: white;
             padding: 20px;
@@ -153,6 +161,10 @@
             margin-top: 15px;
             padding-top: 15px;
             border-top: 2px solid #ecf0f1;
+        }
+
+        .scenario .score.zero {
+            color: #e74c3c;
         }
 
         .key-points {
@@ -245,7 +257,7 @@
         <p class="subtitle">Understanding the Navigate Transition Assessment methodology</p>
 
         <div class="highlight-box">
-            <p><strong>Your overall Transition Capacity Score can range from 1 to 1,000</strong>, calculated by multiplying your three dimension scores together. This multiplication approach reveals something crucial: <strong>your lowest score becomes your constraint</strong> - the primary factor limiting your overall capacity for successful transition.</p>
+            <p><strong>Your overall Transition Capacity Score can range from 0 to 1,000</strong>, calculated by multiplying your three dimension scores together. This multiplication approach reveals something crucial: <strong>your lowest score becomes your constraint</strong> - the primary factor limiting your overall capacity for successful transition.</p>
         </div>
 
         <h2>The Three Dimensions</h2>
@@ -278,14 +290,14 @@
         </ul>
 
         <h3>Step 2: Calculating Dimension Scores</h3>
-        <p>Your five responses in each dimension are averaged and converted to a <strong>1-10 scale</strong>:</p>
+        <p>Your five responses in each dimension are averaged and converted to a <strong>0-10 scale</strong>:</p>
         
         <div class="highlight-box">
-            <p><strong>Score = (Average of 5 responses) × 2</strong></p>
+            <p><strong>Score = (Average of 5 responses - 1) × 2.5</strong></p>
             <ul style="margin-left: 20px; margin-top: 15px;">
-                <li><strong>Scale:</strong> 1-10 for each dimension</li>
+                <li><strong>Scale:</strong> 0-10 for each dimension</li>
                 <li><strong>Example:</strong> If you score 4, 5, 3, 4, 5 across five questions, your average is 4.2</li>
-                <li><strong>Converted:</strong> 4.2 × 2 = 8.4 out of 10</li>
+                <li><strong>Converted:</strong> (4.2 - 1) × 2.5 = 8.0 out of 10</li>
             </ul>
         </div>
 
@@ -296,6 +308,31 @@
 
         <p><strong>Example:</strong> If your scores are Motivation = 7.5, Learning = 6.0, Identity = 8.0:</p>
         <p class="formula">7.5 × 6.0 × 8.0 = 360</p>
+
+        <h2>The Devastating Impact of Zero</h2>
+
+        <div class="warning-box">
+            <p><strong>CRITICAL:</strong> A score of zero in ANY dimension means your total capacity score is ZERO—regardless of how strong your other dimensions are. This is because the scores are multiplied together (anything × 0 = 0).</p>
+        </div>
+
+        <div class="comparison-example">
+            <h3 style="margin-top: 0; color: #2c3e50;">Even Perfect Scores Can't Overcome a Zero</h3>
+            <div class="before-after">
+                <div class="scenario">
+                    <h4>Perfect Scores + Zero</h4>
+                    <p>Motivation: 10.0<br>Learning: 10.0<br>Identity: 0.0</p>
+                    <p class="score zero">Score: 0</p>
+                </div>
+                <div class="scenario">
+                    <h4>Perfect Scores + Low</h4>
+                    <p>Motivation: 10.0<br>Learning: 10.0<br>Identity: 1.0</p>
+                    <p class="score">Score: 100</p>
+                </div>
+            </div>
+            <p style="margin-top: 25px; text-align: center; font-size: 1.1em; color: #2c3e50;">
+                <strong>Even 1.0 is infinitely better than 0.0!</strong>
+            </p>
+        </div>
 
         <h2>Why Multiplication Instead of Addition?</h2>
 
@@ -337,15 +374,15 @@
         <div style="margin: 20px 0;">
             <div class="traffic-light red">
                 <span>🔴</span>
-                <span>RED (1.0-5.9): Priority - Your Constraint</span>
+                <span>RED (0-3.9): Priority - Your Constraint</span>
             </div>
             <div class="traffic-light amber">
                 <span>🟡</span>
-                <span>AMBER (6.0-7.9): Monitor - Could improve</span>
+                <span>AMBER (4.0-6.9): Monitor - Could improve</span>
             </div>
             <div class="traffic-light green">
                 <span>🟢</span>
-                <span>GREEN (8.0-10): Strong - Keep going</span>
+                <span>GREEN (7.0-10.0): Strong - Keep going</span>
             </div>
         </div>
 
