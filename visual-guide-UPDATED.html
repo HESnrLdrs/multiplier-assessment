@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Guide - Navigate Transition Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            font-size: 1.8em;
+        }
+
+        .dimension-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .dimension-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            border: 3px solid;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .dimension-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        }
+
+        .dimension-card.motivation {
+            border-color: #9b59b6;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f4fb 100%);
+        }
+
+        .dimension-card.learning {
+            border-color: #00bcd4;
+            background: linear-gradient(135deg, #ffffff 0%, #f0fbfd 100%);
+        }
+
+        .dimension-card.identity {
+            border-color: #ff9800;
+            background: linear-gradient(135deg, #ffffff 0%, #fff8f0 100%);
+        }
+
+        .dimension-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .dimension-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .dimension-card p {
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .dimension-card ul {
+            margin-left: 20px;
+            color: #555;
+        }
+
+        .dimension-card li {
+            margin-bottom: 8px;
+        }
+
+        .traffic-light-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+
+        .traffic-light-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .traffic-light-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            border: 3px solid;
+        }
+
+        .traffic-light-card.red {
+            border-color: #e74c3c;
+            background: linear-gradient(135deg, #ffffff 0%, #ffebee 100%);
+        }
+
+        .traffic-light-card.amber {
+            border-color: #f39c12;
+            background: linear-gradient(135deg, #ffffff 0%, #fff8e1 100%);
+        }
+
+        .traffic-light-card.green {
+            border-color: #27ae60;
+            background: linear-gradient(135deg, #ffffff 0%, #e8f5e9 100%);
+        }
+
+        .traffic-light-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .traffic-light-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .traffic-light-card .range {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .traffic-light-card.red .range {
+            color: #c62828;
+        }
+
+        .traffic-light-card.amber .range {
+            color: #f57c00;
+        }
+
+        .traffic-light-card.green .range {
+            color: #2e7d32;
+        }
+
+        .example-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border: 2px solid #e0e0e0;
+        }
+
+        .score-example {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .score-bar {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .score-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 600;
+            align-items: center;
+        }
+
+        .score-visual {
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .score-fill {
+            height: 100%;
+            border-radius: 15px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .score-fill.motivation {
+            background: linear-gradient(90deg, #9b59b6 0%, #8e44ad 100%);
+        }
+
+        .score-fill.learning {
+            background: linear-gradient(90deg, #00bcd4 0%, #0097a7 100%);
+        }
+
+        .score-fill.identity {
+            background: linear-gradient(90deg, #ff9800 0%, #f57c00 100%);
+        }
+
+        .total-score {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .total-score h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .total-score .score-number {
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .multiplier-visual {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+
+        .multiplier-example {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            font-size: 1.3em;
+        }
+
+        .multiplier-box {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            border: 2px solid;
+            font-weight: 600;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .multiplier-box.motivation {
+            border-color: #9b59b6;
+            color: #9b59b6;
+        }
+
+        .multiplier-box.learning {
+            border-color: #00bcd4;
+            color: #00bcd4;
+        }
+
+        .multiplier-box.identity {
+            border-color: #ff9800;
+            color: #ff9800;
+        }
+
+        .multiplier-operator {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+
+        .multiplier-result {
+            background: #27ae60;
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .comparison-card h4 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.3em;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 12px 30px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .highlight-box {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #ffc107;
+            margin: 25px 0;
+        }
+
+        .warning-box {
+            background: #ffebee;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #e74c3c;
+            margin: 25px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .dimension-grid,
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .multiplier-example {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Visual Guide</h1>
+        <p class="subtitle">See how your assessment results work with examples and graphics</p>
+
+        <h2>The Three Dimensions</h2>
+        <p>Your transition capacity is measured across three interconnected dimensions:</p>
+
+        <div class="dimension-grid">
+            <div class="dimension-card motivation">
+                <span class="dimension-icon">🔥</span>
+                <h3>Motivation</h3>
+                <p><strong>Your drive and energy for the transition</strong></p>
+                <p>This measures whether you have the emotional fuel to push through challenges, or if you feel drained and stuck.</p>
+                <ul>
+                    <li>Energy and enthusiasm</li>
+                    <li>Willingness to take action</li>
+                    <li>Persistence through setbacks</li>
+                </ul>
+            </div>
+
+            <div class="dimension-card learning">
+                <span class="dimension-icon">📚</span>
+                <h3>Learning</h3>
+                <p><strong>Your capacity to acquire new skills and knowledge</strong></p>
+                <p>This measures whether you're actively developing what you need, or struggling to build competence in unfamiliar territory.</p>
+                <ul>
+                    <li>Skill acquisition</li>
+                    <li>Knowledge development</li>
+                    <li>Adaptation to new demands</li>
+                </ul>
+            </div>
+
+            <div class="dimension-card identity">
+                <span class="dimension-icon">🎯</span>
+                <h3>Identity</h3>
+                <p><strong>Your sense of belonging and self in the new context</strong></p>
+                <p>This measures whether you see yourself fitting in, or are questioning whether this is really "you".</p>
+                <ul>
+                    <li>Sense of belonging</li>
+                    <li>Authenticity and fit</li>
+                    <li>Self-concept alignment</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>Traffic Light System</h2>
+        <p>Each dimension is scored on a 0-10 scale and color-coded to help you prioritize:</p>
+
+        <div class="traffic-light-section">
+            <div class="traffic-light-grid">
+                <div class="traffic-light-card red">
+                    <div class="traffic-light-icon">🔴</div>
+                    <h4>RED - Priority</h4>
+                    <div class="range">0 - 3.9</div>
+                    <p><strong>Your Constraint</strong></p>
+                    <p>This is what's holding you back most. Focus your energy here for maximum impact.</p>
+                </div>
+
+                <div class="traffic-light-card amber">
+                    <div class="traffic-light-icon">🟡</div>
+                    <h4>AMBER - Monitor</h4>
+                    <div class="range">4.0 - 6.9</div>
+                    <p><strong>Could Improve</strong></p>
+                    <p>Room for growth, but not your primary concern right now.</p>
+                </div>
+
+                <div class="traffic-light-card green">
+                    <div class="traffic-light-icon">🟢</div>
+                    <h4>GREEN - Strong</h4>
+                    <div class="range">7.0 - 10.0</div>
+                    <p><strong>Working Well</strong></p>
+                    <p>This area is supporting your transition effectively. Keep it up!</p>
+                </div>
+            </div>
+        </div>
+
+        <h2>Sample Score Visualization</h2>
+
+        <div class="example-section">
+            <h3 style="color: #2c3e50; margin-bottom: 20px;">Example: Mixed Performance Profile</h3>
+            
+            <div class="score-example">
+                <div class="score-bar">
+                    <div class="score-label">
+                        <span>🔥 Motivation</span>
+                        <span style="color: #27ae60;">8.0 🟢</span>
+                    </div>
+                    <div class="score-visual">
+                        <div class="score-fill motivation" style="width: 80%;">8.0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="score-example">
+                <div class="score-bar">
+                    <div class="score-label">
+                        <span>📚 Learning</span>
+                        <span style="color: #f39c12;">5.0 🟡</span>
+                    </div>
+                    <div class="score-visual">
+                        <div class="score-fill learning" style="width: 50%;">5.0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="score-example">
+                <div class="score-bar">
+                    <div class="score-label">
+                        <span>🎯 Identity</span>
+                        <span style="color: #e74c3c;">3.0 🔴</span>
+                    </div>
+                    <div class="score-visual">
+                        <div class="score-fill identity" style="width: 30%;">3.0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="total-score">
+                <h3>Transition Capacity Score</h3>
+                <div class="score-number">120</div>
+                <p style="margin-top: 10px;">8.0 × 5.0 × 3.0 = 120</p>
+            </div>
+
+            <div class="highlight-box">
+                <p><strong>Interpretation:</strong> In this example, Identity (3.0) is the constraint—the red zone score that's limiting overall transition capacity. Even though Motivation is strong (8.0) and Learning is adequate (5.0), the low Identity score means the overall capacity is only 120 out of a possible 1,000.</p>
+            </div>
+        </div>
+
+        <h2>The Multiplier Effect</h2>
+
+        <div class="multiplier-visual">
+            <h3 style="color: #2c3e50; margin-bottom: 20px; text-align: center;">How Your Scores Combine</h3>
+            
+            <div class="multiplier-example">
+                <div class="multiplier-box motivation">8.0</div>
+                <span class="multiplier-operator">×</span>
+                <div class="multiplier-box learning">5.0</div>
+                <span class="multiplier-operator">×</span>
+                <div class="multiplier-box identity">3.0</div>
+                <span class="multiplier-operator">=</span>
+                <div class="multiplier-result">120</div>
+            </div>
+
+            <p style="text-align: center; color: #555; margin-top: 20px;">
+                Your three dimension scores are multiplied together to create your overall Transition Capacity Score (range: 0-1,000)
+            </p>
+        </div>
+
+        <h2>The Devastating Impact of Zero</h2>
+
+        <div class="warning-box">
+            <p><strong>CRITICAL:</strong> A score of zero in ANY dimension means your total capacity score is ZERO—regardless of how strong your other dimensions are. This is because the scores are multiplied together (anything × 0 = 0).</p>
+        </div>
+
+        <div class="comparison-grid">
+            <div class="comparison-card">
+                <h4>Perfect Scores Ruined by One Zero</h4>
+                <div class="score-example">
+                    <div class="score-bar">
+                        <div class="score-label">
+                            <span>Motivation</span>
+                            <span style="color: #27ae60;">10.0</span>
+                        </div>
+                        <div class="score-visual">
+                            <div class="score-fill motivation" style="width: 100%;">10.0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="score-example">
+                    <div class="score-bar">
+                        <div class="score-label">
+                            <span>Learning</span>
+                            <span style="color: #27ae60;">10.0</span>
+                        </div>
+                        <div class="score-visual">
+                            <div class="score-fill learning" style="width: 100%;">10.0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="score-example">
+                    <div class="score-bar">
+                        <div class="score-label">
+                            <span>Identity</span>
+                            <span style="color: #e74c3c;">0.0</span>
+                        </div>
+                        <div class="score-visual">
+                            <div class="score-fill identity" style="width: 0%;">0.0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="total-score" style="background: #e74c3c;">
+                    <div class="score-number">0</div>
+                    <p style="margin-top: 10px;">10.0 × 10.0 × 0.0 = 0</p>
+                </div>
+            </div>
+
+            <div class="comparison-card">
+                <h4>Low But Non-Zero Is Better</h4>
+                <div class="score-example">
+                    <div class="score-bar">
+                        <div class="score-label">
+                            <span>Motivation</span>
+                            <span style="color: #27ae60;">10.0</span>
+                        </div>
+                        <div class="score-visual">
+                            <div class="score-fill motivation" style="width: 100%;">10.0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="score-example">
+                    <div class="score-bar">
+                        <div class="score-label">
+                            <span>Learning</span>
+                            <span style="color: #27ae60;">10.0</span>
+                        </div>
+                        <div class="score-visual">
+                            <div class="score-fill learning" style="width: 100%;">10.0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="score-example">
+                    <div class="score-bar">
+                        <div class="score-label">
+                            <span>Identity</span>
+                            <span style="color: #e74c3c;">1.0</span>
+                        </div>
+                        <div class="score-visual">
+                            <div class="score-fill identity" style="width: 10%;">1.0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="total-score">
+                    <div class="score-number">100</div>
+                    <p style="margin-top: 10px;">10.0 × 10.0 × 1.0 = 100</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <p><strong>Key Insight:</strong> Even a score of 1.0 in your weakest dimension is infinitely better than 0.0. This is why it's crucial to address complete blockers before trying to optimize your strengths.</p>
+        </div>
+
+        <h2>Why Your Constraint Matters</h2>
+
+        <div class="comparison-grid">
+            <div class="comparison-card">
+                <h4>Scenario A: One Weak Link</h4>
+                <div class="score-example">
+                    <div class="score-bar">
+                        <div class="score-label">
+                            <span>Motivation</span>
+                            <span style="color: #27ae60;">9.0</span>
+                        </div>
+                        <div class="score-visual">
+                            <div class="score-fill motivation" style="width: 90%;">9.0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="score-example">
+                    <div class="score-bar">
+                        <div class="score-label">
+                            <span>Learning</span>
+                            <span style="color: #27ae60;">9.0</span>
+                        </div>
+                        <div class="score-visual">
+                            <div class="score-fill learning" style="width: 90%;">9.0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="score-example">
+                    <div class="score-bar">
+                        <div class="score-label">
+                            <span>Identity</span>
+                            <span style="color: #e74c3c;">2.0</span>
+                        </div>
+                        <div class="score-visual">
+                            <div class="score-fill identity" style="width: 20%;">2.0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="total-score">
+                    <div class="score-number">162</div>
+                    <p style="margin-top: 10px;">9.0 × 9.0 × 2.0</p>
+                </div>
+            </div>
+
+            <div class="comparison-card">
+                <h4>Scenario B: Balanced Approach</h4>
+                <div class="score-example">
+                    <div class="score-bar">
+                        <div class="score-label">
+                            <span>Motivation</span>
+                            <span style="color: #27ae60;">7.0</span>
+                        </div>
+                        <div class="score-visual">
+                            <div class="score-fill motivation" style="width: 70%;">7.0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="score-example">
+                    <div class="score-bar">
+                        <div class="score-label">
+                            <span>Learning</span>
+                            <span style="color: #27ae60;">7.0</span>
+                        </div>
+                        <div class="score-visual">
+                            <div class="score-fill learning" style="width: 70%;">7.0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="score-example">
+                    <div class="score-bar">
+                        <div class="score-label">
+                            <span>Identity</span>
+                            <span style="color: #27ae60;">7.0</span>
+                        </div>
+                        <div class="score-visual">
+                            <div class="score-fill identity" style="width: 70%;">7.0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="total-score">
+                    <div class="score-number">343</div>
+                    <p style="margin-top: 10px;">7.0 × 7.0 × 7.0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <p><strong>Key Takeaway:</strong> Scenario B has a much higher total score (343 vs 162) despite having lower individual scores! This shows why addressing your constraint is more powerful than perfecting your strengths. Balanced progress beats uneven excellence in transitions.</p>
+        </div>
+
+        <a href="javascript:history.back()" class="back-button">← Back to Results</a>
+    </div>
+</body>
+</html>
