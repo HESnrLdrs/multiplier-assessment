@@ -208,6 +208,8 @@ function generateMotivationRedContent(scores) {
                 </div>
             </section>
             
+            ${generateResourceLinksHTML()}
+            
             ${generateNextStepsHTML()}
             
             ${generateQuestionsHTML()}
@@ -295,6 +297,8 @@ function generateLearningRedContent(scores) {
                     <p><strong>That's it. Just do that today.</strong></p>
                 </div>
             </section>
+            
+            ${generateResourceLinksHTML()}
             
             ${generateNextStepsHTML()}
             
@@ -387,6 +391,8 @@ function generateIdentityRedContent(scores) {
                 </div>
             </section>
             
+            ${generateResourceLinksHTML()}
+            
             ${generateNextStepsHTML()}
             
             ${generateQuestionsHTML()}
@@ -453,6 +459,8 @@ function generateMultipleRedsContent(reds, scores) {
                     <p><strong>That's it. Just do that today.</strong></p>
                 </div>
             </section>
+            
+            ${generateResourceLinksHTML()}
             
             <section class="next-steps">
                 <h2>Your Next Steps</h2>
@@ -523,10 +531,35 @@ function generateAllGreenContent(scores) {
                 </ul>
             </section>
             
+            ${generateResourceLinksHTML()}
+            
             ${generateNextStepsHTML()}
             
             ${generateQuestionsHTML()}
         </div>
+    `;
+}
+
+function generateResourceLinksHTML() {
+    return `
+        <section class="resource-links-section" style="margin: 40px 0; padding: 30px; background: #f8f9fa; border-radius: 10px; border-top: 3px solid #667eea;">
+            <h2 style="text-align: center; color: #333; margin-bottom: 10px;">Learn More About Your Results</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 25px;">Explore these resources to understand your assessment better:</p>
+            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                <a href="faq.html" target="_blank" style="display: flex; flex-direction: column; align-items: center; padding: 20px 30px; background: white; border: 2px solid #3498db; border-radius: 10px; text-decoration: none; color: #3498db; transition: all 0.3s ease; min-width: 150px; text-align: center;">
+                    <span style="font-size: 2em; margin-bottom: 10px;">❓</span>
+                    <span style="font-weight: 600;">FAQ</span>
+                </a>
+                <a href="visual-guide.html" target="_blank" style="display: flex; flex-direction: column; align-items: center; padding: 20px 30px; background: white; border: 2px solid #3498db; border-radius: 10px; text-decoration: none; color: #3498db; transition: all 0.3s ease; min-width: 150px; text-align: center;">
+                    <span style="font-size: 2em; margin-bottom: 10px;">📊</span>
+                    <span style="font-weight: 600;">Visual Guide</span>
+                </a>
+                <a href="how-scoring-works.html" target="_blank" style="display: flex; flex-direction: column; align-items: center; padding: 20px 30px; background: white; border: 2px solid #3498db; border-radius: 10px; text-decoration: none; color: #3498db; transition: all 0.3s ease; min-width: 150px; text-align: center;">
+                    <span style="font-size: 2em; margin-bottom: 10px;">🔢</span>
+                    <span style="font-weight: 600;">How Scoring Works</span>
+                </a>
+            </div>
+        </section>
     `;
 }
 
@@ -541,16 +574,6 @@ function generateNextStepsHTML() {
                     <h3>📥 Download Your Results</h3>
                     <p>Get a detailed PDF of your results including strategies and resources for next steps.</p>
                     <button class="btn btn-primary" data-action="download-pdf">Download PDF Report</button>
-                </div>
-                
-                <div class="cta-card">
-                    <h3>📚 Learn More</h3>
-                    <p>Free resources to help you understand and address your transition challenges.</p>
-                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
-                        <button class="btn btn-secondary" data-action="faq">FAQ</button>
-                        <button class="btn btn-secondary" data-action="visual-guide">Visual Guide</button>
-                        <button class="btn btn-secondary" data-action="how-scoring-works">How Scoring Works</button>
-                    </div>
                 </div>
                 
                 <div class="cta-card highlight">
