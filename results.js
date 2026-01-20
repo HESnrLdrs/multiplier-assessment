@@ -127,7 +127,69 @@ function generateScoresHTML(scores) {
     `;
 }
 // *** END OF UPDATE ***
+// ============================================
+// WORKBOOK RECOMMENDATION SYSTEM
+// ============================================
 
+function getWorkbookRecommendation(scores, reds) {
+    const mColor = getScoreColor(scores.motivation);
+    const lColor = getScoreColor(scores.learning);
+    const iColor = getScoreColor(scores.identity);
+    
+    if (reds.length === 3) {
+        return { type: 'crisis', primary: null, secondary: null, message: 'With all three dimensions in red, we strongly recommend booking a results review call before purchasing workbooks. We\'ll work together to create an appropriate support plan.' };
+    }
+    
+    if (reds.length === 2) {
+        const workbooks = reds.map(r => r + '-red');
+        return { type: 'dual', primary: workbooks[0], secondary: workbooks[1], message: `You have two constraints: ${reds.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join(' and ')}. We recommend starting with the ${reds[0].charAt(0).toUpperCase() + reds[0].slice(1)} Red Workbook, then moving to ${reds[1].charAt(0).toUpperCase() + reds[1].slice(1)}. We'll help you prioritize in your results review call.` };
+    }
+    
+    if (reds.length === 1) {
+        const constraint = reds[0];
+        let message = '';
+        if (constraint === 'motivation') message = 'Your constraint is Motivation. The Motivation Red Workbook provides specific exercises to rebuild your "why" and move from stuck to in motion.';
+        else if (constraint === 'learning') message = 'Your constraint is Learning. The Learning Red Workbook provides structured pathways to break down overwhelming transitions into manageable steps.';
+        else if (constraint === 'identity') message = 'Your constraint is Identity. The Identity Red Workbook helps you understand who you are beyond your role and translate your identity to new contexts.';
+        return { type: 'single-red', primary: constraint + '-red', secondary: null, message: message };
+    }
+    
+    const allGreen = mColor === 'green' && lColor === 'green' && iColor === 'green';
+    if (allGreen) {
+        return { type: 'no-workbook', primary: null, secondary: null, message: 'You have high capacity across all three dimensions. You don\'t need capacity-building - you need direction and momentum. A results review call will help you create your action plan.' };
+    }
+    
+    const allAmber = mColor === 'amber' && lColor === 'amber' && iColor === 'amber';
+    let message = '';
+    if (allAmber) {
+        message = 'You have workable capacity that could be stronger. The Momentum Workbook will help you develop all three dimensions while creating direction.';
+    } else {
+        const ambers = [];
+        if (mColor === 'amber') ambers.push('Motivation');
+        if (lColor === 'amber') ambers.push('Learning');
+        if (iColor === 'amber') ambers.push('Identity');
+        const greens = [];
+        if (mColor === 'green') greens.push('Motivation');
+        if (lColor === 'green') greens.push('Learning');
+        if (iColor === 'green') greens.push('Identity');
+        if (ambers.length === 1) {
+            message = `Your ${greens.join(' and ')} are strong. The Momentum Workbook will help you strengthen ${ambers[0]} while building on your existing capacity.`;
+        } else {
+            message = `Your ${greens.join(', ')} ${greens.length > 1 ? 'are' : 'is'} strong. The Momentum Workbook will help you strengthen ${ambers.join(' and ')} while building on your existing capacity.`;
+        }
+    }
+    return { type: 'momentum', primary: 'momentum', secondary: null, message: message };
+}
+
+function generateWorkbookCardHTML(recommendation) {
+    if (recommendation.type === 'crisis') {
+        return `<div class="cta-card highlight" style="border: 3px solid #e74c3c;"><h3>⚠️ Important: Support Needed</h3><p>${recommendation.message}</p><button class="btn btn-primary" data-action="book-free-call">Book Results Review Call</button></div>`;
+    }
+    if (recommendation.type === 'no-workbook') {
+        return `<div class="cta-card highlight" style="border: 3px solid #27ae60;"><h3>✅ You Have the Capacity</h3><p>${recommendation.message}</p><button class="btn btn-primary" data-action="book-free-call">Book Your Free Results Review</button></div>`;
+    }
+    if (recommendation.type === 'dual') {
+        return `<div class="cta-card highlight" style="border: 3px solid #667eea;"><h3>📚 Your Recommended Resources</h3><p><strong>You have two constraints that need addressing.</strong></p><p>${recommendation.message}</p><div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;"><button class="btn btn-secondary" data-action="view-workbook" data-workbook="${recommendation.primary}">${recommendation.primary.split('-').map(w => w.charAt
 function generateSingleRedContent(red, scores) {
     if (red === 'motivation') return generateMotivationRedContent(scores);
     if (red === 'learning') return generateLearningRedContent(scores);
@@ -220,7 +282,7 @@ function generateMotivationRedContent(scores) {
             
             ${generateResourceLinksHTML()}
             
-            ${generateNextStepsHTML()}
+            ${generateNextStepsHTML_WithWorkbooks(scores, ['motivation'])}
             
             ${generateQuestionsHTML()}
         </div>
@@ -310,7 +372,7 @@ function generateLearningRedContent(scores) {
             
             ${generateResourceLinksHTML()}
             
-            ${generateNextStepsHTML()}
+            WithWorkbooks(scores, ['learning'])
             
             ${generateQuestionsHTML()}
         </div>
@@ -403,7 +465,7 @@ function generateIdentityRedContent(scores) {
             
             ${generateResourceLinksHTML()}
             
-            ${generateNextStepsHTML()}
+            WithWorkbooks(scores, ['identity'])
             
             ${generateQuestionsHTML()}
         </div>
@@ -477,6 +539,7 @@ function generateMultipleRedsContent(reds, scores) {
                 <p>Having multiple reds means you need support. This is too much to figure out alone.</p>
                 
                 <div class="cta-grid">
+                ${generateWorkbookCardHTML(getWorkbookRecommendation(scores, reds))}
                     <div class="cta-card">
                         <h3>📥 Download Your Results</h3>
                         <p>Get a detailed PDF of your results including all your scores and what each constraint means.</p>
@@ -740,6 +803,22 @@ function setupCTAHandlers(userId) {
     scoringButtons.forEach(btn => {
         btn.addEventListener('click', function() {
             window.location.href = 'how-scoring-works.html';
+        });
+    });
+// Workbook buttons
+    const workbookButtons = document.querySelectorAll('[data-action="view-workbook"]');
+    workbookButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const workbookType = this.getAttribute('data-workbook');
+            if (workbookType === 'momentum') {
+                alert('Momentum Workbook information coming soon! Check your email for details.');
+            } else if (workbookType === 'motivation-red') {
+                alert('Motivation Red Workbook information coming soon! Check your email for details.');
+            } else if (workbookType === 'learning-red') {
+                alert('Learning Red Workbook information coming soon! Check your email for details.');
+            } else if (workbookType === 'identity-red') {
+                alert('Identity Red Workbook information coming soon! Check your email for details.');
+            }
         });
     });
 }
