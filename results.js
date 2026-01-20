@@ -192,11 +192,18 @@ function generateWorkbookCardHTML(recommendation) {
         return `<div class="cta-card highlight" style="border: 3px solid #27ae60;"><h3>✅ You Have the Capacity</h3><p>${recommendation.message}</p><button class="btn btn-primary" data-action="book-free-call">Book Your Free Results Review</button></div>`;
     }
     if (recommendation.type === 'dual') {
-        return `<div class="cta-card highlight" style="border: 3px solid #667eea;"><h3>📚 Your Recommended Resources</h3><p><strong>You have two constraints that need addressing.</strong></p><p>${recommendation.message}</p><div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;"><button class="btn btn-secondary" data-action="view-workbook" data-workbook="${recommendation.primary}">${recommendation.primary.split('-').map(w => w.charAt
-function generateSingleRedContent(red, scores) {
-    if (red === 'motivation') return generateMotivationRedContent(scores);
-    if (red === 'learning') return generateLearningRedContent(scores);
-    if (red === 'identity') return generateIdentityRedContent(scores);
+        const primaryName = recommendation.primary.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        const secondaryName = recommendation.secondary.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        return `<div class="cta-card highlight" style="border: 3px solid #667eea;"><h3>📚 Your Recommended Resources</h3><p><strong>You have two constraints that need addressing.</strong></p><p>${recommendation.message}</p><div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;"><button class="btn btn-secondary" data-action="view-workbook" data-workbook="${recommendation.primary}">View ${primaryName} Workbook</button><button class="btn btn-secondary" data-action="view-workbook" data-workbook="${recommendation.secondary}">View ${secondaryName} Workbook</button></div></div>`;
+    }
+    if (recommendation.type === 'single-red') {
+        const workbookName = recommendation.primary.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        return `<div class="cta-card highlight" style="border: 3px solid #667eea;"><h3>📚 Your Recommended Workbook</h3><p>${recommendation.message}</p><button class="btn btn-secondary" data-action="view-workbook" data-workbook="${recommendation.primary}">View ${workbookName} Workbook</button></div>`;
+    }
+    if (recommendation.type === 'momentum') {
+        return `<div class="cta-card highlight" style="border: 3px solid #667eea;"><h3>📚 Your Recommended Workbook</h3><p>${recommendation.message}</p><button class="btn btn-secondary" data-action="view-workbook" data-workbook="momentum">View Momentum Workbook</button></div>`;
+    }
+    return '';
 }
 
 function generateMotivationRedContent(scores) {
