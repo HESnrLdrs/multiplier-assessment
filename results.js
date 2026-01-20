@@ -144,7 +144,7 @@ function getWorkbookRecommendation(scores, reds) {
     const workbooks = reds.map(r => r + '-red');
     const firstRed = reds[0].charAt(0).toUpperCase() + reds[0].slice(1);
     const secondRed = reds[1].charAt(0).toUpperCase() + reds[1].slice(1);
-    const msg = 'You have two constraints: ' + firstRed + ' and ' + secondRed + '. We recommend starting with the ' + firstRed + ' Red Workbook, then moving to ' + secondRed + '. We will help you prioritize in your results review call.';
+    const msg = `You have two constraints: ${firstRed} and ${secondRed}. We recommend starting with the ${firstRed} Red Workbook, then moving to ${secondRed}. We will help you prioritize in your results review call.`;
     return { type: 'dual', primary: workbooks[0], secondary: workbooks[1], message: msg };
 }
     
@@ -375,7 +375,7 @@ function generateLearningRedContent(scores) {
             
             ${generateResourceLinksHTML()}
             
-            WithWorkbooks(scores, ['learning'])
+            ${generateNextStepsHTML_WithWorkbooks(scores, ['learning'])}
             
             ${generateQuestionsHTML()}
         </div>
@@ -468,7 +468,7 @@ function generateIdentityRedContent(scores) {
             
             ${generateResourceLinksHTML()}
             
-            WithWorkbooks(scores, ['identity'])
+            ${generateNextStepsHTML_WithWorkbooks(scores, ['identity'])}
             
             ${generateQuestionsHTML()}
         </div>
