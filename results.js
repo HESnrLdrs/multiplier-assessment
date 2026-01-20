@@ -140,10 +140,13 @@ function getWorkbookRecommendation(scores, reds) {
         return { type: 'crisis', primary: null, secondary: null, message: 'With all three dimensions in red, we strongly recommend booking a results review call before purchasing workbooks. We\'ll work together to create an appropriate support plan.' };
     }
     
-    if (reds.length === 2) {
-        const workbooks = reds.map(r => r + '-red');
-        return { type: 'dual', primary: workbooks[0], secondary: workbooks[1], message: `You have two constraints: ${reds.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join(' and ')}. We recommend starting with the ${reds[0].charAt(0).toUpperCase() + reds[0].slice(1)} Red Workbook, then moving to ${reds[1].charAt(0).toUpperCase() + reds[1].slice(1)}. We'll help you prioritize in your results review call.` };
-    }
+   if (reds.length === 2) {
+    const workbooks = reds.map(r => r + '-red');
+    const firstRed = reds[0].charAt(0).toUpperCase() + reds[0].slice(1);
+    const secondRed = reds[1].charAt(0).toUpperCase() + reds[1].slice(1);
+    const msg = 'You have two constraints: ' + firstRed + ' and ' + secondRed + '. We recommend starting with the ' + firstRed + ' Red Workbook, then moving to ' + secondRed + '. We will help you prioritize in your results review call.';
+    return { type: 'dual', primary: workbooks[0], secondary: workbooks[1], message: msg };
+}
     
     if (reds.length === 1) {
         const constraint = reds[0];
