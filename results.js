@@ -1183,32 +1183,120 @@ function generateMultipleRedsContent(reds, scores) {
 }
 
 function generateAllGreenContent(scores) {
+    const mColor = getScoreColor(scores.motivation);
+    const lColor = getScoreColor(scores.learning);
+    const iColor = getScoreColor(scores.identity);
+    
+    // Identify amber scores
+    const ambers = [];
+    if (mColor === 'amber') ambers.push({ name: 'Motivation', score: scores.motivation });
+    if (lColor === 'amber') ambers.push({ name: 'Learning', score: scores.learning });
+    if (iColor === 'amber') ambers.push({ name: 'Identity', score: scores.identity });
+    
+    // Check if all green
+    const allGreen = mColor === 'green' && lColor === 'green' && iColor === 'green';
+    
+    // Generate appropriate heading and description
+    let heading, constraintLabel, whatThisMeansContent;
+    
+    if (allGreen) {
+        heading = 'Your Results: High Capacity';
+        constraintLabel = '<p class="constraint-label" style="color: #27ae60;">Great news: <strong>High Capacity Across All Dimensions</strong></p>';
+        whatThisMeansContent = `
+            <p>You have high capacity across all three dimensions (Motivation, Learning, and Identity). This is excellent - you have strong foundation for your transition.</p>
+            
+            <p class="good-news"><strong>You don't need capacity-building. You need direction and momentum.</strong></p>
+            
+            <p>If you're still feeling stuck, it's likely because:</p>
+            <ul>
+                <li>You need specific guidance on next steps</li>
+                <li>You could benefit from accountability and structure</li>
+                <li>You need help translating your capacity into action</li>
+                <li>There are strategic decisions to make about direction</li>
+            </ul>
+        `;
+    } else if (ambers.length === 1) {
+        const amber = ambers[0];
+        heading = `Your Results: One Amber Area - ${amber.name}`;
+        constraintLabel = `<p class="constraint-label" style="color: #f39c12;">Your ${amber.name} is workable but could be stronger</p>`;
+        whatThisMeansContent = `
+            <p>Your ${amber.name} dimension is in the amber zone (${amber.score.toFixed(1)}/10). This means you have some capacity here, but it could be stronger.</p>
+            
+            <p>Your other dimensions are in good shape (green), so focusing on strengthening your ${amber.name} capacity will give you the best return.</p>
+            
+            <p class="good-news"><strong>This is very workable.</strong> You're not blocked - you just have one area that could benefit from targeted development.</p>
+        `;
+    } else {
+        // Multiple ambers
+        const amberNames = ambers.map(a => a.name).join(' and ');
+        heading = 'Your Results: Multiple Amber Areas';
+        constraintLabel = `<p class="constraint-label" style="color: #f39c12;">Your ${amberNames} could be stronger</p>`;
+        whatThisMeansContent = `
+            <p>You have ${ambers.length} dimensions in the amber zone: ${ambers.map(a => `${a.name} (${a.score.toFixed(1)}/10)`).join(', ')}.</p>
+            
+            <p>This means you have workable capacity that could be strengthened. You're not blocked, but developing these areas will make your transition significantly easier.</p>
+            
+            <p class="good-news"><strong>The good news:</strong> You don't have any major constraints (reds). You have a solid foundation to build from.</p>
+        `;
+    }
+    
     return `
         <div class="results-header">
-            <h1>Your Results: No Major Constraints</h1>
+            <h1>${heading}</h1>
             ${generateScoresHTML(scores)}
-            <p class="constraint-label">Great news: <strong>No Red Constraints</strong></p>
+            ${constraintLabel}
         </div>
         
         <div class="results-content">
-            <section>
+            <section class="what-this-means">
                 <h2>What This Means</h2>
-                <p>You don't have any major constraints blocking your transition. Your Motivation, Learning, and Identity scores are all in the amber or green range.</p>
-                
-                <p class="good-news"><strong>This is excellent!</strong> You have the foundation to make your transition successfully.</p>
-                
-                <p>However, if you're still feeling stuck, it might be because:</p>
-                <ul>
-                    <li>Your scores are amber (workable but could be stronger)</li>
-                    <li>You need specific guidance on next steps</li>
-                    <li>You could benefit from accountability and support</li>
-                    <li>There are other factors beyond M×L×I affecting your transition</li>
-                </ul>
+                ${whatThisMeansContent}
             </section>
             
             ${generateResourceLinksHTML()}
             
-            ${generateNextStepsHTML()}
+            <section class="next-steps">
+                <h2>Your Next Steps</h2>
+                <p>You have several options from here:</p>
+                
+                <div class="cta-grid">
+                    ${allGreen ? '' : generateWorkbookCardHTML(getWorkbookRecommendation(scores, []))}
+                    
+                    <div class="cta-card">
+                        <h3>📥 Download Your Results</h3>
+                        <p>Get a detailed PDF of your results including strategies and resources for next steps.</p>
+                        <button class="btn btn-primary" data-action="download-pdf">Download PDF Report</button>
+                    </div>
+                    
+                    <div class="cta-card highlight">
+                        <h3>📞 Book a Free Results Review</h3>
+                        <p>Let's discuss your results together. ${allGreen ? 'Explore your direction and create your action plan.' : 'Understand your amber areas and identify your path forward.'}</p>
+                        <p><strong>No pressure, no commitment - just clarity.</strong></p>
+                        <p class="spots">I have 6 spots available each week for these conversations.</p>
+                        <button class="btn btn-primary" data-action="book-free-call">Schedule Your Free 30-Minute Call</button>
+                    </div>
+                    
+                    <div class="cta-card">
+                        <h3>🎯 Free Pilot Mentoring Session</h3>
+                        <p>One 90-minute focused session as part of our pilot programme. ${allGreen ? 'Create your transition action plan.' : 'Strengthen your amber areas and create momentum.'}</p>
+                        <p style="color: #27ae60; font-weight: 600; font-size: 1.1em; margin: 10px 0;">Free for Pilot Participants</p>
+                        <button class="btn btn-secondary" data-action="book-mentoring">Book Free Pilot Session</button>
+                    </div>
+                    
+                    <div class="cta-card">
+                        <h3>🎯 Full Coaching Programme</h3>
+                        <p>${allGreen ? 'Create and execute your transition strategy.' : 'Strengthen your capacity and navigate your transition.'} 5-10 sessions over 2-5 months with workbooks and exercises.</p>
+                        <p class="price">From £997</p>
+                        <button class="btn btn-secondary" data-action="view-packages">Learn About Coaching Packages</button>
+                    </div>
+                    
+                    <div class="cta-card">
+                        <h3>📧 Stay Connected</h3>
+                        <p>Not ready to book anything yet? That's completely fine. I'll send you an email in the next hour with your results PDF and more resources.</p>
+                        <p class="reassurance">Take your time. This is your journey.</p>
+                    </div>
+                </div>
+            </section>
             
             ${generateQuestionsHTML()}
         </div>
