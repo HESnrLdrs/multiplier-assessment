@@ -597,7 +597,7 @@ async function generateAndDownloadReport(scores, reds) {
         return;
     }
 
-    const { Document, Paragraph, TextRun, AlignmentType, HeadingLevel, Table, TableCell, TableRow, WidthType, Packer } = docx;
+    const { Document, Paragraph, TextRun, AlignmentType, HeadingLevel, Table, TableCell, TableRow, WidthType, Packer, BorderStyle, ShadingType, convertInchesToTwip } = docx;
     
     // Get user info
     const userName = urlParams.get('name') || 'Assessment Participant';
@@ -624,72 +624,181 @@ async function generateAndDownloadReport(scores, reds) {
         return '● Red';
     };
     
+    // Helper to create info box
+    const createInfoBox = (name, email, date) => {
+        return new Table({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            borders: {
+                top: { style: BorderStyle.SINGLE, size: 1, color: "1F4788" },
+                bottom: { style: BorderStyle.SINGLE, size: 1, color: "1F4788" },
+                left: { style: BorderStyle.SINGLE, size: 1, color: "1F4788" },
+                right: { style: BorderStyle.SINGLE, size: 1, color: "1F4788" }
+            },
+            rows: [
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            children: [
+                                new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "Participant", bold: true, size: 20 })] }),
+                                new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 120 }, children: [new TextRun({ text: name, size: 28, bold: true, color: "1F4788" })] }),
+                                new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 80, after: 80 }, children: [new TextRun({ text: email, size: 20 })] }),
+                                new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: `Assessment Date: ${date}`, size: 20, italics: true })] })
+                            ],
+                            shading: { fill: "F0F4F8", type: ShadingType.CLEAR }
+                        })
+                    ]
+                })
+            ]
+        });
+    };
+    
+    // Helper to create dimension box
+    const createDimensionBox = (title, description, color) => {
+        return new Table({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            margins: { top: 120, bottom: 120 },
+            borders: {
+                left: { style: BorderStyle.SINGLE, size: 6, color: color }
+            },
+            rows: [
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            children: [
+                                new Paragraph({ children: [new TextRun({ text: title, bold: true, size: 24, color: color })] }),
+                                new Paragraph({ spacing: { before: 80 }, children: [new TextRun({ text: description, size: 22 })] })
+                            ],
+                            shading: { fill: "F8F9FA", type: ShadingType.CLEAR },
+                            margins: { top: 200, bottom: 200, left: 200, right: 200 }
+                        })
+                    ]
+                })
+            ]
+        });
+    };
+    
     // Create document
     const doc = new Document({
         sections: [{
             properties: {},
             children: [
+                // Cover section
                 new Paragraph({
                     alignment: AlignmentType.CENTER,
                     spacing: { after: 400 },
-                    children: [new TextRun({ text: "NAVIGATE TRANSITION", bold: true, size: 40, color: "1F4788" })]
+                    children: [new TextRun({ text: "NAVIGATE TRANSITION", bold: true, size: 48, color: "1F4788" })]
                 }),
                 new Paragraph({
                     alignment: AlignmentType.CENTER,
-                    spacing: { after: 600 },
-                    children: [new TextRun({ text: "M×L×I Assessment Report", size: 32, color: "2E5C8A" })]
+                    spacing: { after: 800 },
+                    children: [new TextRun({ text: "M×L×I Assessment Report", size: 36, color: "2E5C8A" })]
+                }),
+                
+                // Info box
+                createInfoBox(userName, userEmail, assessmentDate),
+                
+                new Paragraph({ spacing: { before: 600 } }),
+                
+                // Prepared by
+                new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    spacing: { before: 800, after: 200 },
+                    children: [new TextRun({ text: "Prepared by", size: 22, color: "666666", italics: true })]
                 }),
                 new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    spacing: { after: 1200 },
+                    children: [new TextRun({ text: "Paul Thomas Coaching Ltd", size: 24, color: "1F4788", bold: true })]
+                }),
+                
+                // Page break to results
+                new Paragraph({ 
+                    pageBreakBefore: true,
                     heading: HeadingLevel.HEADING_1,
-                    children: [new TextRun("Participant Information")]
+                    children: [new TextRun("Your Results Summary")],
+                    spacing: { after: 400 }
                 }),
-                new Paragraph({
-                    spacing: { after: 120 },
-                    children: [new TextRun({ text: "Name: ", bold: true }), new TextRun(userName)]
-                }),
-                new Paragraph({
-                    spacing: { after: 120 },
-                    children: [new TextRun({ text: "Assessment Date: ", bold: true }), new TextRun(assessmentDate)]
-                }),
-                new Paragraph({
-                    spacing: { after: 400 },
-                    children: [new TextRun({ text: "Email: ", bold: true }), new TextRun(userEmail || 'Not provided')]
-                }),
-                new Paragraph({
-                    heading: HeadingLevel.HEADING_1,
-                    children: [new TextRun("Your Results Summary")]
-                }),
-                new Paragraph({
-                    spacing: { after: 240 },
-                    children: [
-                        new TextRun({ text: "Capacity Score: ", bold: true }),
-                        new TextRun({ text: scores.capacityScore.toString(), bold: true, size: 32, color: "667eea" }),
-                        new TextRun("  "),
-                        new TextRun({ text: `(M×L×I = ${scores.motivation.toFixed(1)} × ${scores.learning.toFixed(1)} × ${scores.identity.toFixed(1)})`, size: 20 })
+                
+                // Capacity Score Box
+                new Table({
+                    width: { size: 100, type: WidthType.PERCENTAGE },
+                    borders: {
+                        top: { style: BorderStyle.SINGLE, size: 2, color: "667eea" },
+                        bottom: { style: BorderStyle.SINGLE, size: 2, color: "667eea" },
+                        left: { style: BorderStyle.SINGLE, size: 2, color: "667eea" },
+                        right: { style: BorderStyle.SINGLE, size: 2, color: "667eea" }
+                    },
+                    rows: [
+                        new TableRow({
+                            children: [
+                                new TableCell({
+                                    children: [
+                                        new Paragraph({ 
+                                            alignment: AlignmentType.CENTER,
+                                            spacing: { before: 200, after: 100 },
+                                            children: [new TextRun({ text: "Your Capacity Score", bold: true, size: 28, color: "FFFFFF" })] 
+                                        }),
+                                        new Paragraph({ 
+                                            alignment: AlignmentType.CENTER,
+                                            spacing: { before: 200, after: 200 },
+                                            children: [new TextRun({ text: scores.capacityScore.toString(), bold: true, size: 72, color: "FFFFFF" })] 
+                                        }),
+                                        new Paragraph({ 
+                                            alignment: AlignmentType.CENTER,
+                                            spacing: { after: 200 },
+                                            children: [new TextRun({ text: `M×L×I = ${scores.motivation.toFixed(1)} × ${scores.learning.toFixed(1)} × ${scores.identity.toFixed(1)}`, size: 24, color: "FFFFFF" })] 
+                                        })
+                                    ],
+                                    shading: { fill: "667eea", type: ShadingType.CLEAR }
+                                })
+                            ]
+                        })
                     ]
                 }),
+                
                 new Paragraph({
-                    spacing: { after: 400 },
-                    children: [new TextRun({ text: "Primary Constraint: ", bold: true }), new TextRun(constraintText)]
+                    spacing: { before: 400, after: 400 },
+                    children: [
+                        new TextRun({ text: "Primary Constraint: ", bold: true, size: 24 }),
+                        new TextRun({ text: constraintText, size: 24, color: "1F4788" })
+                    ]
                 }),
+                
+                // Detailed Scores heading
                 new Paragraph({
                     heading: HeadingLevel.HEADING_2,
-                    children: [new TextRun("Detailed Scores")]
+                    spacing: { before: 600, after: 300 },
+                    children: [new TextRun("Detailed Dimensional Scores")]
                 }),
+                
+                // Scores Table with better styling
                 new Table({
                     width: { size: 100, type: WidthType.PERCENTAGE },
                     rows: [
                         new TableRow({
+                            tableHeader: true,
                             children: [
-                                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Dimension", bold: true })] })] }),
-                                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Score", bold: true })] })] }),
-                                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Status", bold: true })] })] }),
-                                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Assessment", bold: true })] })] })
+                                new TableCell({ 
+                                    children: [new Paragraph({ children: [new TextRun({ text: "Dimension", bold: true, color: "FFFFFF" })] })],
+                                    shading: { fill: "1F4788", type: ShadingType.CLEAR }
+                                }),
+                                new TableCell({ 
+                                    children: [new Paragraph({ children: [new TextRun({ text: "Score", bold: true, color: "FFFFFF" })] })],
+                                    shading: { fill: "1F4788", type: ShadingType.CLEAR }
+                                }),
+                                new TableCell({ 
+                                    children: [new Paragraph({ children: [new TextRun({ text: "Status", bold: true, color: "FFFFFF" })] })],
+                                    shading: { fill: "1F4788", type: ShadingType.CLEAR }
+                                }),
+                                new TableCell({ 
+                                    children: [new Paragraph({ children: [new TextRun({ text: "Assessment", bold: true, color: "FFFFFF" })] })],
+                                    shading: { fill: "1F4788", type: ShadingType.CLEAR }
+                                })
                             ]
                         }),
                         new TableRow({
                             children: [
-                                new TableCell({ children: [new Paragraph("Motivation")] }),
+                                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Motivation", bold: true })] })] }),
                                 new TableCell({ children: [new Paragraph(`${scores.motivation.toFixed(1)}/10`)] }),
                                 new TableCell({ children: [new Paragraph(getTrafficLight(scores.motivation))] }),
                                 new TableCell({ children: [new Paragraph(scores.motivation >= 7 ? "Strong" : scores.motivation >= 5 ? "Workable" : "Constraint")] })
@@ -697,7 +806,7 @@ async function generateAndDownloadReport(scores, reds) {
                         }),
                         new TableRow({
                             children: [
-                                new TableCell({ children: [new Paragraph("Learning")] }),
+                                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Learning", bold: true })] })] }),
                                 new TableCell({ children: [new Paragraph(`${scores.learning.toFixed(1)}/10`)] }),
                                 new TableCell({ children: [new Paragraph(getTrafficLight(scores.learning))] }),
                                 new TableCell({ children: [new Paragraph(scores.learning >= 7 ? "Strong" : scores.learning >= 5 ? "Workable" : "Constraint")] })
@@ -705,7 +814,7 @@ async function generateAndDownloadReport(scores, reds) {
                         }),
                         new TableRow({
                             children: [
-                                new TableCell({ children: [new Paragraph("Identity")] }),
+                                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Identity", bold: true })] })] }),
                                 new TableCell({ children: [new Paragraph(`${scores.identity.toFixed(1)}/10`)] }),
                                 new TableCell({ children: [new Paragraph(getTrafficLight(scores.identity))] }),
                                 new TableCell({ children: [new Paragraph(scores.identity >= 7 ? "Strong" : scores.identity >= 5 ? "Workable" : "Constraint")] })
@@ -713,59 +822,114 @@ async function generateAndDownloadReport(scores, reds) {
                         })
                     ]
                 }),
+                
+                // Framework section
                 new Paragraph({
-                    spacing: { before: 600 },
+                    spacing: { before: 800 },
                     heading: HeadingLevel.HEADING_1,
                     children: [new TextRun("Understanding the M×L×I Framework")]
                 }),
+                
                 new Paragraph({
-                    spacing: { after: 240 },
+                    spacing: { before: 300, after: 400 },
                     children: [new TextRun("The M×L×I assessment measures three dimensions that determine your readiness for career transition. These dimensions work together multiplicatively - meaning that weakness in any one area constrains your overall capacity.")]
                 }),
+                
+                createDimensionBox(
+                    "Motivation (M)",
+                    "Your drive and commitment to making the transition happen",
+                    "1F4788"
+                ),
+                
+                createDimensionBox(
+                    "Learning (L)",
+                    "Your readiness and capability to acquire new skills and adapt to new roles",
+                    "2E5C8A"
+                ),
+                
+                createDimensionBox(
+                    "Identity (I)",
+                    "Your clarity about who you are professionally and who you're becoming",
+                    "4A7BA7"
+                ),
+                
+                // Multiplicative relationship
                 new Paragraph({
-                    spacing: { after: 120 },
-                    children: [new TextRun({ text: "Motivation (M): ", bold: true }), new TextRun("Your drive and commitment to making the transition happen")]
+                    spacing: { before: 600, after: 300 },
+                    children: [new TextRun({ text: "The Multiplicative Relationship", bold: true, size: 26, color: "1F4788" })]
                 }),
+                
                 new Paragraph({
-                    spacing: { after: 120 },
-                    children: [new TextRun({ text: "Learning (L): ", bold: true }), new TextRun("Your readiness and capability to acquire new skills and adapt to new roles")]
+                    spacing: { after: 600 },
+                    children: [new TextRun("Your overall transition capacity is calculated as M×L×I. Because these multiply rather than add, a low score in any dimension significantly constrains your overall capacity. For example, even if two dimensions are at 8/10, a third at 2/10 gives you a capacity score of only 128 - well below your potential.")]
                 }),
-                new Paragraph({
-                    spacing: { after: 400 },
-                    children: [new TextRun({ text: "Identity (I): ", bold: true }), new TextRun("Your clarity about who you are professionally and who you're becoming")]
-                }),
+                
+                // Next steps
                 new Paragraph({
                     heading: HeadingLevel.HEADING_1,
+                    spacing: { before: 600 },
                     children: [new TextRun("Your Recommended Next Steps")]
                 }),
+                
                 new Paragraph({
-                    spacing: { after: 240 },
-                    children: [new TextRun({ text: recommendation.message })]
+                    spacing: { before: 300, after: 400 },
+                    children: [new TextRun({ text: recommendation.message, size: 24 })]
                 }),
-                new Paragraph({
-                    spacing: { after: 120 },
-                    children: [
-                        new TextRun({ text: "1. ", bold: true }),
-                        new TextRun(reds.length === 3 ? "Book a results review call to create your support plan" : 
-                                   reds.length >= 1 ? `Work through your recommended ${recommendation.primary ? recommendation.primary.replace('-', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : ''} Workbook` :
-                                   "Book a strategic coaching call to discuss direction and deployment of your capacity")
+                
+                new Table({
+                    width: { size: 100, type: WidthType.PERCENTAGE },
+                    borders: {
+                        left: { style: BorderStyle.SINGLE, size: 6, color: "667eea" }
+                    },
+                    rows: [
+                        new TableRow({
+                            children: [
+                                new TableCell({
+                                    children: [
+                                        new Paragraph({ 
+                                            spacing: { after: 200 },
+                                            children: [
+                                                new TextRun({ text: "1. ", bold: true, size: 24 }),
+                                                new TextRun({ 
+                                                    text: reds.length === 3 ? "Book a results review call to create your support plan" : 
+                                                          reds.length >= 1 ? `Work through your recommended ${recommendation.primary ? recommendation.primary.replace('-', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : ''} Workbook` :
+                                                          "Book a strategic coaching call to discuss direction and deployment of your capacity",
+                                                    size: 24
+                                                })
+                                            ] 
+                                        }),
+                                        new Paragraph({ 
+                                            spacing: { after: 200 },
+                                            children: [
+                                                new TextRun({ text: "2. ", bold: true, size: 24 }),
+                                                new TextRun({ text: "Complete the micro-action from your results page", size: 24 })
+                                            ] 
+                                        }),
+                                        new Paragraph({ 
+                                            children: [
+                                                new TextRun({ text: "3. ", bold: true, size: 24 }),
+                                                new TextRun({ text: "Book a free 30-minute results review call to discuss your path forward", size: 24 })
+                                            ] 
+                                        })
+                                    ],
+                                    shading: { fill: "F8F9FA", type: ShadingType.CLEAR },
+                                    margins: { top: 200, bottom: 200, left: 200, right: 200 }
+                                })
+                            ]
+                        })
                     ]
                 }),
-                new Paragraph({
-                    spacing: { after: 120 },
-                    children: [new TextRun({ text: "2. ", bold: true }), new TextRun("Complete the micro-action from your results page")]
-                }),
-                new Paragraph({
-                    spacing: { after: 400 },
-                    children: [new TextRun({ text: "3. ", bold: true }), new TextRun("Book a free 30-minute results review call to discuss your path forward")]
-                }),
+                
+                // Contact section
                 new Paragraph({
                     heading: HeadingLevel.HEADING_2,
+                    spacing: { before: 800, after: 300 },
                     children: [new TextRun("Contact Information")]
                 }),
+                
                 new Paragraph({
                     spacing: { after: 120 },
-                    children: [new TextRun("Paul Thomas Coaching Ltd")]
+                    children: [new TextRun({ text: "Paul Thomas Coaching Ltd", bold: true, size: 24 })]
                 }),
                 new Paragraph({
                     spacing: { after: 120 },
@@ -776,12 +940,13 @@ async function generateAndDownloadReport(scores, reds) {
                     children: [new TextRun("Phone: +44 7368 621415")]
                 }),
                 new Paragraph({
-                    spacing: { after: 240 },
+                    spacing: { after: 400 },
                     children: [new TextRun("Website: navigatetransition.co.uk")]
                 }),
+                
                 new Paragraph({
                     alignment: AlignmentType.CENTER,
-                    spacing: { before: 400 },
+                    spacing: { before: 600 },
                     children: [new TextRun({ text: "© 2025 Paul Thomas Coaching Ltd. All rights reserved.", size: 20, color: "666666", italics: true })]
                 })
             ]
