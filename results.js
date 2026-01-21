@@ -243,9 +243,9 @@ function generateNextStepsHTML_WithWorkbooks(scores, reds) {
                 ${generateWorkbookCardHTML(recommendation)}
                 
                 <div class="cta-card">
-                    <h3>📥 Download Your Results</h3>
-                    <p>Get a detailed PDF of your results including all your scores and what your constraint means.</p>
-                    <button class="btn btn-primary" data-action="download-pdf">Download PDF Report</button>
+                    <h3>📥 Download Your Comprehensive Report</h3>
+                    <p>Get your professional 2-page assessment report with detailed analysis and personalized action plan (Word document).</p>
+                    <button class="btn btn-primary" data-action="download-pdf">Download Report</button>
                 </div>
                 
                 <div class="cta-card highlight">
@@ -587,15 +587,227 @@ function generateQuestionsHTML() {
 }
 
 // ============================================
+// 2-PAGE REPORT GENERATION
+// ============================================
+
+async function generateAndDownloadReport(scores, reds) {
+    // Check if docx library is available
+    if (typeof docx === 'undefined') {
+        alert('Report library is loading... Please wait a moment and try again.');
+        return;
+    }
+
+    const { Document, Paragraph, TextRun, AlignmentType, HeadingLevel, Table, TableCell, TableRow, WidthType, Packer } = docx;
+    
+    // Get user info
+    const userName = urlParams.get('name') || 'Assessment Participant';
+    const userEmail = urlParams.get('email') || '';
+    const assessmentDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    
+    // Determine constraint text
+    let constraintText = '';
+    if (reds.length === 0) {
+        constraintText = 'No significant constraints - strong capacity across all dimensions';
+    } else if (reds.length === 1) {
+        constraintText = reds[0].charAt(0).toUpperCase() + reds[0].slice(1) + ' is your primary constraint';
+    } else if (reds.length === 2) {
+        constraintText = reds.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join(' and ') + ' are your primary constraints';
+    } else {
+        constraintText = 'Multiple constraints - immediate support recommended';
+    }
+    
+    const recommendation = getWorkbookRecommendation(scores, reds);
+    
+    const getTrafficLight = (score) => {
+        if (score >= 7.0) return '● Green';
+        if (score >= 5.0) return '● Amber';
+        return '● Red';
+    };
+    
+    // Create document
+    const doc = new Document({
+        sections: [{
+            properties: {},
+            children: [
+                new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    spacing: { after: 400 },
+                    children: [new TextRun({ text: "NAVIGATE TRANSITION", bold: true, size: 40, color: "1F4788" })]
+                }),
+                new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    spacing: { after: 600 },
+                    children: [new TextRun({ text: "M×L×I Assessment Report", size: 32, color: "2E5C8A" })]
+                }),
+                new Paragraph({
+                    heading: HeadingLevel.HEADING_1,
+                    children: [new TextRun("Participant Information")]
+                }),
+                new Paragraph({
+                    spacing: { after: 120 },
+                    children: [new TextRun({ text: "Name: ", bold: true }), new TextRun(userName)]
+                }),
+                new Paragraph({
+                    spacing: { after: 120 },
+                    children: [new TextRun({ text: "Assessment Date: ", bold: true }), new TextRun(assessmentDate)]
+                }),
+                new Paragraph({
+                    spacing: { after: 400 },
+                    children: [new TextRun({ text: "Email: ", bold: true }), new TextRun(userEmail || 'Not provided')]
+                }),
+                new Paragraph({
+                    heading: HeadingLevel.HEADING_1,
+                    children: [new TextRun("Your Results Summary")]
+                }),
+                new Paragraph({
+                    spacing: { after: 240 },
+                    children: [
+                        new TextRun({ text: "Capacity Score: ", bold: true }),
+                        new TextRun({ text: scores.capacityScore.toString(), bold: true, size: 32, color: "667eea" }),
+                        new TextRun("  "),
+                        new TextRun({ text: `(M×L×I = ${scores.motivation.toFixed(1)} × ${scores.learning.toFixed(1)} × ${scores.identity.toFixed(1)})`, size: 20 })
+                    ]
+                }),
+                new Paragraph({
+                    spacing: { after: 400 },
+                    children: [new TextRun({ text: "Primary Constraint: ", bold: true }), new TextRun(constraintText)]
+                }),
+                new Paragraph({
+                    heading: HeadingLevel.HEADING_2,
+                    children: [new TextRun("Detailed Scores")]
+                }),
+                new Table({
+                    width: { size: 100, type: WidthType.PERCENTAGE },
+                    rows: [
+                        new TableRow({
+                            children: [
+                                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Dimension", bold: true })] })] }),
+                                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Score", bold: true })] })] }),
+                                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Status", bold: true })] })] }),
+                                new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Assessment", bold: true })] })] })
+                            ]
+                        }),
+                        new TableRow({
+                            children: [
+                                new TableCell({ children: [new Paragraph("Motivation")] }),
+                                new TableCell({ children: [new Paragraph(`${scores.motivation.toFixed(1)}/10`)] }),
+                                new TableCell({ children: [new Paragraph(getTrafficLight(scores.motivation))] }),
+                                new TableCell({ children: [new Paragraph(scores.motivation >= 7 ? "Strong" : scores.motivation >= 5 ? "Workable" : "Constraint")] })
+                            ]
+                        }),
+                        new TableRow({
+                            children: [
+                                new TableCell({ children: [new Paragraph("Learning")] }),
+                                new TableCell({ children: [new Paragraph(`${scores.learning.toFixed(1)}/10`)] }),
+                                new TableCell({ children: [new Paragraph(getTrafficLight(scores.learning))] }),
+                                new TableCell({ children: [new Paragraph(scores.learning >= 7 ? "Strong" : scores.learning >= 5 ? "Workable" : "Constraint")] })
+                            ]
+                        }),
+                        new TableRow({
+                            children: [
+                                new TableCell({ children: [new Paragraph("Identity")] }),
+                                new TableCell({ children: [new Paragraph(`${scores.identity.toFixed(1)}/10`)] }),
+                                new TableCell({ children: [new Paragraph(getTrafficLight(scores.identity))] }),
+                                new TableCell({ children: [new Paragraph(scores.identity >= 7 ? "Strong" : scores.identity >= 5 ? "Workable" : "Constraint")] })
+                            ]
+                        })
+                    ]
+                }),
+                new Paragraph({
+                    spacing: { before: 600 },
+                    heading: HeadingLevel.HEADING_1,
+                    children: [new TextRun("Understanding the M×L×I Framework")]
+                }),
+                new Paragraph({
+                    spacing: { after: 240 },
+                    children: [new TextRun("The M×L×I assessment measures three dimensions that determine your readiness for career transition. These dimensions work together multiplicatively - meaning that weakness in any one area constrains your overall capacity.")]
+                }),
+                new Paragraph({
+                    spacing: { after: 120 },
+                    children: [new TextRun({ text: "Motivation (M): ", bold: true }), new TextRun("Your drive and commitment to making the transition happen")]
+                }),
+                new Paragraph({
+                    spacing: { after: 120 },
+                    children: [new TextRun({ text: "Learning (L): ", bold: true }), new TextRun("Your readiness and capability to acquire new skills and adapt to new roles")]
+                }),
+                new Paragraph({
+                    spacing: { after: 400 },
+                    children: [new TextRun({ text: "Identity (I): ", bold: true }), new TextRun("Your clarity about who you are professionally and who you're becoming")]
+                }),
+                new Paragraph({
+                    heading: HeadingLevel.HEADING_1,
+                    children: [new TextRun("Your Recommended Next Steps")]
+                }),
+                new Paragraph({
+                    spacing: { after: 240 },
+                    children: [new TextRun({ text: recommendation.message })]
+                }),
+                new Paragraph({
+                    spacing: { after: 120 },
+                    children: [
+                        new TextRun({ text: "1. ", bold: true }),
+                        new TextRun(reds.length === 3 ? "Book a results review call to create your support plan" : 
+                                   reds.length >= 1 ? `Work through your recommended ${recommendation.primary ? recommendation.primary.replace('-', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : ''} Workbook` :
+                                   "Book a strategic coaching call to discuss direction and deployment of your capacity")
+                    ]
+                }),
+                new Paragraph({
+                    spacing: { after: 120 },
+                    children: [new TextRun({ text: "2. ", bold: true }), new TextRun("Complete the micro-action from your results page")]
+                }),
+                new Paragraph({
+                    spacing: { after: 400 },
+                    children: [new TextRun({ text: "3. ", bold: true }), new TextRun("Book a free 30-minute results review call to discuss your path forward")]
+                }),
+                new Paragraph({
+                    heading: HeadingLevel.HEADING_2,
+                    children: [new TextRun("Contact Information")]
+                }),
+                new Paragraph({
+                    spacing: { after: 120 },
+                    children: [new TextRun("Paul Thomas Coaching Ltd")]
+                }),
+                new Paragraph({
+                    spacing: { after: 120 },
+                    children: [new TextRun("Email: paul@paulthomascoaching.co.uk")]
+                }),
+                new Paragraph({
+                    spacing: { after: 120 },
+                    children: [new TextRun("Phone: +44 7368 621415")]
+                }),
+                new Paragraph({
+                    spacing: { after: 240 },
+                    children: [new TextRun("Website: navigatetransition.co.uk")]
+                }),
+                new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    spacing: { before: 400 },
+                    children: [new TextRun({ text: "© 2025 Paul Thomas Coaching Ltd. All rights reserved.", size: 20, color: "666666", italics: true })]
+                })
+            ]
+        }]
+    });
+    
+    // Generate and download
+    const blob = await Packer.toBlob(doc);
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${userName.replace(/\s+/g, '_')}_Navigate_Transition_Report.docx`;
+    link.click();
+    window.URL.revokeObjectURL(url);
+}
+
+// ============================================
 // CTA BUTTON HANDLERS
 // ============================================
 
 function setupCTAHandlers(userId) {
-    // Download PDF button
+    // Download Report button (2-page Word document)
     const pdfButtons = document.querySelectorAll('[data-action="download-pdf"]');
     pdfButtons.forEach(btn => {
         btn.addEventListener('click', function() {
-            alert('PDF download coming soon! Check your email for your results.');
+            generateAndDownloadReport(scores, reds);
         });
     });
     
