@@ -135,12 +135,12 @@ function getWorkbookRecommendation(scores, reds) {
         };
     }
     
-    // All amber or mixed (no reds) - recommend Momentum
+    // All green/amber (no reds) - recommend coaching for direction
     return {
-        type: 'momentum',
-        primary: 'momentum',
+        type: 'all-green',
+        primary: null,
         secondary: null,
-        message: 'You have workable capacity in all three dimensions. The Momentum Workbook will help you strengthen all three and build forward progress.'
+        message: 'You have strong capacity across all three dimensions. Your challenge is not building capacity - it is deploying what you already have effectively. You need direction and strategic guidance, not workbooks.'
     };
 }
 
@@ -194,6 +194,18 @@ function generateWorkbookCardHTML(recommendation) {
                 <p><strong>Momentum Workbook</strong></p>
                 <p>${recommendation.message}</p>
                 <button class="btn btn-primary" data-action="view-workbook" data-workbook="momentum">Learn More About Momentum Workbook</button>
+            </div>
+        `;
+    }
+    
+    // All green - recommend coaching instead of workbook
+    if (recommendation.type === 'all-green') {
+        return `
+            <div class="cta-card highlight" style="border: 3px solid #27ae60;">
+                <h3>🎯 Your Recommended Next Step</h3>
+                <p><strong>Strategic Coaching Call</strong></p>
+                <p>${recommendation.message}</p>
+                <button class="btn btn-primary" data-action="book-free-call">Book Your Free Results Review Call</button>
             </div>
         `;
     }
@@ -366,10 +378,10 @@ function generateScoresHTML(scores) {
             </div>
         </div>
         
-        <div class="capacity-score">
-            <h3>Your Capacity Score</h3>
-            <div class="capacity-number">${scores.capacityScore}</div>
-            <p class="capacity-explanation">M × L × I = ${scores.motivation.toFixed(1)} × ${scores.learning.toFixed(1)} × ${scores.identity.toFixed(1)} = ${scores.capacityScore}</p>
+        <div class="capacity-score-box" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 15px; text-align: center; margin: 30px 0; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);">
+            <h3 style="margin: 0 0 15px 0; font-size: 1.2em; font-weight: 600;">Your Capacity Score</h3>
+            <div style="font-size: 4em; font-weight: bold; margin: 20px 0; line-height: 1;">${scores.capacityScore}</div>
+            <p style="margin: 10px 0 0 0; font-size: 1.1em; opacity: 0.95;">M × L × I = ${scores.motivation.toFixed(1)} × ${scores.learning.toFixed(1)} × ${scores.identity.toFixed(1)} = ${scores.capacityScore}</p>
         </div>
     `;
 }
