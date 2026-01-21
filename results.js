@@ -548,7 +548,7 @@ function generateNextStepsHTML_WithWorkbooks(scores, reds) {
             </div>
         </section>
     `;
-}{
+}
     const redsText = reds.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join(', ');
     
     return `
