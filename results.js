@@ -593,6 +593,31 @@ function generateQuestionsHTML() {
                 <p>Either works! The workbooks are designed to be self-guided. Coaching accelerates the process and provides accountability, but the workbooks alone can be very effective if you're self-directed.</p>
             </div>
         </section>
+        
+        <section class="resources" style="margin: 60px 0; padding: 40px; background: #f8f9fa; border-radius: 12px;">
+            <h2 style="text-align: center; margin-bottom: 30px;">Learn More About Your Results</h2>
+            <p style="text-align: center; margin-bottom: 40px; color: #666;">Explore these resources to understand the M×L×I framework and your assessment better:</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <a href="faq.html" target="_blank" style="display: block; padding: 30px; background: white; border-radius: 10px; text-decoration: none; color: #2c3e50; border: 2px solid #e0e0e0; transition: all 0.3s ease; text-align: center;">
+                    <div style="font-size: 3em; margin-bottom: 15px;">❓</div>
+                    <h3 style="margin: 0 0 10px 0; color: #667eea;">Frequently Asked Questions</h3>
+                    <p style="margin: 0; color: #666; font-size: 0.95em;">Common questions about the assessment and what your results mean</p>
+                </a>
+                
+                <a href="visual-guide.html" target="_blank" style="display: block; padding: 30px; background: white; border-radius: 10px; text-decoration: none; color: #2c3e50; border: 2px solid #e0e0e0; transition: all 0.3s ease; text-align: center;">
+                    <div style="font-size: 3em; margin-bottom: 15px;">📊</div>
+                    <h3 style="margin: 0 0 10px 0; color: #667eea;">Visual Explanation</h3>
+                    <p style="margin: 0; color: #666; font-size: 0.95em;">See how the M×L×I formula works with real examples and scenarios</p>
+                </a>
+                
+                <a href="how-scoring-works.html" target="_blank" style="display: block; padding: 30px; background: white; border-radius: 10px; text-decoration: none; color: #2c3e50; border: 2px solid #e0e0e0; transition: all 0.3s ease; text-align: center;">
+                    <div style="font-size: 3em; margin-bottom: 15px;">🔢</div>
+                    <h3 style="margin: 0 0 10px 0; color: #667eea;">How Scoring Works</h3>
+                    <p style="margin: 0; color: #666; font-size: 0.95em;">Understand the methodology and why multiplication reveals constraints</p>
+                </a>
+            </div>
+        </section>
     `;
 }
 
