@@ -570,30 +570,6 @@ function generateAllGreenContent(scores) {
 
 function generateQuestionsHTML() {
     return `
-        <section class="faq">
-            <h2>Common Questions</h2>
-            
-            <div class="faq-item">
-                <h3>Why am I stuck when others seem fine?</h3>
-                <p>You're not more broken than others. Different transitions affect people differently based on their specific situation, background, and context. Your constraint is simply where the system is blocked right now.</p>
-            </div>
-            
-            <div class="faq-item">
-                <h3>How long will this take to fix?</h3>
-                <p>That depends on your specific situation. Some people see significant improvement in 2-3 sessions. Others need more sustained support over 2-3 months. The key is starting with the right constraint.</p>
-            </div>
-            
-            <div class="faq-item">
-                <h3>What if I don't have time for this?</h3>
-                <p>That's exactly the point of identifying your constraint. We focus on the one thing that will unlock progress, not trying to fix everything at once. Small, focused actions beat overwhelming comprehensive plans.</p>
-            </div>
-            
-            <div class="faq-item">
-                <h3>Do I need coaching or can I use the workbooks alone?</h3>
-                <p>Either works! The workbooks are designed to be self-guided. Coaching accelerates the process and provides accountability, but the workbooks alone can be very effective if you're self-directed.</p>
-            </div>
-        </section>
-        
         <section class="resources" style="margin: 60px 0; padding: 40px; background: #f8f9fa; border-radius: 12px;">
             <h2 style="text-align: center; margin-bottom: 30px;">Learn More About Your Results</h2>
             <p style="text-align: center; margin-bottom: 40px; color: #666;">Explore these resources to understand the M×L×I framework and your assessment better:</p>
