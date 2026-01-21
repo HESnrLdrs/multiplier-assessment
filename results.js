@@ -162,11 +162,12 @@ function generateWorkbookCardHTML(recommendation) {
     if (recommendation.type === 'dual') {
         return `
             <div class="cta-card highlight" style="border: 3px solid #667eea;">
-                <h3>📚 Your Recommended Resources</h3>
+                <h3>📚 Your Recommended Workbooks</h3>
                 <p>${recommendation.message}</p>
+                <p class="price" style="font-size: 1.2em; color: #667eea; font-weight: bold; margin: 15px 0;">£35 each</p>
                 <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
-                    <button class="btn btn-secondary" data-action="view-workbook" data-workbook="${recommendation.primary}">View ${recommendation.primary.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Workbook</button>
-                    <button class="btn btn-secondary" data-action="view-workbook" data-workbook="${recommendation.secondary}">View ${recommendation.secondary.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Workbook</button>
+                    <button class="btn btn-secondary" data-action="purchase-workbook" data-workbook="${recommendation.primary}">Purchase ${recommendation.primary.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Workbook (£35)</button>
+                    <button class="btn btn-secondary" data-action="purchase-workbook" data-workbook="${recommendation.secondary}">Purchase ${recommendation.secondary.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Workbook (£35)</button>
                 </div>
                 <p style="font-size: 0.9em; margin-top: 10px; color: #666;">We will help you decide which to start with in your results review call.</p>
             </div>
@@ -178,10 +179,11 @@ function generateWorkbookCardHTML(recommendation) {
         const workbookTitle = recommendation.primary.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') + ' Workbook';
         return `
             <div class="cta-card highlight" style="border: 3px solid #667eea;">
-                <h3>📚 Your Recommended Resource</h3>
+                <h3>📚 Your Recommended Workbook</h3>
                 <p><strong>${workbookTitle}</strong></p>
                 <p>${recommendation.message}</p>
-                <button class="btn btn-primary" data-action="view-workbook" data-workbook="${recommendation.primary}">Learn More About ${workbookTitle}</button>
+                <p class="price" style="font-size: 1.4em; color: #667eea; font-weight: bold; margin: 15px 0;">£35</p>
+                <button class="btn btn-primary" data-action="purchase-workbook" data-workbook="${recommendation.primary}">Purchase ${workbookTitle}</button>
             </div>
         `;
     }
@@ -190,10 +192,11 @@ function generateWorkbookCardHTML(recommendation) {
     if (recommendation.type === 'momentum') {
         return `
             <div class="cta-card highlight" style="border: 3px solid #27ae60;">
-                <h3>📚 Your Recommended Resource</h3>
+                <h3>📚 Your Recommended Workbook</h3>
                 <p><strong>Momentum Workbook</strong></p>
                 <p>${recommendation.message}</p>
-                <button class="btn btn-primary" data-action="view-workbook" data-workbook="momentum">Learn More About Momentum Workbook</button>
+                <p class="price" style="font-size: 1.4em; color: #27ae60; font-weight: bold; margin: 15px 0;">£35</p>
+                <button class="btn btn-primary" data-action="purchase-workbook" data-workbook="momentum">Purchase Momentum Workbook</button>
             </div>
         `;
     }
@@ -248,7 +251,7 @@ function generateNextStepsHTML_WithWorkbooks(scores, reds) {
                     <button class="btn btn-primary" data-action="download-pdf">Download Report</button>
                 </div>
                 
-                <div class="cta-card highlight">
+                <div class="cta-card">
                     <h3>📞 Book a Free Results Review</h3>
                     <p>Let's discuss your results together. Understand your constraint, explore what's blocking you, identify your path forward.</p>
                     <p><strong>No pressure, no commitment - just clarity.</strong></p>
@@ -257,17 +260,24 @@ function generateNextStepsHTML_WithWorkbooks(scores, reds) {
                 </div>
                 
                 <div class="cta-card">
-                    <h3>🎯 Free Pilot Mentoring Session</h3>
-                    <p>One 90-minute focused session as part of our pilot programme. Deep dive into your constraint and create your personal action plan.</p>
-                    <p style="color: #27ae60; font-weight: 600; font-size: 1.1em; margin: 10px 0;">Free for Pilot Participants</p>
-                    <button class="btn btn-secondary" data-action="book-mentoring">Book Free Pilot Session</button>
+                    <h3>🎯 Starter Package</h3>
+                    <p>Your recommended workbook plus 2 x 60-minute coaching sessions to work through it together.</p>
+                    <p class="price">£350</p>
+                    <button class="btn btn-secondary" data-action="view-packages">Learn More</button>
                 </div>
                 
                 <div class="cta-card">
-                    <h3>🎯 Full Coaching Programme</h3>
-                    <p>Resolve your constraint completely. 5-10 sessions over 2-5 months with workbooks and exercises.</p>
-                    <p class="price">From £997</p>
-                    <button class="btn btn-secondary" data-action="view-packages">Learn About Coaching Packages</button>
+                    <h3>🎯 Core Programme</h3>
+                    <p>All workbooks you need plus 5 x 60-minute coaching sessions. Resolve your constraint completely.</p>
+                    <p class="price">£500</p>
+                    <button class="btn btn-secondary" data-action="view-packages">Learn More</button>
+                </div>
+                
+                <div class="cta-card">
+                    <h3>🎯 Premium Programme</h3>
+                    <p>1 year of support with 8 x 60-minute sessions. All workbooks included. Navigate your complete transition.</p>
+                    <p class="price">£997</p>
+                    <button class="btn btn-secondary" data-action="view-packages">Learn More</button>
                 </div>
                 
                 <div class="cta-card">
@@ -639,7 +649,7 @@ async function generateAndDownloadReport(scores, reds) {
                 new Paragraph({
                     alignment: AlignmentType.CENTER,
                     spacing: { after: 200 },
-                    children: [new TextRun({ text: "NAVIGATE TRANSITION", bold: true, size: 48, color: "1F4788" })]
+                    children: [new TextRun({ text: "NAVIGATING TRANSITION", bold: true, size: 48, color: "1F4788" })]
                 }),
                 new Paragraph({
                     alignment: AlignmentType.CENTER,
@@ -857,7 +867,7 @@ async function generateAndDownloadReport(scores, reds) {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${userName.replace(/\s+/g, '_')}_Navigate_Transition_Report.docx`;
+    link.download = `${userName.replace(/\s+/g, '_')}_Navigating_Transition_Report.docx`;
     link.click();
     window.URL.revokeObjectURL(url);
 }
@@ -895,25 +905,41 @@ function setupCTAHandlers(userId) {
     const packageButtons = document.querySelectorAll('[data-action="view-packages"]');
     packageButtons.forEach(btn => {
         btn.addEventListener('click', function() {
-            alert('Coaching packages information coming soon! Check your email for details.');
+            alert('NAVIGATING TRANSITION COACHING PACKAGES:\n\n' +
+                  '🎯 STARTER PACKAGE - £350\n' +
+                  'Your recommended workbook + 2 x 60-minute coaching sessions\n\n' +
+                  '🎯 CORE PROGRAMME - £500\n' +
+                  'All workbooks you need + 5 x 60-minute coaching sessions\n' +
+                  'Resolve your constraint completely\n\n' +
+                  '🎯 PREMIUM PROGRAMME - £997\n' +
+                  '1 year of support with 8 x 60-minute sessions\n' +
+                  'All workbooks included\n\n' +
+                  'To discuss which package is right for you, email paul@paulthomascoaching.co.uk or call +44 7368 621415');
         });
     });
     
-    // Workbook buttons
-    const workbookButtons = document.querySelectorAll('[data-action="view-workbook"]');
+    // Workbook purchase buttons
+    const workbookButtons = document.querySelectorAll('[data-action="purchase-workbook"]');
     workbookButtons.forEach(btn => {
         btn.addEventListener('click', function() {
             const workbookType = this.getAttribute('data-workbook');
             
+            let workbookName = '';
             if (workbookType === 'momentum') {
-                alert('Momentum Workbook information coming soon! Check your email for details.');
+                workbookName = 'Momentum Workbook';
             } else if (workbookType === 'motivation-red') {
-                alert('Motivation Red Workbook - Coming soon! This workbook provides exercises to rebuild your "why" and move from stuck to in motion. Check your email for more information.');
+                workbookName = 'Motivation Red Workbook';
             } else if (workbookType === 'learning-red') {
-                alert('Learning Red Workbook - Coming soon! This workbook provides structured pathways to make your transition manageable. Check your email for more information.');
+                workbookName = 'Learning Red Workbook';
             } else if (workbookType === 'identity-red') {
-                alert('Identity Red Workbook - Coming soon! This workbook helps you understand who you are beyond your role. Check your email for more information.');
+                workbookName = 'Identity Red Workbook';
             }
+            
+            // For now, show contact message - will be replaced with PayPal link
+            alert(`To purchase the ${workbookName} (£35), please email paul@paulthomascoaching.co.uk or call +44 7368 621415.\n\nPayPal payment link coming soon!`);
+            
+            // Future: Replace with PayPal payment link
+            // window.open('https://paypal.me/yourlink', '_blank');
         });
     });
 }
