@@ -482,7 +482,73 @@ function generateIdentityRedContent(scores) {
     `;
 }
 
-function generateMultipleRedsContent(reds, scores) {
+function generateMultipleRedsContent(reds, scores) 
+// ============================================
+// SINGLE RED ROUTER FUNCTION
+// ============================================
+
+function generateSingleRedContent(red, scores) {
+    if (red === 'motivation') {
+        return generateMotivationRedContent(scores);
+    } else if (red === 'learning') {
+        return generateLearningRedContent(scores);
+    } else if (red === 'identity') {
+        return generateIdentityRedContent(scores);
+    }
+}
+
+// ============================================
+// NEXT STEPS WITH WORKBOOKS (FOR SINGLE REDS)
+// ============================================
+
+function generateNextStepsHTML_WithWorkbooks(scores, reds) {
+    const recommendation = getWorkbookRecommendation(scores, reds);
+    
+    return `
+        <section class="next-steps">
+            <h2>Your Next Steps</h2>
+            <p>You have several options from here:</p>
+            
+            <div class="cta-grid">
+                ${generateWorkbookCardHTML(recommendation)}
+                
+                <div class="cta-card">
+                    <h3>📥 Download Your Results</h3>
+                    <p>Get a detailed PDF of your results including all your scores and what your constraint means.</p>
+                    <button class="btn btn-primary" data-action="download-pdf">Download PDF Report</button>
+                </div>
+                
+                <div class="cta-card highlight">
+                    <h3>📞 Book a Free Results Review</h3>
+                    <p>Let's discuss your results together. Understand your constraint, explore what's blocking you, identify your path forward.</p>
+                    <p><strong>No pressure, no commitment - just clarity.</strong></p>
+                    <p class="spots">I have 6 spots available each week for these conversations.</p>
+                    <button class="btn btn-primary" data-action="book-free-call">Schedule Your Free 30-Minute Call</button>
+                </div>
+                
+                <div class="cta-card">
+                    <h3>🎯 Free Pilot Mentoring Session</h3>
+                    <p>One 90-minute focused session as part of our pilot programme. Deep dive into your constraint and create your personal action plan.</p>
+                    <p style="color: #27ae60; font-weight: 600; font-size: 1.1em; margin: 10px 0;">Free for Pilot Participants</p>
+                    <button class="btn btn-secondary" data-action="book-mentoring">Book Free Pilot Session</button>
+                </div>
+                
+                <div class="cta-card">
+                    <h3>🎯 Full Coaching Programme</h3>
+                    <p>Resolve your constraint completely. 5-10 sessions over 2-5 months with workbooks and exercises.</p>
+                    <p class="price">From £997</p>
+                    <button class="btn btn-secondary" data-action="view-packages">Learn About Coaching Packages</button>
+                </div>
+                
+                <div class="cta-card">
+                    <h3>📧 Stay Connected</h3>
+                    <p>Not ready to book anything yet? That's completely fine. I'll send you an email in the next hour with your results PDF and more resources.</p>
+                    <p class="reassurance">Take your time. This is your journey.</p>
+                </div>
+            </div>
+        </section>
+    `;
+}{
     const redsText = reds.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join(', ');
     
     return `
