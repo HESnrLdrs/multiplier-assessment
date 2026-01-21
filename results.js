@@ -482,7 +482,7 @@ function generateIdentityRedContent(scores) {
     `;
 }
 
-function generateMultipleRedsContent(reds, scores) 
+function generateMultipleRedsContent(reds, scores) {
 // ============================================
 // SINGLE RED ROUTER FUNCTION
 // ============================================
