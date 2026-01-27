@@ -750,7 +750,7 @@ function generateAllGreenContent(scores) {
     
     if (allGreen) {
         heading = 'Your Results: High Capacity';
-        constraintLabel = '<p class="constraint-label" style="color: #27ae60;">Great news: <strong>High Capacity Across All Dimensions</strong></p>';
+        constraintLabel = '<p style="color: #27ae60 !important; font-size: 1.1em; margin: 20px 0; text-align: center;">Great news: <strong>High Capacity Across All Dimensions</strong></p>';
         whatThisMeansContent = `
             <p>You have high capacity across all three dimensions (Motivation, Learning, and Identity). This is excellent - you have strong foundation for your transition.</p>
             
