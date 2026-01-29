@@ -810,6 +810,21 @@
         let progressChart = null;
         let storedAssessments = [];
 
+        // ============================================
+// QUESTION RANDOMIZATION VARIABLES
+// ============================================
+let currentQuestions = [];
+
+// Shuffle array using Fisher-Yates algorithm
+function shuffleArray(array) {
+    const shuffled = [...array]; // Create a copy
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
 // =============================================================================
 // ORIGINAL PROVEN QUESTIONS - RESTORED FROM OCTOBER 29TH VERSION
 // These questions were working well and have been tested in practice
@@ -1026,15 +1041,17 @@ showView('welcome-view');
             }
         }
         
-       // Assessment Functions
+// Assessment Functions
 function startAssessment() {
+    // Shuffle questions each time assessment starts
+    currentQuestions = shuffleArray(questions);
     renderQuestions();
     showView('assessment-view');
 }
         
         function renderQuestions() {
     const container = document.getElementById('questions-container');
-    container.innerHTML = questions.map((q, index) => {
+    container.innerHTML = currentQuestions.map((q, index) => {
         const options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         
         return `
@@ -1066,7 +1083,7 @@ function startAssessment() {
             let motivationSum = 0, learningSum = 0, identitySum = 0;
             let motivationCount = 0, learningCount = 0, identityCount = 0;
 
-            questions.forEach(q => {
+            currentQuestions.forEach(q => {
                 const value = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value);
                 if (q.dimension === 'motivation') {
                     motivationSum += value;
