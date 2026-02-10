@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Studies - Navigate Transition Programme</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2C5F5F;
+            --primary-light: #3A7979;
+            --accent: #D4A574;
+            --text: #2A2A2A;
+            --text-light: #5A5A5A;
+            --background: #FAFAF8;
+            --white: #FFFFFF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Work Sans', sans-serif;
+            color: var(--text);
+            background: var(--background);
+            line-height: 1.7;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Header */
+        header {
+            padding: 40px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: 'Crimson Pro', serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+        
+        .back-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+        
+        .back-link:hover {
+            color: var(--primary);
+        }
+        
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            padding: 60px 0;
+        }
+        
+        .page-header h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 42px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+        
+        .page-header p {
+            font-size: 18px;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Case Study */
+        .case-study {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 48px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+        
+        .case-study h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 32px;
+            letter-spacing: -0.5px;
+        }
+        
+        .case-study h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 32px 0 16px 0;
+        }
+        
+        .case-study p {
+            font-size: 17px;
+            line-height: 1.7;
+            color: var(--text);
+            margin-bottom: 20px;
+        }
+        
+        .scores {
+            background: var(--background);
+            border-left: 4px solid var(--accent);
+            padding: 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+        
+        .scores p {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .scores p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .constraint-summary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            padding: 24px;
+            border-radius: 8px;
+            margin: 32px 0;
+        }
+        
+        .constraint-summary p {
+            margin-bottom: 8px;
+            color: var(--white);
+        }
+        
+        .constraint-summary p:last-child {
+            margin-bottom: 0;
+            font-style: italic;
+            opacity: 0.9;
+            margin-top: 12px;
+        }
+        
+        .constraint-summary strong {
+            font-weight: 600;
+        }
+        
+        /* Footer CTA */
+        .footer-cta {
+            text-align: center;
+            padding: 80px 0;
+        }
+        
+        .footer-cta h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 24px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--white);
+            padding: 18px 48px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(44, 95, 95, 0.15);
+        }
+        
+        .cta-button:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(44, 95, 95, 0.25);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-light);
+            font-size: 14px;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 32px;
+            }
+            
+            .case-study {
+                padding: 32px 24px;
+            }
+            
+            .case-study h2 {
+                font-size: 28px;
+            }
+            
+            .case-study h3 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">Navigate Transition Programme</a>
+                <a href="index.html" class="back-link">← Back to home</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <div class="container">
+                <h1>Case Studies</h1>
+                <p>Three professionals, three different constraint patterns, one framework that helped each identify what was actually stopping them</p>
+            </div>
+        </section>
+
+        <div class="container">
+            <!-- CASE STUDY 1: NHS ENGLAND SENIOR LEADER -->
+            <article class="case-study">
+                <h2>NHS England Senior Leader</h2>
+                
+                <h3>The Person and the Context</h3>
+                <p>This is a senior leader within NHS England who has been navigating repeated organizational restructures over several years. They hold substantial responsibility, manage complex stakeholder relationships, and carry deep institutional knowledge about how the system actually works.</p>
+                
+                <p>Over a career spanning multiple NHS reorganizations, they've accumulated significant stored corporate knowledge. They understand who makes things happen across organizational boundaries, know the informal networks that get things done, recognize what's been tried before and why it didn't work, can read political signals, know where the real blockers sit. This institutional memory took years to build and represents high-value organizational capital.</p>
+                
+                <p>They're technically capable, well-regarded by colleagues, and genuinely committed to public service. The performance is still there. What's changed is the confidence that sustained effort will produce durable outcomes.</p>
+                
+                <p>When asked directly about what's happening, they put it plainly: "Nothing ever really moves forward in the NHS. It just goes round in political circles, and I've had my fill."</p>
+                
+                <p>That's not burnout in the traditional sense. It's something more specific: motivation erosion caused by systemic instability. When the organizational ground keeps shifting, even capable people start pulling back.</p>
+                
+                <p>When we ran the Navigate Transition assessment, the pattern was immediately clear.</p>
+                
+                <h3>The Assessment Results</h3>
+                <div class="scores">
+                    <p><strong>Motivation (WHY):</strong> 4.4 / 10</p>
+                    <p><strong>Learning (HOW):</strong> 7.2 / 10</p>
+                    <p><strong>Identity (WHO):</strong> 7.2 / 10</p>
+                    <p><strong>Overall Capacity:</strong> M × L × I = 228</p>
+                </div>
+                <p>The pattern shows capacity constrained primarily by motivation.</p>
+                
+                <h3>What's Actually Happening</h3>
+                <p>The high learning score at 7.2 reflects genuine capability. This person knows how NHS England works. They understand the machinery of healthcare reorganization, the dynamics of integrated care systems, the politics of service transformation. They know who to call, how to position proposals, where resistance will come from. That stored corporate knowledge is substantial and real.</p>
+                
+                <p>The high identity score at 7.2 shows continued professional coherence. They haven't lost sight of who they are or what they're trying to contribute. The public service commitment remains intact. The professional identity is solid.</p>
+                
+                <p>But the motivation score at 4.4 tells a different story. Here's what's happened: over repeated restructures, their confidence that sustained effort produces lasting change has eroded. It's not that they've lost the ability to work hard or that they don't care anymore. It's that experience has taught them a specific lesson: in environments of persistent organizational churn, investment doesn't necessarily yield return.</p>
+                
+                <p>This is what we call structural demotivation. It's not personal burnout or loss of professional commitment. It's a rational response to an environment where change initiatives get announced, resources get mobilized, work gets done—and then everything shifts again before the work can produce results. Do that enough times, and even capable, committed people start conserving their energy.</p>
+                
+                <p>The corporate knowledge they've built up is still there. But it's sitting dormant rather than being actively deployed. They can still do the work. They just don't believe it will stick.</p>
+                
+                <h3>Why This Matters Systemically</h3>
+                <p>NHS England doesn't just lose the person's current contribution when this pattern develops. It loses access to their stored organizational memory.</p>
+                
+                <p>That matters because institutional knowledge is what prevents organizations from repeating mistakes. It's what allows experienced leaders to say, "We tried something similar in 2019 and here's why it didn't work" or "The integration agenda will collide with the financial framework unless we sequence things differently." When people with that knowledge pull back, the organization loses its collective memory.</p>
+                
+                <p>What tends to happen next is this: new initiatives get launched without the benefit of that stored knowledge. Predictable problems resurface. Things that were learned get relearned. The organizational cost compounds.</p>
+                
+                <p>This isn't about one person's career dissatisfaction. It's about what happens to organizational capability when experienced leaders become structurally demotivated. The knowledge doesn't disappear—it just stops being actively deployed. And that's a significant organizational loss, compounded across however many senior leaders are in this same pattern.</p>
+                
+                <h3>The Implication for Intervention</h3>
+                <p>If we were working with this profile in the Navigate Transition Programme, we wouldn't offer resilience training or motivational development. Those would miss the constraint entirely.</p>
+                
+                <p>The work needed here is about restoring confidence that effort produces durable outcomes. That requires either changing the organizational environment or finding arenas where sustained effort actually pays off. It might mean identifying specific, bounded projects where results can actually stick. It might mean moving to a different organizational context where structural instability isn't the dominant feature.</p>
+                
+                <p>But it won't be fixed by individual-level interventions. The constraint is systemic, not personal. You can't skill your way out of this. You can't mindset your way out of it either. The motivation erosion is a reasonable response to an unreasonable environment.</p>
+                
+                <p>Learning-focused interventions would be irrelevant—this person already has high capability. Identity-focused interventions would miss the target entirely.</p>
+                
+                <p>Their transitioning capacity remains constrained at the point of motivation, and no amount of personal development will shift that. The intervention needs to be structural, not individual.</p>
+                
+                <h3>Why This Case Is in the Book</h3>
+                <p>This case demonstrates three critical things.</p>
+                
+                <p>First, that stalled transition isn't caused by low capability. This person has high learning and identity scores. They're perfectly capable.</p>
+                
+                <p>Second, that motivation can be structurally constrained. It's not about attitude or mindset. It's about what the environment teaches you.</p>
+                
+                <p>Third, that system design directly shapes human capacity. The repeated restructuring within NHS England isn't a neutral backdrop—it's actively constraining transitioning capacity across its senior leadership.</p>
+                
+                <p>This is evidence for the M×L×I framework as an analytic lens, not just a developmental tool. It helps us see patterns that would otherwise stay invisible.</p>
+                
+                <div class="constraint-summary">
+                    <p><strong>Primary Constraint:</strong> Motivation</p>
+                    <p><strong>Nature of Constraint:</strong> Reduced confidence that effort leads to durable impact</p>
+                    <p><strong>System Signal:</strong> Repeated restructuring and political reset within NHS England</p>
+                    <p>This case illustrates how transitioning capacity collapses at the point where experience teaches caution—not where ability fails.</p>
+                </div>
+            </article>
+
+            <!-- CASE STUDY 2: SENIOR ACADEMIC LEADER -->
+            <article class="case-study">
+                <h2>Senior Academic Leader</h2>
+                
+                <h3>The Person and the Context</h3>
+                <p>This is a senior academic leader working within a prestigious research-intensive university. They manage a complex portfolio: senior leadership responsibilities, teaching, research expectations, and institutional service. The performance pressure is relentless, and there's virtually no structural slack in the system.</p>
+                
+                <p>Over the years, they've accumulated substantial academic capital. They know how universities actually work, understand the politics of academic governance, have expertise in navigating REF cycles and research funding, know what makes teaching excellent rather than merely adequate. They understand which committees matter, how to read institutional signals, where the real power sits, how to protect research time while meeting service obligations. All that stored institutional and academic knowledge is there, built up over years of experience.</p>
+                
+                <p>They're highly capable, intellectually engaged, and genuinely committed to academic standards and student outcomes. The competence is not in question.</p>
+                
+                <p>What has changed is the sustainability. The work intensity has increased steadily without corresponding recovery. The boundaries between professional and personal life have eroded. Strategic thinking time has been displaced by operational demand. They're still delivering, but it's costing more than it used to.</p>
+                
+                <p>From the outside, this looks like continued performance but diminishing renewal. They're relying on personal stamina rather than system support. And when opportunities for additional leadership responsibility come up, the appetite isn't there anymore.</p>
+                
+                <p>When we ran the Navigate Transition assessment, the pattern was immediately clear.</p>
+                
+                <h3>The Assessment Results</h3>
+                <div class="scores">
+                    <p><strong>Motivation (WHY):</strong> 4.2 / 10</p>
+                    <p><strong>Learning (HOW):</strong> 6.4 / 10</p>
+                    <p><strong>Identity (WHO):</strong> 4.2 / 10</p>
+                    <p><strong>Overall Capacity:</strong> M × L × I = 173</p>
+                </div>
+                <p>The pattern shows capacity constrained primarily by identity, with motivation also under strain.</p>
+                
+                <h3>What's Actually Happening</h3>
+                <p>The low identity score doesn't indicate lack of commitment or role competence. What it reflects is strain between the demands of the role and the sustainability of the wider self.</p>
+                
+                <p>Here's what's happened: the professional identity has expanded to fill all available space. The role demands have steadily increased, and they've been met—but at the cost of other identities. Parent, partner, friend, person who has interests outside work—those identities haven't disappeared, but they've been progressively squeezed.</p>
+                
+                <p>This shows up as increasing role saturation. The academic leadership role isn't just a job, it's become the organizing principle of their entire life. And while that can work for a period, it's not sustainable indefinitely.</p>
+                
+                <p>When they say they want to work on work-life balance, they're not being vague or self-indulgent. They're signalling that the cost of the role is approaching an unacceptable level.</p>
+                
+                <p>The motivation score at 4.2 tells a related story. There's still intrinsic interest in the academic work—the teaching, the research, the intellectual community. But the willingness to extend effort further is diminishing. Energy is being allocated defensively, to protect what's left rather than to pursue what's possible.</p>
+                
+                <p>The learning score at 6.4 is adequate. They understand academic systems, know how to navigate institutional politics, have accumulated significant knowledge about how things actually get done in universities. All that stored academic and institutional knowledge is there. But here's the thing: learning can't resolve an identity constraint. You can't skill your way out of unsustainability.</p>
+                
+                <h3>Why This Matters Systemically</h3>
+                <p>Academic leadership roles systematically conflate excellence with overextension. They reward availability rather than sustainability. They rely on individual coping rather than role redesign.</p>
+                
+                <p>The unspoken assumption is that if you're good at this work, you should be willing to do more of it. And if you say you're struggling with the load, the system tends to interpret that as a personal capacity issue rather than a role design problem.</p>
+                
+                <p>Over time, this produces identity crowding—where the professional role progressively displaces other aspects of self. The system normalizes this imbalance while individualizing the cost. It's framed as a personal work-life balance challenge rather than a structural issue.</p>
+                
+                <p>But here's what the university doesn't see: when capable leaders reach this point, the institution starts losing access to their best thinking. All that accumulated academic and institutional knowledge—understanding of how the university really works, what's been tried, where the leverage points are—is still there, but it's being deployed in survival mode rather than strategic mode. The corporate knowledge that should be shaping institutional direction is instead being rationed to manage operational overload.</p>
+                
+                <p>The practical implications are significant. Strategic thinking requires recovery time. Innovation requires slack. Effective governance requires presence, not just attendance. When leaders are operating at capacity saturation, they can maintain but not develop. They can respond but not initiate. They can manage current demands but not shape future direction.</p>
+                
+                <h3>The Implication for Intervention</h3>
+                <p>If we were working with this profile in the Navigate Transition Programme, we wouldn't offer time management training or productivity techniques. Those would miss the constraint entirely.</p>
+                
+                <p>The work needed here is identity reconstruction—creating sustainable integration between professional demands and wider life. That requires boundary restoration, role renegotiation, and probably some difficult conversations about what realistic leadership performance actually looks like.</p>
+                
+                <p>It also requires recognizing that this isn't a personal failing. It's a predictable outcome of role design that systematically underestimates what sustainable performance requires.</p>
+                
+                <h3>Why This Case Is in the Book</h3>
+                <p>This case demonstrates three critical things.</p>
+                
+                <p>First, that high capability doesn't prevent capacity constraint. This person has strong learning and reasonable professional identity. But when identity becomes unsustainable, capacity collapses anyway.</p>
+                
+                <p>Second, that identity strain is a systemic outcome, not a personal failing. When the system rewards overextension and relies on individual stamina, identity crowding is the predictable result.</p>
+                
+                <p>Third, that work-life balance concerns are actually capacity signals, not signs of disengagement. When someone says they're struggling with balance, they're telling you the role has become unsustainable—and that's information the system needs to take seriously.</p>
+                
+                <p>This provides important contrast to motivation- and learning-constrained cases. The intervention needed here is fundamentally different.</p>
+                
+                <div class="constraint-summary">
+                    <p><strong>Primary Constraint:</strong> Identity</p>
+                    <p><strong>Nature of Constraint:</strong> Role demands exceed sustainable integration of wider identities</p>
+                    <p><strong>System Signal:</strong> Normalization of overextension within academic leadership roles</p>
+                    <p>This case illustrates how capacity becomes constrained when success requires unsustainable self-investment.</p>
+                </div>
+            </article>
+
+            <!-- CASE STUDY 3: SENIOR COACH AND MENTOR -->
+            <article class="case-study">
+                <h2>Senior Coach and Mentor Developing a New Programme</h2>
+                
+                <h3>The Person and the Context</h3>
+                <p>This is an experienced senior coach and mentor who's developed an original framework (M×L×I) for understanding transitioning capacity. The work sits at an interesting intersection: practice-based but theoretically grounded, individual-focused but with system-level implications. There's a clear intention to publish the thinking and scale the impact through a structured programme.</p>
+                
+                <p>Over decades of practice, they've accumulated substantial professional capital. They know how coaching actually works—not just the techniques, but what creates genuine movement versus what creates the illusion of progress. They understand organizational dynamics, can read system constraints quickly, know when resistance is personal versus structural. They've worked across sectors, built credibility with clients, developed their own frameworks and approaches. All that stored professional knowledge represents real expertise, hard-won over years of practice.</p>
+                
+                <p>They have clarity of purpose. The work matters to them. There's strong alignment between their values and what they're trying to create. The professional identity is solid—this is work that fits who they are and who they're becoming.</p>
+                
+                <p>What's missing isn't commitment or capability. What's missing is a fully articulated, credible path for making this programme real.</p>
+                
+                <p>Progress is episodic rather than continuous. Conceptual development outpaces execution. Decisions about next steps get repeatedly deferred—not because they don't matter, but because the "how" isn't fully clear yet.</p>
+                
+                <p>When we ran the Navigate Transition assessment, the results explained the pattern immediately.</p>
+                
+                <h3>The Assessment Results</h3>
+                <div class="scores">
+                    <p><strong>Motivation (WHY):</strong> 7.0 / 10</p>
+                    <p><strong>Learning (HOW):</strong> 5.0 / 10</p>
+                    <p><strong>Identity (WHO):</strong> 7.6 / 10</p>
+                    <p><strong>Overall Capacity:</strong> M × L × I = 266</p>
+                </div>
+                <p>The pattern shows capacity constrained primarily by learning.</p>
+                
+                <h3>What's Actually Happening</h3>
+                <p>The high motivation score reflects genuine drive. There's no ambivalence about whether this work matters or whether it's worth pursuing. The energy is there. The commitment is there. This isn't a motivation problem.</p>
+                
+                <p>The high identity score shows strong professional coherence. There's clarity about who they are as a practitioner, what they stand for professionally, how this work connects to core values. The identity alignment is solid. This isn't an identity crisis.</p>
+                
+                <p>The constraint sits at learning—but not in the way that phrase is usually understood.</p>
+                
+                <p>This isn't about lacking knowledge or refusing to develop. It's about hitting the limits of what can be figured out alone. The existing expertise—all that accumulated professional capital about how coaching works, what creates change, how to read organizational systems—is necessary but not sufficient for the task ahead.</p>
+                
+                <p>Building a scalable programme requires different knowledge. It requires understanding how to structure materials so they work without you in the room. It requires knowing how to sequence learning so people can apply frameworks independently. It requires technical implementation knowledge—how assessment tools actually work, how to present results clearly, how to design user interfaces that make sense.</p>
+                
+                <p>These aren't extensions of existing expertise. They're adjacent capabilities that need to be learned or accessed through collaboration.</p>
+                
+                <p>The pattern shows up as productive thinking that doesn't translate into completed action. There's clarity about what the programme should achieve, less clarity about the procedural pathway to make it real. Development stalls at the point where expertise runs out and new learning would need to begin.</p>
+                
+                <h3>Why This Matters Systemically</h3>
+                <p>This constraint pattern is common among experienced practitioners developing new offerings. They have deep subject matter expertise but hit capacity limits when scaling requires capabilities outside their domain.</p>
+                
+                <p>The challenge isn't lack of professional knowledge—it's the gap between what they know deeply and what programme delivery requires. All that stored professional knowledge about effective coaching practice is real and valuable, but it doesn't automatically translate into knowing how to build web applications, design assessment algorithms, or structure self-directed learning materials.</p>
+                
+                <p>Organizations and professional communities often misread this pattern. They see someone with strong expertise who "should" be able to translate that into scaled delivery. When progress is slow, it gets attributed to lack of commitment or poor time management. The actual constraint—the learning gap between practice expertise and programme development—stays invisible.</p>
+                
+                <p>The systemic cost is significant. Experienced practitioners who could contribute valuable thinking to the field get stuck at the implementation stage. Their expertise remains locked in one-to-one practice rather than being scaled through programmes, publications, or tools that could reach wider audiences.</p>
+                
+                <h3>The Implication for Intervention</h3>
+                <p>If we were working with this profile in the Navigate Transition Programme, the intervention wouldn't focus on motivation building or identity work. Both of those are already strong.</p>
+                
+                <p>The work needed here is learning pathway clarification—identifying specifically what new capabilities are required, finding credible routes to acquire them, and accepting that expertise in one domain doesn't eliminate the need for learning in adjacent ones.</p>
+                
+                <p>That might mean:</p>
+                <p style="padding-left: 24px;">• Structured collaboration with people who have complementary technical skills</p>
+                <p style="padding-left: 24px;">• Focused learning in specific areas (web development, assessment design, instructional sequencing)</p>
+                <p style="padding-left: 24px;">• Accepting that some things need to be delegated rather than self-taught</p>
+                <p style="padding-left: 24px;">• Breaking the programme development into smaller components that can be completed sequentially</p>
+                
+                <p>It also requires recognizing that hitting a learning constraint isn't a sign of decline or inadequacy. It's a normal feature of moving from individual practice into programme development. The transition requires new capabilities, and acquiring those takes deliberate effort.</p>
+                
+                <h3>Why This Case Is in the Book</h3>
+                <p>This case demonstrates three critical things.</p>
+                
+                <p>First, that transitioning capacity can be constrained even when motivation and identity are strong. High scores in two dimensions don't compensate for constraint in the third—the multiplication means the weakest dimension limits overall capacity.</p>
+                
+                <p>Second, that learning constraints aren't always about unwillingness to develop. Sometimes they reflect genuine gaps between existing expertise and what the new situation requires. The stored professional knowledge is real, but programme scaling requires different knowledge.</p>
+                
+                <p>Third, that experienced practitioners aren't immune to capacity constraints. Expertise in one domain doesn't automatically create capacity in adjacent ones. Moving from practice to programme development is itself a transition that requires new learning.</p>
+                
+                <p>This provides important contrast to motivation- and identity-constrained cases. The intervention needed here is about capability acquisition, not attitude adjustment or role clarification.</p>
+                
+                <div class="constraint-summary">
+                    <p><strong>Primary Constraint:</strong> Learning</p>
+                    <p><strong>Nature of Constraint:</strong> Gap between practice expertise and programme development capabilities</p>
+                    <p><strong>System Signal:</strong> Episodic progress with implementation stalling at points requiring new technical knowledge</p>
+                    <p>This case illustrates how transitioning capacity becomes constrained when the task requires capabilities beyond current expertise—even when motivation and identity are strong.</p>
+                </div>
+            </article>
+        </div>
+
+        <section class="footer-cta">
+            <div class="container">
+                <h2>Ready to discover your own pattern?</h2>
+                <a href="assessment.html" class="cta-button">Start Assessment</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2026 Navigate Transition Programme</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigate Transition Programme</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2C5F5F;
+            --primary-light: #3A7979;
+            --accent: #D4A574;
+            --text: #2A2A2A;
+            --text-light: #5A5A5A;
+            --background: #FAFAF8;
+            --white: #FFFFFF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Work Sans', sans-serif;
+            color: var(--text);
+            background: var(--background);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Header */
+        header {
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        .logo {
+            font-family: 'Crimson Pro', serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 80px 0 100px;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 48px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 24px;
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+        
+        .hero p {
+            font-size: 24px;
+            color: var(--text-light);
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--white);
+            padding: 18px 48px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(44, 95, 95, 0.15);
+        }
+        
+        .cta-button:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(44, 95, 95, 0.25);
+        }
+        
+        /* Content Sections */
+        section {
+            padding: 60px 0;
+            animation: fadeIn 0.8s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        section:nth-child(2) { animation-delay: 0.1s; }
+        section:nth-child(3) { animation-delay: 0.2s; }
+        section:nth-child(4) { animation-delay: 0.3s; }
+        
+        h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 32px;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+        
+        /* How It Works */
+        .how-it-works {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 48px 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+        
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+        
+        .step {
+            display: flex;
+            align-items: start;
+            gap: 20px;
+        }
+        
+        .step-number {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .step-content h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .step-content p {
+            color: var(--text-light);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        /* Honesty Box */
+        .honesty-box {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            border-radius: 12px;
+            padding: 48px 40px;
+            text-align: center;
+        }
+        
+        .honesty-box h2 {
+            color: var(--white);
+            margin-bottom: 20px;
+        }
+        
+        .honesty-box p {
+            font-size: 18px;
+            line-height: 1.7;
+            margin-bottom: 24px;
+            opacity: 0.95;
+        }
+        
+        .maggies-link {
+            display: inline-block;
+            background: var(--white);
+            color: var(--primary);
+            padding: 14px 32px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .maggies-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Case Studies Link */
+        .case-studies-section {
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        .case-studies-section p {
+            font-size: 18px;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+        
+        .case-studies-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 18px;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .case-studies-link:hover {
+            color: var(--primary-light);
+            border-bottom-color: var(--primary-light);
+        }
+        
+        /* Footer CTA */
+        .footer-cta {
+            text-align: center;
+            padding: 80px 0;
+        }
+        
+        .footer-cta h2 {
+            margin-bottom: 32px;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-light);
+            font-size: 14px;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 20px;
+            }
+            
+            .cta-button {
+                padding: 16px 36px;
+                font-size: 16px;
+            }
+            
+            h2 {
+                font-size: 28px;
+            }
+            
+            .how-it-works,
+            .honesty-box {
+                padding: 32px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">Navigate Transition Programme</div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Discover what you need to know</h1>
+                <p>Understand what's constraining your capacity for change</p>
+                <a href="assessment.html" class="cta-button">Start Assessment</a>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="how-it-works">
+                    <h2>How It Works</h2>
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h3>Complete the assessment</h3>
+                                <p>A focused 10-minute assessment that identifies your transition pattern</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h3>Get your M×L×I scores</h3>
+                                <p>Understand your Motivation, Learning, and Identity scores and how they multiply to create capacity</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h3>Know where to focus</h3>
+                                <p>Discover which dimension is constraining your capacity and what that means for your next steps</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="honesty-box">
+                    <h2>Honesty Box Principle</h2>
+                    <p>This programme follows an honesty box model. Rather than charging fees, we ask that you make a donation to Maggie's Cancer Centres based on the value you receive.</p>
+                    <p>All our materials show suggested prices - you decide what feels right.</p>
+                    <a href="https://www.maggies.org/get-involved/donate/" class="maggies-link" target="_blank">Donate to Maggie's</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="case-studies-section">
+            <div class="container">
+                <p>Wondering how others have used this?</p>
+                <a href="case-studies.html" class="case-studies-link">See how the framework works in practice →</a>
+            </div>
+        </section>
+
+        <section class="footer-cta">
+            <div class="container">
+                <h2>Ready to begin?</h2>
+                <a href="assessment.html" class="cta-button">Start Assessment</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2026 Navigate Transition Programme</p>
+        </div>
+    </footer>
+</body>
+</html>
