@@ -3,473 +3,623 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navigating Your Life</title>
+    <title>Navigate Transition | M×L×I Framework for Career Transitions</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Karla:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --deep-teal: #1a4d4d;
-            --rich-teal: #2d6a6a;
-            --soft-gold: #c9a961;
-            --warm-cream: #f5f3ed;
-            --charcoal: #2d2d2d;
-            --soft-gray: #6b6b6b;
+            --primary: #1a4d2e;
+            --accent: #8b6f47;
+            --text: #2c3e50;
+            --light: #f8f9fa;
+            --white: #ffffff;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Source Sans Pro', sans-serif;
-            background: var(--warm-cream);
-            color: var(--charcoal);
-            line-height: 1.6;
-            overflow-x: hidden;
+            font-family: 'Karla', sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+            background: var(--white);
         }
-        
-        /* Subtle grain texture overlay */
-        body::before {
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 400;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: clamp(1.75rem, 3vw, 2.5rem);
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            font-size: clamp(1.25rem, 2vw, 1.75rem);
+            margin-bottom: 1rem;
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section {
+            padding: clamp(3rem, 8vw, 6rem) 0;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #1a4d2e 0%, #2d6a4f 100%);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
             content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(139, 111, 71, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2vw, 1.35rem);
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            line-height: 1.8;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-family: 'Karla', sans-serif;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--white);
+            box-shadow: 0 8px 24px rgba(139, 111, 71, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #755d3a;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(139, 111, 71, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* Framework Section */
+        .framework {
+            background: var(--light);
+        }
+
+        .framework-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .framework-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .framework-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .framework-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Case Studies Section */
+        .case-studies {
+            background: var(--white);
+        }
+
+        .case-study-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .case-study-card {
+            background: var(--light);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .case-study-card:hover {
+            border-left-color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .case-study-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .case-study-card .role {
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+        }
+
+        .case-study-card .summary {
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .case-study-card .constraint-pattern {
+            font-size: 0.95rem;
+            color: var(--primary);
+            background: rgba(26, 77, 46, 0.08);
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            font-family: 'Karla', sans-serif;
+        }
+
+        /* Full Case Study Modal */
+        .modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            opacity: 0.03;
-            pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background: rgba(0, 0, 0, 0.8);
             z-index: 1000;
-            mix-blend-mode: overlay;
+            overflow-y: auto;
+            padding: 2rem;
+            animation: fadeIn 0.3s ease;
         }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 40px;
+
+        .modal.active {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
         }
-        
-        /* Header */
-        header {
-            padding: 50px 0 30px;
+
+        .modal-content {
+            background: var(--white);
+            max-width: 900px;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 3rem;
+            border-radius: 16px;
             position: relative;
-            z-index: 10;
+            animation: slideUp 0.4s ease;
         }
-        
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--deep-teal);
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-        
-        /* Hero Section - Asymmetric Editorial Layout */
-        .hero {
-            min-height: 85vh;
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: var(--light);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            position: relative;
-            padding: 60px 0;
+            justify-content: center;
+            transition: all 0.3s ease;
         }
-        
-        .hero-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 80px;
-            align-items: start;
-            position: relative;
-            z-index: 2;
+
+        .modal-close:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: rotate(90deg);
         }
-        
-        /* Decorative background element */
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 10%;
-            right: -10%;
-            width: 600px;
-            height: 600px;
-            background: linear-gradient(135deg, var(--rich-teal) 0%, var(--deep-teal) 100%);
-            border-radius: 50%;
-            opacity: 0.08;
-            z-index: 1;
-            animation: float 20s ease-in-out infinite;
+
+        .modal-content h2 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
         }
-        
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(-30px, 30px) scale(1.05); }
+
+        .modal-content h3 {
+            color: var(--primary);
+            margin-top: 2rem;
         }
-        
-        .hero-left {
-            animation: slideInLeft 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+        .modal-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
         }
-        
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-80px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+
+        .modal-content .scores {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
         }
-        
-        .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 64px;
-            font-weight: 800;
-            line-height: 1.1;
-            color: var(--deep-teal);
-            margin-bottom: 40px;
-            letter-spacing: -1px;
-            position: relative;
-        }
-        
-        /* Decorative thought bubbles */
-        .hero h1::before {
-            content: '';
-            position: absolute;
-            top: -80px;
-            left: -60px;
-            width: 140px;
-            height: 140px;
-            background: var(--soft-gold);
-            border-radius: 50%;
-            opacity: 0.25;
-            animation: float-bubble 4s ease-in-out infinite;
-        }
-        
-        .hero h1::after {
-            content: '?';
-            position: absolute;
-            top: -70px;
-            left: -50px;
-            font-size: 180px;
-            color: var(--deep-teal);
-            opacity: 0.2;
-            font-style: italic;
-            font-weight: 900;
-            animation: float-bubble 4s ease-in-out infinite 0.5s;
-        }
-        
-        @keyframes float-bubble {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-        }
-        
-        .hero h1 .highlight {
-            color: var(--soft-gold);
-            font-style: italic;
-            display: inline-block;
-            animation: emphasize 2s ease-in-out 1.5s infinite;
-        }
-        
-        @keyframes emphasize {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        
-        .hero-right {
-            animation: slideInRight 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-        }
-        
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(80px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        .hero-text {
-            font-size: 28px;
-            font-weight: 300;
-            line-height: 1.5;
-            color: var(--soft-gray);
-            margin-bottom: 30px;
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-        }
-        
-        .cta-button {
-            display: inline-block;
-            background: linear-gradient(180deg, var(--deep-teal) 0%, #143d3d 100%);
-            color: var(--warm-cream);
-            padding: 22px 50px;
-            font-size: 16px;
+
+        .modal-content .scores p {
+            margin-bottom: 0.5rem;
             font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            text-decoration: none;
-            border: none;
-            border-radius: 50px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            animation: pulse 2s ease-in-out 2s infinite;
+            color: var(--primary);
+        }
+
+        /* Footer CTA */
+        .footer-cta {
+            background: linear-gradient(135deg, #1a4d2e 0%, #2d6a4f 100%);
+            color: var(--white);
             text-align: center;
-            box-shadow: 
-                0 8px 0 #0d2f2f,
-                0 12px 20px rgba(0, 0, 0, 0.3);
         }
-        
-        @keyframes pulse {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-2px); }
+
+        .footer-cta p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
         }
-        
-        .cta-button:hover {
-            background: linear-gradient(180deg, var(--soft-gold) 0%, #b8944d 100%);
-            color: var(--deep-teal);
-            animation: none;
-            transform: translateY(4px);
-            box-shadow: 
-                0 4px 0 #9a7d42,
-                0 6px 12px rgba(0, 0, 0, 0.2);
-        }
-        
-        /* Maggie's Card - Compact, integrated */
-        .maggies-card {
-            background: linear-gradient(135deg, #6b8e8e 0%, #547373 100%);
-            padding: 16px 20px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-        }
-        
-        .maggies-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-        }
-        
-        /* Decorative corner element */
-        .maggies-card::before {
-            content: '';
-            position: absolute;
-            top: -15px;
-            right: -15px;
-            width: 60px;
-            height: 60px;
-            background: var(--soft-gold);
-            opacity: 0.1;
-            border-radius: 50%;
-        }
-        
-        .maggies-content {
-            position: relative;
-            z-index: 2;
-        }
-        
-        .maggies-card h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--warm-cream);
-            margin-bottom: 8px;
-            line-height: 1.2;
-        }
-        
-        .maggies-card p {
-            font-size: 12px;
-            line-height: 1.5;
-            color: rgba(245, 243, 237, 0.9);
-            margin-bottom: 12px;
-            font-weight: 300;
-        }
-        
-        .donate-link {
-            display: inline-block;
-            background: var(--soft-gold);
-            color: var(--deep-teal);
-            padding: 8px 20px;
-            font-size: 11px;
-            font-weight: 600;
-            text-decoration: none;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            border: 2px solid var(--soft-gold);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .donate-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--warm-cream);
-            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: -1;
-        }
-        
-        .donate-link:hover::before {
-            left: 0;
-        }
-        
-        .donate-link:hover {
-            color: var(--deep-teal);
-            border-color: var(--warm-cream);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-        
+
         /* Footer */
         footer {
-            padding: 60px 0 40px;
+            background: #0f2818;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 2rem 0;
             text-align: center;
-            border-top: 1px solid rgba(45, 45, 45, 0.1);
-            animation: fadeIn 1s ease-out 1s both;
         }
-        
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .maggie-note {
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-        
-        .footer-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
-        footer p {
-            font-size: 13px;
-            color: var(--soft-gray);
-            letter-spacing: 0.5px;
-        }
-        
-        .case-studies-link {
-            font-size: 15px;
-            color: var(--deep-teal);
-            text-decoration: none;
-            font-weight: 400;
-            border-bottom: 1px solid var(--soft-gold);
-            padding-bottom: 2px;
-            transition: all 0.3s ease;
-        }
-        
-        .case-studies-link:hover {
-            color: var(--soft-gold);
-            border-bottom-color: var(--deep-teal);
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 968px) {
-            .hero-content {
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .framework-grid,
+            .case-study-grid {
                 grid-template-columns: 1fr;
-                gap: 50px;
             }
-            
-            .hero h1 {
-                font-size: 48px;
+
+            .modal-content {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
             }
-            
-            .hero-text {
-                font-size: 24px;
-            }
-        }
-        
-        @media (max-width: 640px) {
-            .container {
-                padding: 0 24px;
-            }
-            
-            header {
-                padding: 30px 0 20px;
-            }
-            
+
             .hero {
-                min-height: auto;
-                padding: 40px 0;
-            }
-            
-            .hero h1 {
-                font-size: 38px;
-            }
-            
-            .hero-text {
-                font-size: 20px;
-                margin-bottom: 25px;
-            }
-            
-            .cta-button {
-                padding: 18px 40px;
-                font-size: 14px;
-            }
-            
-            .maggies-card {
-                padding: 14px 18px;
-            }
-            
-            .maggies-card h3 {
-                font-size: 13px;
-            }
-            
-            .maggies-card p {
-                font-size: 11px;
+                min-height: 70vh;
             }
         }
     </style>
 </head>
 <body>
-    <header>
+    <!-- Hero Section -->
+    <section class="hero">
         <div class="container">
-            <div class="logo">Navigating Your Life</div>
+            <div class="hero-content">
+                <h1>Navigating Your Transition</h1>
+                <p>Major life transitions demand more than generic advice. The M×L×I framework helps you understand exactly where you are, what's constraining you, and what you need to move forward with clarity and confidence.</p>
+                <a href="http://academicleadershiptransformations.co.uk/multiplier-assessment/" class="btn btn-primary">Start Your Assessment</a>
+            </div>
         </div>
-    </header>
+    </section>
 
-    <main>
-        <section class="hero">
-            <div class="container">
-                <div class="hero-content">
-                    <div class="hero-left">
-                        <h1>Would you like to find out <span class="highlight">why</span> some changes work for you and others don't?</h1>
-                    </div>
-                    <div class="hero-right">
-                        <div>
-                            <p class="hero-text">Find out what's stopping you</p>
-                            <a href="assessment.html" class="cta-button">Start Assessment</a>
-                        </div>
-                        
-                        <div class="maggies-card">
-                            <div class="maggies-content">
-                                <h3>Help us by supporting Maggie's</h3>
-                                <p>If you have been helped by us then please help others by making a donation to Maggie's by following the link.</p>
-                                <a href="https://www.maggies.org/get-involved/donate/" class="donate-link" target="_blank">Find out more</a>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Framework Section -->
+    <section class="section framework">
+        <div class="container">
+            <h2>The M×L×I Framework</h2>
+            <p style="max-width: 800px; margin-bottom: 2rem;">Understanding your transitioning capacity requires measuring three dimensions that work together multiplicatively:</p>
+            
+            <div class="framework-grid">
+                <div class="framework-card">
+                    <h3>Motivation</h3>
+                    <p>The energy and drive to actually do something about your situation. Not theoretical interest – genuine, actionable motivation.</p>
+                </div>
+                
+                <div class="framework-card">
+                    <h3>Learning</h3>
+                    <p>Your capacity to acquire new knowledge, skills, and ways of thinking. This includes bandwidth, cognitive load, and readiness to engage with new material.</p>
+                </div>
+                
+                <div class="framework-card">
+                    <h3>Identity</h3>
+                    <p>Clarity about who you are beyond your current role. Understanding what matters to you, what you value, and what you're willing to change.</p>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
+    <!-- Case Studies Section -->
+    <section class="section case-studies">
+        <div class="container">
+            <h2>Real Transitions, Real Insights</h2>
+            <p style="max-width: 800px; margin-bottom: 2rem;">These case studies show how the M×L×I framework identifies specific constraint patterns that matter:</p>
+            
+            <div class="case-study-grid">
+                <!-- NHS England Leader -->
+                <div class="case-study-card">
+                    <h3>NHS England Senior Leader</h3>
+                    <p class="role">Healthcare Leadership | Redundancy Threat</p>
+                    <div class="constraint-pattern">M 4.4 | L 7.2 | I 7.2 – Motivation Constraint</div>
+                    <div class="summary">
+                        Years of accumulated expertise in navigating NHS complexity suddenly threatened by redundancy. High capability to learn and clear identity, but the drive to move forward has taken a significant hit. The challenge isn't knowing what to do – it's reconnecting with the motivation to actually do it.
+                    </div>
+                    <button class="btn btn-secondary" onclick="showCase('nhs')">Read Full Case Study</button>
+                </div>
+
+                <!-- Senior Academic Leader -->
+                <div class="case-study-card">
+                    <h3>Senior Academic Leader</h3>
+                    <p class="role">University Deputy Head of School | Work-Life Imbalance</p>
+                    <div class="constraint-pattern">M 4.2 | L 6.4 | I 4.2 – Dual Constraint</div>
+                    <div class="summary">
+                        Capable of learning new skills but depleted in motivation and unclear about identity beyond institutional roles. The exhaustion isn't just about hours – it's about losing touch with who they are whilst serving organisational demands. Can develop in new directions, but needs to rediscover what actually matters first.
+                    </div>
+                    <button class="btn btn-secondary" onclick="showCase('academic')">Read Full Case Study</button>
+                </div>
+
+                <!-- Senior Coach -->
+                <div class="case-study-card">
+                    <h3>Senior Coach and Mentor</h3>
+                    <p class="role">81-Year-Old Career Transitions Expert | Legacy Work</p>
+                    <div class="constraint-pattern">M 7.0 | L 5.0 | I 7.6 – Learning Constraint</div>
+                    <div class="summary">
+                        Clear identity, strong motivation, but experiencing genuine constraint around integrating vast stored corporate knowledge with fundamentally new material. After 50 years of transitions work, the challenge isn't capability – it's finding coherent patterns across radically different knowledge domains whilst maintaining focus on what genuinely matters.
+                    </div>
+                    <button class="btn btn-secondary" onclick="showCase('coach')">Read Full Case Study</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section footer-cta">
+        <div class="container">
+            <h2>Ready to understand your transition?</h2>
+            <p>Take the assessment and discover what's constraining you, what capacity you have, and where to focus your energy.</p>
+            <a href="http://academicleadershiptransformations.co.uk/multiplier-assessment/" class="btn btn-primary">Start Your Assessment</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
     <footer>
         <div class="container">
-            <div class="footer-content">
-                <a href="case-studies.html" class="case-studies-link">See how the framework works in practice</a>
-                <p>© 2026 Navigating Your Life</p>
+            <p>&copy; 2026 Navigate Transition | Paul Thomas Coaching Ltd</p>
+            <div class="maggie-note">
+                <p>This assessment follows an honesty box model. If you find value in it, please consider <a href="https://www.maggies.org/get-involved/donate/" target="_blank">supporting Maggie's Cancer Centres</a>.</p>
             </div>
         </div>
     </footer>
+
+    <!-- Modals for Full Case Studies -->
+    <div id="modal-nhs" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('nhs')">&times;</button>
+            <h2>NHS England Senior Leader</h2>
+            <p class="role" style="color: var(--accent); font-weight: 600; margin-bottom: 2rem;">Healthcare Leadership | Redundancy Threat</p>
+            
+            <div class="scores">
+                <p>Motivation: 4.4 (Constraint)</p>
+                <p>Learning: 7.2 (Capacity)</p>
+                <p>Identity: 7.2 (Capacity)</p>
+            </div>
+
+            <h3>The Person and the Context</h3>
+            <p>This is a senior leader within NHS England who has been navigating repeated organisational restructures over several years. They hold substantial responsibility, manage complex stakeholder relationships, and carry deep institutional knowledge about how the system actually works.</p>
+            <p>Over a career spanning multiple NHS reorganisations, they've accumulated significant stored corporate knowledge – understanding how decisions get made, where the resistance points are, who the key influencers really are, and what actually works versus what just looks good in strategy documents.</p>
+            <p>Then came the threat of redundancy.</p>
+
+            <h3>What's Actually Going On</h3>
+            <p>The redundancy threat triggered something deeper than just job insecurity. When you've spent years building expertise in how a complex system really works – not the org chart version, but the actual version – and suddenly that knowledge might become irrelevant, it affects your sense of agency.</p>
+            <p>This isn't about lacking self-belief or not knowing what to do. The Learning and Identity scores show someone who's clear about their value and capable of acquiring new skills. But the Motivation constraint reveals the core issue: the threat of losing all that accumulated understanding has temporarily drained the drive to move forward.</p>
+            <p>Their stored corporate knowledge – years of navigating NHS politics, understanding funding cycles, knowing which battles are worth fighting – suddenly feels vulnerable. Not because it's not valuable, but because they might be forced to abandon it before they're ready.</p>
+
+            <h3>The Work Ahead</h3>
+            <p>With high Learning and Identity capacity, this person doesn't need help figuring out what they could do next or who they are. What they need is to reconnect with what actually matters to them beyond this particular role.</p>
+            <p><strong>Acknowledge the loss:</strong> Years of accumulated organisational wisdom has real value. Glossing over what's being lost won't help. The work starts with recognising what's actually at stake.</p>
+            <p><strong>Separate expertise from employment:</strong> Their stored corporate knowledge doesn't disappear with the role. Understanding how to navigate complex systems, influence stakeholders, and deliver in chaotic environments – these transfer.</p>
+            <p><strong>Find what energises:</strong> With the Motivation constraint front and centre, the question becomes: what do they actually want to be doing? Not what they think they should do, but what generates genuine energy and interest.</p>
+            <p><strong>Leverage the capacity that's there:</strong> High Learning and Identity scores mean this person can rebuild momentum once they reconnect with purpose. They don't need to completely reinvent themselves – they need to rediscover what drives them.</p>
+
+            <h3>The Bigger Picture</h3>
+            <p>This assessment reveals something common in senior roles: accumulated expertise can become both an asset and a trap. When the threat of losing that expertise triggers a Motivation constraint, it's often because we've conflated our value with our organisational knowledge rather than recognising the deeper capabilities that created that knowledge in the first place.</p>
+            <p>This person will move forward. Their Learning and Identity capacity guarantees that. But the quality of that movement depends on whether they can reconnect with what genuinely motivates them beyond protecting what they've already built.</p>
+        </div>
+    </div>
+
+    <div id="modal-academic" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('academic')">&times;</button>
+            <h2>Senior Academic Leader</h2>
+            <p class="role" style="color: var(--accent); font-weight: 600; margin-bottom: 2rem;">University Deputy Head of School | Work-Life Imbalance</p>
+            
+            <div class="scores">
+                <p>Motivation: 4.2 (Constraint)</p>
+                <p>Learning: 6.4 (Capacity)</p>
+                <p>Identity: 4.2 (Constraint)</p>
+            </div>
+
+            <h3>The Person and the Context</h3>
+            <p>This is a senior academic leader at a UK university, currently serving as a Deputy Head of School. They manage significant administrative responsibilities alongside teaching and research, operate in the complex political landscape of higher education, and have built up substantial stored corporate knowledge about how their institution really works.</p>
+            <p>Over years of service, they've accumulated deep understanding of university processes, stakeholder dynamics, committee politics, and the gap between institutional rhetoric and operational reality. They know how to get things done, who to talk to, and which battles are worth fighting.</p>
+            <p>But they're exhausted.</p>
+
+            <h3>What's Actually Going On</h3>
+            <p>The dual constraint pattern tells a specific story: someone who's been so busy serving institutional demands that they've lost touch with both their own identity and their intrinsic motivation. The work-life imbalance isn't just about hours – it's about what those hours have cost them in terms of self-knowledge and purpose.</p>
+            <p>Years of accumulated stored corporate knowledge about university operations have created a trap. They're good at the administrative work because they understand the system. The institution values them because they know how things work. But that expertise has consumed so much energy that they've lost sight of who they are outside these organisational roles.</p>
+            <p>The Learning capacity at 6.4 shows they're perfectly capable of developing new skills or taking on new challenges. But without clarity about identity (4.2) or genuine motivation (4.2), that capacity has nowhere productive to go. They could learn something new – but what? And for what purpose?</p>
+
+            <h3>The Work Ahead</h3>
+            <p>With dual Motivation and Identity constraints, the path forward isn't about doing more or pushing harder. It's about stopping long enough to reconnect with who they are and what they actually care about.</p>
+            <p><strong>Separate expertise from identity:</strong> The stored corporate knowledge they've built up about university operations is valuable. But it's not who they are. The first work is distinguishing between "what I know how to do" and "who I actually am."</p>
+            <p><strong>Examine the exhaustion:</strong> Work-life imbalance is a symptom, not the root cause. The deeper question is: what have they been sacrificing by staying in service mode? What parts of themselves have they set aside to maintain that corporate knowledge and institutional effectiveness?</p>
+            <p><strong>Use the Learning capacity wisely:</strong> With Learning at 6.4, they can develop in new directions – but only once they've figured out what directions actually matter to them. Learning new skills right now, without first addressing the Identity constraint, just creates more tools for serving other people's agendas.</p>
+            <p><strong>Reconnect with intrinsic motivation:</strong> The Motivation constraint at 4.2 isn't about lacking drive generally – it's about having exhausted the drive that comes from serving institutional needs. What would re-energise them?</p>
+
+            <h3>The Bigger Picture</h3>
+            <p>This assessment pattern is common in senior university roles: accumulate expertise in how the institution works, become indispensable because of that stored corporate knowledge, lose yourself in the process.</p>
+            <p>This person will find their way forward. The Learning capacity guarantees they can develop in whatever direction they choose. But the quality of that development depends on whether they can step back from their accumulated corporate expertise long enough to remember what actually matters to them beyond keeping the university running.</p>
+        </div>
+    </div>
+
+    <div id="modal-coach" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('coach')">&times;</button>
+            <h2>Senior Coach and Mentor</h2>
+            <p class="role" style="color: var(--accent); font-weight: 600; margin-bottom: 2rem;">81-Year-Old Career Transitions Expert | Legacy Work</p>
+            
+            <div class="scores">
+                <p>Motivation: 7.0 (Capacity)</p>
+                <p>Learning: 5.0 (Constraint)</p>
+                <p>Identity: 7.6 (Capacity)</p>
+            </div>
+
+            <h3>The Person and the Context</h3>
+            <p>This is an 81-year-old senior coach and mentor who has spent over 50 years working in career transitions and organisational development. They've served across UK universities, worked as a Royal Navy Resettlement Officer, held roles at major organisations, and accumulated extraordinary stored corporate knowledge across multiple sectors and thousands of individual transitions.</p>
+            <p>Now, they're navigating their own transition: moving from active practice toward legacy work, including writing a book that synthesises decades of experience with recent AI-assisted exploration of deeper material.</p>
+            <p>They know transitions intimately. They've guided others through them for half a century. But knowing about transitions professionally doesn't exempt you from experiencing them personally.</p>
+
+            <h3>What's Actually Going On</h3>
+            <p>At 81, with jazz piano practice, daily work on a book, development of the Navigate Transition Programme, and ongoing coaching relationships, this isn't someone who's stopped learning. But the Learning constraint at 5.0 reveals something specific: the challenge isn't intellectual decline, it's about integrating vast amounts of stored corporate knowledge with fundamentally new material.</p>
+            <p>They're trying to synthesise 604 pages of ChatGPT-assisted exploration with 50+ years of accumulated professional wisdom. That's not a simple learning task – it's about finding coherent patterns across radically different knowledge domains and communication styles.</p>
+            <p>The high Motivation (7.0) means the drive is there. The high Identity (7.6) means they're clear about who they are and what they're trying to accomplish. But the Learning constraint reflects genuine difficulty: how do you integrate AI-generated philosophical exploration with deeply embodied professional expertise gained over five decades?</p>
+
+            <h3>The Work Ahead</h3>
+            <p>With high Motivation and Identity but constrained Learning, the path forward isn't about working harder or pushing through. It's about working differently with the material.</p>
+            <p><strong>Accept the learning constraint as information:</strong> At 81, with decades of accumulated stored corporate knowledge, trying to force integration with completely new material may not be the most productive approach. The constraint might be saying: "You don't need to learn everything new – you need to find the core elements that actually matter."</p>
+            <p><strong>Leverage what's already there:</strong> The Identity score at 7.6 and Motivation at 7.0 show someone who knows what they're doing and has the energy to do it. The work might not be acquiring new frameworks but rather articulating what they already know with the clarity and depth it deserves.</p>
+            <p><strong>Use the AI material selectively:</strong> The 604 pages of ChatGPT exploration don't all need to be mastered or integrated. Perhaps the Learning constraint is pointing toward: "Extract what resonates, leave the rest."</p>
+            <p><strong>Trust the 50 years:</strong> Someone who's navigated thousands of transitions, developed frameworks that work, and maintained effectiveness across decades has accumulated extraordinary stored corporate knowledge. The learning constraint might be less about capability and more about: "You already know this."</p>
+
+            <h3>The Bigger Picture</h3>
+            <p>This assessment pattern is particularly telling for someone transitioning from active practice to legacy work. The Learning constraint at 5.0 isn't failure – it's feedback about trying to do too much integration work at once.</p>
+            <p>The stored corporate knowledge accumulated over five decades is substantial. Adding 604 pages of new material on top of that isn't necessarily productive. What might work better: use the Motivation (7.0) and Identity (7.6) capacity to articulate what's already known, treating the AI material as supplementary rather than central.</p>
+            <p>This person doesn't need to become a new kind of thinker. They need to become a clearer writer about the kind of thinking they've been doing for 50 years.</p>
+        </div>
+    </div>
+
+    <script>
+        function showCase(caseId) {
+            document.getElementById('modal-' + caseId).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(caseId) {
+            document.getElementById('modal-' + caseId).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
 </body>
 </html>
