@@ -130,6 +130,38 @@
             color: var(--deep-teal);
             margin-bottom: 40px;
             letter-spacing: -1px;
+            position: relative;
+        }
+        
+        /* Decorative thought bubbles */
+        .hero h1::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            left: -40px;
+            width: 80px;
+            height: 80px;
+            background: var(--soft-gold);
+            border-radius: 50%;
+            opacity: 0.15;
+            animation: float-bubble 4s ease-in-out infinite;
+        }
+        
+        .hero h1::after {
+            content: '?';
+            position: absolute;
+            top: -50px;
+            left: -30px;
+            font-size: 120px;
+            color: var(--deep-teal);
+            opacity: 0.08;
+            font-style: italic;
+            animation: float-bubble 4s ease-in-out infinite 0.5s;
+        }
+        
+        @keyframes float-bubble {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
         
         .hero h1 .highlight {
@@ -419,7 +451,7 @@
             <div class="container">
                 <div class="hero-content">
                     <div class="hero-left">
-                        <h1>Would you like to find out <span class="highlight">why</span> some changes work and others don't?</h1>
+                        <h1>Would you like to find out <span class="highlight">why</span> some changes work for you and others don't?</h1>
                     </div>
                     <div class="hero-right">
                         <div>
@@ -429,8 +461,8 @@
                         
                         <div class="maggies-card">
                             <div class="maggies-content">
-                                <h3>Supporting Maggie's</h3>
-                                <p>This programme follows an honesty box model. Rather than charging fees, we ask that you donate to Maggie's Cancer Centres based on the value you receive.</p>
+                                <h3>We support Maggie's</h3>
+                                <p>We use an honesty box idea. If you have been helped by us we ask that you help others by donating to Maggie's.</p>
                                 <a href="https://www.maggies.org/get-involved/donate/" class="donate-link" target="_blank">Find out more</a>
                             </div>
                         </div>
