@@ -242,6 +242,101 @@
                 0 6px 12px rgba(0, 0, 0, 0.2);
         }
         
+        /* Maggie's Section */
+        .maggies-section {
+            padding: 60px 0;
+            background: var(--warm-cream);
+        }
+        
+        .maggies-card {
+            background: linear-gradient(135deg, #6b8e8e 0%, #547373 100%);
+            padding: 30px 40px;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        
+        .maggies-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .maggies-card::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 60px;
+            height: 60px;
+            background: var(--soft-gold);
+            opacity: 0.1;
+            border-radius: 50%;
+        }
+        
+        .maggies-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .maggies-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--warm-cream);
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+        
+        .maggies-card p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: rgba(245, 243, 237, 0.95);
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+        
+        .donate-link {
+            display: inline-block;
+            background: var(--soft-gold);
+            color: var(--deep-teal);
+            padding: 12px 30px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 2px solid var(--soft-gold);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .donate-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--warm-cream);
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: -1;
+        }
+        
+        .donate-link:hover::before {
+            left: 0;
+        }
+        
+        .donate-link:hover {
+            color: var(--deep-teal);
+            border-color: var(--warm-cream);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
         /* Footer */
         footer {
             padding: 60px 0 40px;
@@ -314,24 +409,7 @@
             font-family: 'Playfair Display', serif;
             font-size: 22px;
             color: var(--deep-teal);
-            margin-bottom: 8px;
-        }
-        
-        .case-role {
-            font-size: 13px;
-            color: var(--soft-gray);
             margin-bottom: 15px;
-            font-style: italic;
-        }
-        
-        .case-scores {
-            background: rgba(45, 106, 106, 0.1);
-            padding: 10px 15px;
-            margin-bottom: 15px;
-            font-family: 'Source Sans Pro', sans-serif;
-            font-size: 14px;
-            color: var(--deep-teal);
-            font-weight: 600;
         }
         
         .case-summary {
@@ -450,23 +528,32 @@
                 <div class="case-grid">
                     <div class="case-card">
                         <h3>NHS Senior Manager</h3>
-                        <div class="case-scores">M 4.4 | L 7.2 | I 7.2 – Motivation Constraint</div>
                         <p class="case-summary">Years of expertise in navigating NHS complexity suddenly threatened by redundancy. High capability to learn and clear identity, but the drive to move forward has taken a hit. The challenge isn't knowing what to do – it's reconnecting with the motivation to actually do it.</p>
                         <a href="case-nhs.html" class="case-button">Read Full Case Study</a>
                     </div>
                     
                     <div class="case-card">
                         <h3>Senior Academic Leader</h3>
-                        <div class="case-scores">M 4.2 | L 6.4 | I 4.2 – Dual Constraint</div>
                         <p class="case-summary">Capable of learning new skills but depleted in motivation and unclear about identity beyond institutional roles. The exhaustion isn't just about hours – it's about losing touch with who they are whilst serving organisational demands.</p>
                         <a href="case-academic.html" class="case-button">Read Full Case Study</a>
                     </div>
                     
                     <div class="case-card">
                         <h3>Coach and Mentor</h3>
-                        <div class="case-scores">M 7.0 | L 5.0 | I 7.6 – Learning Constraint</div>
                         <p class="case-summary">Clear identity and strong motivation, but experiencing genuine constraint around integrating vast stored corporate knowledge with fundamentally new material. After 50 years of transitions work, the challenge is finding coherent patterns across different knowledge domains.</p>
                         <a href="case-coach.html" class="case-button">Read Full Case Study</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="maggies-section">
+            <div class="container">
+                <div class="maggies-card">
+                    <div class="maggies-content">
+                        <h3>Help us by supporting Maggie's</h3>
+                        <p>This assessment follows an honesty box model. If you have been helped by us then please help others by making a donation to Maggie's by following the link.</p>
+                        <a href="https://www.maggies.org/get-involved/donate/" class="donate-link" target="_blank">Make a Donation</a>
                     </div>
                 </div>
             </div>
@@ -477,7 +564,6 @@
         <div class="container">
             <div class="footer-content">
                 <p>© 2026 Navigating Your Life</p>
-                <p style="font-size: 12px; margin-top: 10px;">This assessment follows an honesty box model. If you find value in it, please consider <a href="https://www.maggies.org/get-involved/donate/" target="_blank" style="color: var(--soft-gold); text-decoration: none; border-bottom: 1px solid var(--soft-gold);">supporting Maggie's Cancer Centres</a>.</p>
             </div>
         </div>
     </footer>
