@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome | Navigating Your Life</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --deep-teal: #1a4d4d;
+            --rich-teal: #2d6a6a;
+            --soft-gold: #c9a961;
+            --warm-cream: #f5f3ed;
+            --charcoal: #2d2d2d;
+            --soft-gray: #6b6b6b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: var(--warm-cream);
+            color: var(--charcoal);
+            line-height: 1.7;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 80px 40px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--deep-teal);
+            margin-bottom: 30px;
+        }
+        
+        p {
+            font-size: 18px;
+            line-height: 1.8;
+            color: var(--charcoal);
+            margin-bottom: 25px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(180deg, var(--deep-teal) 0%, #143d3d 100%);
+            color: var(--warm-cream);
+            padding: 20px 50px;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 50px;
+            margin-top: 30px;
+            box-shadow: 
+                0 8px 0 #0d2828,
+                0 12px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .cta-button:hover {
+            background: linear-gradient(180deg, var(--soft-gold) 0%, #b8944d 100%);
+            color: var(--deep-teal);
+            transform: translateY(4px);
+            box-shadow: 
+                0 4px 0 #9a7d42,
+                0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: var(--soft-gray);
+            text-decoration: none;
+            font-size: 15px;
+            margin-bottom: 40px;
+            transition: color 0.3s ease;
+        }
+        
+        .back-link:hover {
+            color: var(--deep-teal);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 60px 20px;
+            }
+            
+            h1 {
+                font-size: 36px;
+            }
+            
+            p {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to home</a>
+        
+        <h1>Welcome</h1>
+        
+        <p>When you're navigating change, it can be hard to know where you stand. This short check-in helps you understand your current capacity and how transition may be affecting you.</p>
+
+        <p>It takes around 5–7 minutes to complete. Your responses are completely confidential. There are no right or wrong answers — just answer honestly based on how things feel for you in this moment.</p>
+
+        <p>This is not about judging yourself or fixing anything. It's simply a way to pause, notice where you are, and begin from there.</p>
+        
+        <a href="assessment.html" class="cta-button">Begin Assessment</a>
+    </div>
+</body>
+</html>
