@@ -3,335 +3,484 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navigating Your Life | Navigate Transition Programme</title>
+    <title>Navigating Your Life</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <style>
+        :root {
+            --deep-teal: #1a4d4d;
+            --rich-teal: #2d6a6a;
+            --soft-gold: #c9a961;
+            --warm-cream: #f5f3ed;
+            --charcoal: #2d2d2d;
+            --soft-gray: #6b6b6b;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            font-family: 'Source Sans Pro', sans-serif;
+            background: var(--warm-cream);
+            color: var(--charcoal);
             line-height: 1.6;
-            color: #333;
+            overflow-x: hidden;
         }
-
+        
+        /* Subtle grain texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            z-index: 1000;
+            mix-blend-mode: overlay;
+        }
+        
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 40px;
         }
-
-        /* Hero Section */
+        
+        /* Header */
+        header {
+            padding: 50px 0 30px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--deep-teal);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        
+        /* Hero Section - Asymmetric Editorial Layout */
         .hero {
-            background: linear-gradient(135deg, #2d5f5f 0%, #1a4040 100%);
-            color: white;
-            padding: 80px 20px;
-            text-align: center;
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: 60px 0;
         }
-
+        
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: start;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Decorative background element */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: linear-gradient(135deg, var(--rich-teal) 0%, var(--deep-teal) 100%);
+            border-radius: 50%;
+            opacity: 0.08;
+            z-index: 1;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-30px, 30px) scale(1.05); }
+        }
+        
+        .hero-left {
+            animation: slideInLeft 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-80px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
         .hero h1 {
-            font-size: 2.8rem;
-            margin-bottom: 1rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 64px;
+            font-weight: 800;
+            line-height: 1.1;
+            color: var(--deep-teal);
+            margin-bottom: 40px;
+            letter-spacing: -1px;
+            position: relative;
+        }
+        
+        /* Decorative thought bubbles */
+        .hero h1::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            left: -60px;
+            width: 140px;
+            height: 140px;
+            background: var(--soft-gold);
+            border-radius: 50%;
+            opacity: 0.25;
+            animation: float-bubble 4s ease-in-out infinite;
+        }
+        
+        .hero h1::after {
+            content: '?';
+            position: absolute;
+            top: -70px;
+            left: -50px;
+            font-size: 180px;
+            color: var(--deep-teal);
+            opacity: 0.2;
+            font-style: italic;
+            font-weight: 900;
+            animation: float-bubble 4s ease-in-out infinite 0.5s;
+        }
+        
+        @keyframes float-bubble {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .hero h1 .highlight {
+            color: var(--soft-gold);
+            font-style: italic;
+            display: inline-block;
+            animation: emphasize 2s ease-in-out 1.5s infinite;
+        }
+        
+        @keyframes emphasize {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .hero-right {
+            animation: slideInRight 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(80px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .hero-text {
+            font-size: 28px;
             font-weight: 300;
+            line-height: 1.5;
+            color: var(--soft-gray);
+            margin-bottom: 30px;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
         }
-
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
+        
         .cta-button {
             display: inline-block;
-            background: #d4a574;
-            color: white;
-            padding: 16px 40px;
+            background: linear-gradient(180deg, var(--deep-teal) 0%, #143d3d 100%);
+            color: var(--warm-cream);
+            padding: 22px 50px;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
             text-decoration: none;
-            border-radius: 6px;
-            font-size: 1.1rem;
-            font-weight: 500;
-            transition: all 0.3s;
+            border: none;
+            border-radius: 50px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: pulse 2s ease-in-out 2s infinite;
+            text-align: center;
+            box-shadow: 
+                0 8px 0 #0d2f2f,
+                0 12px 20px rgba(0, 0, 0, 0.3);
         }
-
+        
+        @keyframes pulse {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-2px); }
+        }
+        
         .cta-button:hover {
-            background: #c09563;
-            transform: translateY(-2px);
+            background: linear-gradient(180deg, var(--soft-gold) 0%, #b8944d 100%);
+            color: var(--deep-teal);
+            animation: none;
+            transform: translateY(4px);
+            box-shadow: 
+                0 4px 0 #9a7d42,
+                0 6px 12px rgba(0, 0, 0, 0.2);
         }
-
-        /* Framework Section */
-        .framework {
-            padding: 60px 20px;
-            background: white;
-        }
-
-        .framework h2 {
+        
+        /* Footer */
+        footer {
+            padding: 60px 0 40px;
             text-align: center;
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: #2d5f5f;
+            border-top: 1px solid rgba(45, 45, 45, 0.1);
+            animation: fadeIn 1s ease-out 1s both;
         }
-
-        .framework-intro {
-            text-align: center;
-            max-width: 700px;
-            margin: 0 auto 3rem;
-            color: #666;
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-
-        .framework-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 2rem;
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
         }
-
-        .framework-card {
-            padding: 30px;
-            background: #f8f8f8;
-            border-radius: 8px;
+        
+        footer p {
+            font-size: 13px;
+            color: var(--soft-gray);
+            letter-spacing: 0.5px;
         }
-
-        .framework-card h3 {
-            color: #2d5f5f;
-            margin-bottom: 0.75rem;
-            font-size: 1.3rem;
-        }
-
+        
         /* Case Studies Section */
         .case-studies {
-            padding: 60px 20px;
-            background: #f8f8f8;
+            padding: 80px 0;
+            background: white;
         }
-
+        
         .case-studies h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--deep-teal);
             text-align: center;
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: #2d5f5f;
+            margin-bottom: 20px;
         }
-
-        .case-intro {
+        
+        .case-studies-intro {
             text-align: center;
+            font-size: 18px;
+            color: var(--soft-gray);
             max-width: 700px;
-            margin: 0 auto 3rem;
-            color: #666;
+            margin: 0 auto 60px;
         }
-
+        
         .case-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
+            gap: 40px;
+            margin-top: 40px;
         }
-
+        
         .case-card {
-            background: white;
+            background: var(--warm-cream);
             padding: 30px;
-            border-radius: 8px;
-            border-left: 4px solid #2d5f5f;
+            border-left: 3px solid var(--soft-gold);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
+        
+        .case-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
         .case-card h3 {
-            color: #2d5f5f;
-            margin-bottom: 0.5rem;
-            font-size: 1.4rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            color: var(--deep-teal);
+            margin-bottom: 8px;
         }
-
-        .case-card .role {
-            color: #999;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
+        
+        .case-role {
+            font-size: 13px;
+            color: var(--soft-gray);
+            margin-bottom: 15px;
+            font-style: italic;
         }
-
-        .case-card .scores {
-            background: #f8f8f8;
-            padding: 12px 16px;
-            border-radius: 4px;
-            margin-bottom: 1rem;
-            font-family: monospace;
-            color: #2d5f5f;
-            font-size: 0.95rem;
+        
+        .case-scores {
+            background: rgba(45, 106, 106, 0.1);
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 14px;
+            color: var(--deep-teal);
+            font-weight: 600;
         }
-
-        .case-card .summary {
-            margin-bottom: 1.5rem;
-            color: #555;
+        
+        .case-summary {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--charcoal);
+            margin-bottom: 20px;
         }
-
+        
         .case-button {
             display: inline-block;
-            background: white;
-            color: #2d5f5f;
-            border: 2px solid #2d5f5f;
+            background: transparent;
+            color: var(--deep-teal);
+            border: 2px solid var(--deep-teal);
             padding: 10px 24px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
             text-decoration: none;
-            border-radius: 4px;
-            font-size: 0.95rem;
-            transition: all 0.3s;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
         }
-
+        
         .case-button:hover {
-            background: #2d5f5f;
-            color: white;
+            background: var(--deep-teal);
+            color: var(--warm-cream);
         }
-
-        /* Final CTA */
-        .final-cta {
-            padding: 60px 20px;
-            background: linear-gradient(135deg, #2d5f5f 0%, #1a4040 100%);
-            color: white;
-            text-align: center;
-        }
-
-        .final-cta h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            font-weight: 300;
-        }
-
-        .final-cta p {
-            margin-bottom: 2rem;
-            font-size: 1.1rem;
-        }
-
-        /* Footer */
-        footer {
-            background: #1a3030;
-            color: rgba(255,255,255,0.7);
-            padding: 40px 20px;
-            text-align: center;
-        }
-
-        footer p {
-            margin-bottom: 1rem;
-        }
-
-        footer a {
-            color: #d4a574;
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        .maggie-note {
-            font-size: 0.9rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            margin-top: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-            .hero p {
-                font-size: 1rem;
-            }
-            .framework-grid,
-            .case-grid {
+        
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .hero-content {
                 grid-template-columns: 1fr;
+                gap: 50px;
+            }
+            
+            .hero h1 {
+                font-size: 48px;
+            }
+            
+            .hero-text {
+                font-size: 24px;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 24px;
+            }
+            
+            header {
+                padding: 30px 0 20px;
+            }
+            
+            .hero {
+                min-height: auto;
+                padding: 40px 0;
+            }
+            
+            .hero h1 {
+                font-size: 38px;
+            }
+            
+            .hero-text {
+                font-size: 20px;
+                margin-bottom: 25px;
+            }
+            
+            .cta-button {
+                padding: 18px 40px;
+                font-size: 14px;
+            }
+            
+            .maggies-card {
+                padding: 14px 18px;
+            }
+            
+            .maggies-card h3 {
+                font-size: 13px;
+            }
+            
+            .maggies-card p {
+                font-size: 11px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Hero -->
-    <section class="hero">
+    <header>
         <div class="container">
-            <h1>Navigating Your Life</h1>
-            <p>Understanding your capacity for change through the M×L×I framework. Discover what's constraining you and where to focus your energy.</p>
-            <a href="assessment.html" class="cta-button">Take the Assessment</a>
+            <div class="logo">Navigating Your Life</div>
         </div>
-    </section>
+    </header>
 
-    <!-- Framework Explanation -->
-    <section class="framework">
-        <div class="container">
-            <h2>The M×L×I Framework</h2>
-            <p class="framework-intro">Three dimensions that work together to determine your transitioning capacity:</p>
-            
-            <div class="framework-grid">
-                <div class="framework-card">
-                    <h3>Motivation</h3>
-                    <p>The energy and drive to actually do something about your situation. Not theoretical interest – genuine, actionable motivation.</p>
-                </div>
-                
-                <div class="framework-card">
-                    <h3>Learning</h3>
-                    <p>Your capacity to acquire new knowledge, skills, and ways of thinking. Bandwidth, cognitive load, and readiness to engage with new material.</p>
-                </div>
-                
-                <div class="framework-card">
-                    <h3>Identity</h3>
-                    <p>Clarity about who you are beyond your current role. What matters to you, what you value, and what you're willing to change.</p>
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-left">
+                        <h1>Would you like to find out <span class="highlight">why</span> some changes work for you and others don't?</h1>
+                    </div>
+                    <div class="hero-right">
+                        <div>
+                            <p class="hero-text">Find out what's stopping you</p>
+                            <a href="assessment.html" class="cta-button">Start Assessment</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Case Studies -->
-    <section class="case-studies">
-        <div class="container">
-            <h2>How the Framework Works</h2>
-            <p class="case-intro">Real examples showing how M×L×I identifies specific constraint patterns:</p>
-            
-            <div class="case-grid">
-                <!-- NHS Leader -->
-                <div class="case-card">
-                    <h3>NHS England Senior Leader</h3>
-                    <p class="role">Healthcare Leadership | Redundancy Threat</p>
-                    <div class="scores">M 4.4 | L 7.2 | I 7.2 – Motivation Constraint</div>
-                    <div class="summary">
-                        Years of expertise in navigating NHS complexity suddenly threatened by redundancy. High capability to learn and clear identity, but the drive to move forward has taken a hit. The challenge isn't knowing what to do – it's reconnecting with the motivation to actually do it.
+        </section>
+        
+        <section class="case-studies">
+            <div class="container">
+                <h2>How the Framework Works</h2>
+                <p class="case-studies-intro">Real examples showing how M×L×I identifies specific constraint patterns:</p>
+                
+                <div class="case-grid">
+                    <div class="case-card">
+                        <h3>NHS England Senior Leader</h3>
+                        <p class="case-role">Healthcare Leadership | Redundancy Threat</p>
+                        <div class="case-scores">M 4.4 | L 7.2 | I 7.2 – Motivation Constraint</div>
+                        <p class="case-summary">Years of expertise in navigating NHS complexity suddenly threatened by redundancy. High capability to learn and clear identity, but the drive to move forward has taken a hit. The challenge isn't knowing what to do – it's reconnecting with the motivation to actually do it.</p>
+                        <a href="case-nhs.html" class="case-button">Read Full Case Study</a>
                     </div>
-                    <a href="case-nhs.html" class="case-button">Read Full Case Study</a>
-                </div>
-
-                <!-- Academic Leader -->
-                <div class="case-card">
-                    <h3>Senior Academic Leader</h3>
-                    <p class="role">University Deputy Head | Work-Life Imbalance</p>
-                    <div class="scores">M 4.2 | L 6.4 | I 4.2 – Dual Constraint</div>
-                    <div class="summary">
-                        Capable of learning new skills but depleted in motivation and unclear about identity beyond institutional roles. The exhaustion isn't just about hours – it's about losing touch with who they are whilst serving organisational demands.
+                    
+                    <div class="case-card">
+                        <h3>Senior Academic Leader</h3>
+                        <p class="case-role">University Deputy Head | Work-Life Imbalance</p>
+                        <div class="case-scores">M 4.2 | L 6.4 | I 4.2 – Dual Constraint</div>
+                        <p class="case-summary">Capable of learning new skills but depleted in motivation and unclear about identity beyond institutional roles. The exhaustion isn't just about hours – it's about losing touch with who they are whilst serving organisational demands.</p>
+                        <a href="case-academic.html" class="case-button">Read Full Case Study</a>
                     </div>
-                    <a href="case-academic.html" class="case-button">Read Full Case Study</a>
-                </div>
-
-                <!-- Senior Coach -->
-                <div class="case-card">
-                    <h3>Senior Coach and Mentor</h3>
-                    <p class="role">81-Year-Old Transitions Expert | Legacy Work</p>
-                    <div class="scores">M 7.0 | L 5.0 | I 7.6 – Learning Constraint</div>
-                    <div class="summary">
-                        Clear identity and strong motivation, but experiencing genuine constraint around integrating vast stored corporate knowledge with fundamentally new material. After 50 years of transitions work, the challenge is finding coherent patterns across different knowledge domains.
+                    
+                    <div class="case-card">
+                        <h3>Senior Coach and Mentor</h3>
+                        <p class="case-role">81-Year-Old Transitions Expert | Legacy Work</p>
+                        <div class="case-scores">M 7.0 | L 5.0 | I 7.6 – Learning Constraint</div>
+                        <p class="case-summary">Clear identity and strong motivation, but experiencing genuine constraint around integrating vast stored corporate knowledge with fundamentally new material. After 50 years of transitions work, the challenge is finding coherent patterns across different knowledge domains.</p>
+                        <a href="case-coach.html" class="case-button">Read Full Case Study</a>
                     </div>
-                    <a href="case-coach.html" class="case-button">Read Full Case Study</a>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
-    <!-- Final CTA -->
-    <section class="final-cta">
-        <div class="container">
-            <h2>Ready to understand your transition?</h2>
-            <p>Take the assessment and discover what's constraining you and where you have capacity.</p>
-            <a href="assessment.html" class="cta-button">Take the Assessment</a>
-        </div>
-    </section>
-
-    <!-- Footer -->
     <footer>
         <div class="container">
-            <p>&copy; 2026 Navigate Transition Programme | Paul Thomas Coaching Ltd</p>
-            <div class="maggie-note">
-                <p>This assessment follows an honesty box model. If you find value in it, please consider <a href="https://www.maggies.org/get-involved/donate/" target="_blank">supporting Maggie's Cancer Centres</a>.</p>
+            <div class="footer-content">
+                <p>© 2026 Navigating Your Life</p>
+                <p style="font-size: 12px; margin-top: 10px;">If you find value in this assessment, please consider <a href="https://www.maggies.org/get-involved/donate/" target="_blank" style="color: var(--soft-gold); text-decoration: none; border-bottom: 1px solid var(--soft-gold);">supporting Maggie's Cancer Centres</a>.</p>
             </div>
         </div>
     </footer>
