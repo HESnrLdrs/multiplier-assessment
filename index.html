@@ -242,6 +242,27 @@
                 0 6px 12px rgba(0, 0, 0, 0.2);
         }
         
+        .cta-button-secondary {
+            display: inline-block;
+            background: transparent;
+            color: var(--deep-teal);
+            padding: 18px 45px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            border: 2px solid var(--deep-teal);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .cta-button-secondary:hover {
+            background: var(--deep-teal);
+            color: var(--warm-cream);
+        }
+        
         /* Maggie's Section */
         .maggies-section {
             padding: 60px 0;
@@ -505,34 +526,11 @@
                     <div class="hero-right">
                         <div>
                             <p class="hero-text">Find out what's stopping you</p>
-                            <a href="assessment.html" class="cta-button">Start Assessment</a>
+                            <div style="display: flex; flex-direction: column; gap: 15px; align-items: flex-start;">
+                                <a href="assessment.html" class="cta-button">Start Assessment</a>
+                                <a href="case-studies.html" class="cta-button-secondary">Example Case Studies</a>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <section class="case-studies">
-            <div class="container">
-                <h2>Example Case Studies</h2>
-                
-                <div class="case-grid">
-                    <div class="case-card">
-                        <h3>NHS Senior Manager</h3>
-                        <p class="case-summary">A senior manager facing redundancy after years of building expertise in how the NHS actually works. They know their value and they're perfectly capable of learning new things, but right now the energy to actually do something about their situation just isn't there. It's not about capability – it's about finding the drive to move forward when everything feels uncertain.</p>
-                        <a href="case-nhs.html" class="case-button">Read Full Case Study</a>
-                    </div>
-                    
-                    <div class="case-card">
-                        <h3>Senior Academic Leader</h3>
-                        <p class="case-summary">A deputy head of school who's absolutely exhausted. They could learn new skills if they wanted to, but they've lost touch with who they are beyond their institutional role. The problem isn't the hours they're working – it's that they've been so busy serving everyone else's needs that they can't remember what actually matters to them anymore.</p>
-                        <a href="case-academic.html" class="case-button">Read Full Case Study</a>
-                    </div>
-                    
-                    <div class="case-card">
-                        <h3>Coach and Mentor</h3>
-                        <p class="case-summary">An experienced coach who knows exactly who they are and what they want to achieve. They've got the drive and energy to do the work. But after 50 years of accumulated wisdom, they're finding it genuinely difficult to integrate completely new material and approaches. It's not about losing sharpness – it's about having so much knowledge that finding room for new patterns is actually quite challenging.</p>
-                        <a href="case-coach.html" class="case-button">Read Full Case Study</a>
                     </div>
                 </div>
             </div>
