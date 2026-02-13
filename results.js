@@ -891,7 +891,6 @@ workbookButtons.forEach(btn => {
         }
     });
 });
-}
 
 // ============================================
 // EMAIL TRIGGER
