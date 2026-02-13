@@ -876,21 +876,26 @@ function setupCTAHandlers(userId) {
     });
     
     // Workbook buttons
-const workbookButtons = document.querySelectorAll('[data-action="view-workbook"]');
-workbookButtons.forEach(btn => {
-    btn.addEventListener('click', function() {
-        const workbookType = this.getAttribute('data-workbook');
-        if (workbookType === 'momentum') {
-            window.open('https://drive.google.com/uc?export=download&id=1hKSMIoyzucD3rv_r26K3be9js9NpdZME', '_blank');
-        } else if (workbookType === 'motivation-red') {
-            window.open('https://drive.google.com/uc?export=download&id=1gvLQNhcytSKILG_0-T04lt-V3h1QXyZc', '_blank');
-        } else if (workbookType === 'learning-red') {
-            window.open('https://drive.google.com/uc?export=download&id=17vH7Xh32IvK1rCD2TIY1JzBi2QZpIrsn', '_blank');
-        } else if (workbookType === 'identity-red') {
-            window.open('https://drive.google.com/uc?export=download&id=1Dd1IhBsX5sLcrYLh_cN18swUs0eYa9ki', '_blank');
-        }
+    const workbookButtons = document.querySelectorAll('[data-action="view-workbook"]');
+    workbookButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const workbookType = this.getAttribute('data-workbook');
+            if (workbookType === 'momentum') {
+                window.open('https://drive.google.com/uc?export=download&id=1hKSMIoyzucD3rv_r26K3be9js9NpdZME', '_blank');
+            } else if (workbookType === 'motivation-red') {
+                window.open('https://drive.google.com/uc?export=download&id=1gvLQNhcytSKILG_0-T04lt-V3h1QXyZc', '_blank');
+            } else if (workbookType === 'learning-red') {
+                window.open('https://drive.google.com/uc?export=download&id=17vH7Xh32IvK1rCD2TIY1JzBi2QZpIrsn', '_blank');
+            } else if (workbookType === 'identity-red') {
+                window.open('https://drive.google.com/uc?export=download&id=1Dd1IhBsX5sLcrYLh_cN18swUs0eYa9ki', '_blank');
+            }
+        });
     });
-});
+} // Close setupCTAHandlers function
+
+// ============================================
+// EMAIL TRIGGER
+// ============================================
 
 // ============================================
 // EMAIL TRIGGER
