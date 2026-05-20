@@ -66,7 +66,6 @@
 
         .content { padding: 40px; }
 
-        /* Loading screen */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background: linear-gradient(135deg, #1a4d4d 0%, #2d6a6a 100%);
@@ -89,7 +88,6 @@
         .view { display: none; }
         .view.active { display: block; }
 
-        /* Auth */
         .auth-container { max-width: 420px; margin: 0 auto; }
         .auth-tabs {
             display: flex; margin-bottom: 30px;
@@ -133,7 +131,6 @@
         }
         .error-message.show { display: block; }
 
-        /* Dashboard */
         .dashboard-header {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 30px; padding-bottom: 20px;
@@ -192,7 +189,6 @@
             font-size: 1.4em; font-weight: 700; color: #2d6a6a;
         }
 
-        /* Assessment */
         .instructions-card {
             background: #f5f3ed;
             padding: 20px 24px;
@@ -200,9 +196,7 @@
             margin-bottom: 30px;
             border-left: 4px solid #2d6a6a;
         }
-        .instructions-card p {
-            margin: 0; color: #333; line-height: 1.6;
-        }
+        .instructions-card p { margin: 0; color: #333; line-height: 1.6; }
 
         .question {
             background: #fafaf8;
@@ -263,7 +257,6 @@
             border: 2px solid #2d6a6a;
         }
 
-        /* Results */
         .dimension-score {
             display: flex; align-items: center; gap: 14px;
             padding: 18px 22px;
@@ -344,6 +337,24 @@
         </div>
 
         <div class="content">
+
+            <!-- Access Gate View -->
+            <div id="access-view" class="view">
+                <div style="max-width: 460px; margin: 0 auto; padding: 20px 0;">
+                    <h2 style="color: #1a4d4d; font-size: 1.5em; margin-bottom: 16px;">Invitation-only road test</h2>
+                    <p style="font-size: 1em; color: #444; line-height: 1.6; margin-bottom: 24px;">
+                        This is a sandbox version of a new instrument, shared with a small group of invited testers. Please enter the access code you were given to continue.
+                    </p>
+                    <div id="access-error" class="error-message"></div>
+                    <form onsubmit="handleAccess(event)">
+                        <div class="form-group">
+                            <label for="access-code">Access code</label>
+                            <input type="text" id="access-code" required autocomplete="off">
+                        </div>
+                        <button type="submit" class="btn">Continue</button>
+                    </form>
+                </div>
+            </div>
 
             <!-- Auth View -->
             <div id="auth-view" class="view">
@@ -451,9 +462,7 @@
                     <p>For each statement below, select the number (0–10) that best describes what you observe happening in your organisation, where 0 is "not at all true" and 10 is "completely true". The statements appear in mixed order.</p>
                 </div>
 
-                <div id="questions-container">
-                    <!-- Questions inserted here -->
-                </div>
+                <div id="questions-container"></div>
 
                 <div class="navigation-buttons">
                     <button class="nav-btn secondary" onclick="cancelAssessment()">Cancel</button>
@@ -479,7 +488,6 @@
     </div>
 
     <script>
-        // Firebase config (shared project)
         const firebaseConfig = {
             apiKey: "AIzaSyCmnYEq0hf9QyNjbhej6ghdM2LAzWLGaPA",
             authDomain: "multiplier-assessment.firebaseapp.com",
@@ -497,8 +505,6 @@
         let currentUser = null;
         let currentQuestions = [];
 
-        // The 15 field items, with dimension and reverse flag.
-        // Items 1, 4, 8, 12 are reverse-scored (high score = field present).
         const questions = [
             { id: 'q1',  dimension: 'motivation', reverse: true,  text: "Over time, people can become less clear about why their contribution matters." },
             { id: 'q2',  dimension: 'learning',   reverse: false, text: "People can raise difficult issues in ways that improve how work is done." },
@@ -526,6 +532,8 @@
             return shuffled;
         }
 
+        const ACCESS_CODE = 'fieldtest26';
+
         auth.onAuthStateChanged(user => {
             const loadingScreen = document.getElementById('loading-screen');
             if (loadingScreen) {
@@ -535,12 +543,39 @@
 
             if (user) {
                 currentUser = user;
-                loadUserData();
             } else {
                 currentUser = null;
+            }
+
+            if (localStorage.getItem('field_access_granted') !== 'yes') {
+                showView('access-view');
+                return;
+            }
+
+            if (currentUser) {
+                loadUserData();
+            } else {
                 showView('auth-view');
             }
         });
+
+        function handleAccess(event) {
+            event.preventDefault();
+            const code = document.getElementById('access-code').value.trim().toLowerCase();
+            const errorEl = document.getElementById('access-error');
+            if (code === ACCESS_CODE) {
+                localStorage.setItem('field_access_granted', 'yes');
+                errorEl.classList.remove('show');
+                if (currentUser) {
+                    loadUserData();
+                } else {
+                    showView('auth-view');
+                }
+            } else {
+                errorEl.textContent = 'That access code is not recognised. Check what you were sent, and try again.';
+                errorEl.classList.add('show');
+            }
+        }
 
         function switchAuthTab(tab) {
             document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
@@ -643,7 +678,6 @@
                 const userSnap = await database.ref('field_users/' + currentUser.uid).once('value');
                 let userData = userSnap.val();
 
-                // If user authed but has no field_users record, treat them as new to this assessment
                 if (!userData) {
                     await database.ref('field_users/' + currentUser.uid).set({
                         name: currentUser.email,
@@ -657,15 +691,12 @@
 
                 document.getElementById('user-name').textContent = userData.name || currentUser.email;
 
-                // Check if they have prior field assessments
                 const assessmentsSnap = await database.ref('field_assessments/' + currentUser.uid).once('value');
                 const assessments = assessmentsSnap.val();
 
                 if (!assessments) {
-                    // First time, show welcome
                     showView('welcome-view');
                 } else {
-                    // Show dashboard with previous result
                     renderPreviousResult(assessments);
                     showView('dashboard-view');
                 }
@@ -750,10 +781,7 @@
 
             currentQuestions.forEach(q => {
                 const raw = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value);
-                // Reverse-scoring: for items where high score indicates field presence,
-                // transform value to (10 - raw) so all items align with high = healthy.
                 const adjusted = q.reverse ? (10 - raw) : raw;
-
                 if (q.dimension === 'motivation') { motSum += adjusted; motCount++; }
                 if (q.dimension === 'learning')   { learnSum += adjusted; learnCount++; }
                 if (q.dimension === 'identity')   { idSum   += adjusted; idCount++; }
@@ -778,7 +806,6 @@
                 identity:   getTrafficLight(scores.identity)
             };
 
-            // Capture raw item responses for admin diagnostics
             const itemResponses = {};
             currentQuestions.forEach(q => {
                 const raw = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value);
@@ -819,7 +846,6 @@
 
         function displayResults(data) {
             const capitalise = s => s.charAt(0).toUpperCase() + s.slice(1);
-
             const dims = ['motivation', 'learning', 'identity'];
             const html = dims.map(dim => `
                 <div class="dimension-score ${data.constraint === dim ? 'constraint' : ''}">
