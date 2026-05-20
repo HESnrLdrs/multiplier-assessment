@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Field Assessment Admin — Navigate Transition</title>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f3ed;
+            min-height: 100vh;
+            padding: 20px;
+            color: #2d2d2d;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a4d4d 0%, #2d6a6a 100%);
+            color: white;
+            padding: 30px 40px;
+        }
+        .header h1 { font-size: 1.6em; margin-bottom: 6px; }
+        .header p { opacity: 0.95; font-size: 0.95em; }
+
+        .content { padding: 30px 40px; }
+
+        .view { display: none; }
+        .view.active { display: block; }
+
+        /* Login */
+        .login-container { max-width: 400px; margin: 40px auto; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 500; color: #333; }
+        .form-group input {
+            width: 100%; padding: 10px 12px;
+            border: 2px solid #e0e0e0; border-radius: 6px; font-size: 1em;
+        }
+        .form-group input:focus { outline: none; border-color: #2d6a6a; }
+
+        .btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #1a4d4d 0%, #2d6a6a 100%);
+            color: white; border: none; border-radius: 6px;
+            font-size: 1em; font-weight: 600; cursor: pointer;
+        }
+        .btn-secondary {
+            background: white; color: #2d6a6a;
+            border: 2px solid #2d6a6a;
+        }
+        .error-msg {
+            background: #fee; color: #c33;
+            padding: 10px 14px; border-radius: 6px;
+            margin-bottom: 16px; display: none;
+            font-size: 0.92em;
+        }
+        .error-msg.show { display: block; }
+
+        /* Dashboard */
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .top-bar h2 { color: #1a4d4d; font-size: 1.3em; }
+
+        .summary-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .summary-card {
+            background: #f5f3ed;
+            padding: 14px 18px;
+            border-radius: 8px;
+            border-left: 3px solid #c9a961;
+        }
+        .summary-label {
+            font-size: 0.78em; color: #666;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .summary-value {
+            font-size: 1.4em; color: #1a4d4d; font-weight: 700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92em;
+        }
+        thead th {
+            background: #1a4d4d; color: white;
+            text-align: left; padding: 12px 14px;
+            font-weight: 600; font-size: 0.85em;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        tbody td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #eee;
+        }
+        tbody tr:hover { background: #fafaf8; cursor: pointer; }
+
+        .score-cell {
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            min-width: 40px;
+            text-align: center;
+        }
+        .score-red    { background: #fceaea; color: #A32D2D; }
+        .score-amber  { background: #faedda; color: #854F0B; }
+        .score-green  { background: #eaf3de; color: #3B6D11; }
+
+        .constraint-tag {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 10px;
+            font-size: 0.78em;
+            font-weight: 600;
+            background: #fceaea;
+            color: #A32D2D;
+        }
+
+        /* Detail */
+        .back-btn {
+            background: none; border: none; color: #2d6a6a;
+            font-size: 0.95em; cursor: pointer; padding: 0;
+            margin-bottom: 20px;
+        }
+        .detail-meta {
+            background: #f5f3ed;
+            padding: 18px 22px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+        }
+        .detail-meta div { margin-bottom: 6px; font-size: 0.95em; }
+        .detail-meta div:last-child { margin-bottom: 0; }
+        .detail-meta strong { color: #1a4d4d; margin-right: 6px; }
+
+        .detail-scores {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .detail-score-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            padding: 16px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .detail-score-card.constraint {
+            border-left: 4px solid #A32D2D;
+            background: #fff8f6;
+        }
+        .detail-score-card .label {
+            font-size: 0.85em; color: #666; margin-bottom: 6px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .detail-score-card .value {
+            font-size: 1.8em; font-weight: 700; color: #2d6a6a;
+        }
+        .detail-score-card.constraint .value { color: #A32D2D; }
+
+        .item-table th, .item-table td { font-size: 0.88em; }
+        .item-table .dim-m { color: #5e3a91; font-weight: 600; }
+        .item-table .dim-l { color: #0e7da3; font-weight: 600; }
+        .item-table .dim-i { color: #b8541e; font-weight: 600; }
+        .item-table .reverse-tag {
+            display: inline-block;
+            background: #f0e8d8;
+            color: #854F0B;
+            padding: 1px 6px;
+            border-radius: 8px;
+            font-size: 0.72em;
+            margin-left: 4px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+            font-style: italic;
+        }
+
+        .denied {
+            background: #fee; color: #c33;
+            padding: 24px;
+            border-radius: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Field Assessment Admin</h1>
+        <p>Road test responses — Navigate Transition</p>
+    </div>
+
+    <div class="content">
+
+        <!-- Login -->
+        <div id="login-view" class="view active">
+            <div class="login-container">
+                <h2 style="color: #1a4d4d; margin-bottom: 20px; font-size: 1.2em;">Admin Login</h2>
+                <div id="error-message" class="error-msg"></div>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%;">Login</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- List -->
+        <div id="list-view" class="view">
+            <div class="top-bar">
+                <h2>All field assessment responses</h2>
+                <button class="btn btn-secondary" onclick="handleLogout()">Logout</button>
+            </div>
+
+            <div class="summary-row" id="summary-row"></div>
+
+            <div id="list-container"></div>
+        </div>
+
+        <!-- Detail -->
+        <div id="detail-view" class="view">
+            <button class="back-btn" onclick="showList()">← Back to all responses</button>
+            <div id="detail-container"></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyCmnYEq0hf9QyNjbhej6ghdM2LAzWLGaPA",
+        authDomain: "multiplier-assessment.firebaseapp.com",
+        databaseURL: "https://multiplier-assessment-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "multiplier-assessment",
+        storageBucket: "multiplier-assessment.firebasestorage.app",
+        messagingSenderId: "696632883081",
+        appId: "1:696632883081:web:3b5ced9d2e85bb54999358"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+
+    // Optional admin allow-list. If empty array, any logged-in user can view.
+    // Paul: add your email here (lowercase) for a simple admin-only gate.
+    const ADMIN_EMAILS = []; // e.g. ['paul@example.com']
+
+    let allResponses = [];
+
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            if (ADMIN_EMAILS.length > 0 && !ADMIN_EMAILS.includes(user.email.toLowerCase())) {
+                showAccessDenied();
+                return;
+            }
+            loadAllResponses();
+        } else {
+            showView('login-view');
+        }
+    });
+
+    function showView(viewId) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+    }
+
+    function showError(msg) {
+        const el = document.getElementById('error-message');
+        el.textContent = msg;
+        el.classList.add('show');
+    }
+
+    function showAccessDenied() {
+        document.querySelector('.content').innerHTML = `
+            <div class="denied">
+                <strong>Access denied.</strong><br>
+                This admin view is restricted. If you believe you should have access, contact the site owner.<br><br>
+                <button class="btn" onclick="auth.signOut().then(() => location.reload())">Sign Out</button>
+            </div>
+        `;
+    }
+
+    async function handleLogin(e) {
+        e.preventDefault();
+        document.getElementById('error-message').classList.remove('show');
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        try {
+            await auth.signInWithEmailAndPassword(email, password);
+        } catch (error) {
+            showError('Login failed. Check your email and password.');
+        }
+    }
+
+    function handleLogout() { auth.signOut().then(() => location.reload()); }
+
+    async function loadAllResponses() {
+        try {
+            const usersSnap = await database.ref('field_users').once('value');
+            const users = usersSnap.val() || {};
+
+            const assessmentsSnap = await database.ref('field_assessments').once('value');
+            const assessmentsByUser = assessmentsSnap.val() || {};
+
+            allResponses = [];
+
+            Object.entries(assessmentsByUser).forEach(([uid, userAssessments]) => {
+                const userMeta = users[uid] || {};
+                Object.entries(userAssessments).forEach(([assessmentId, data]) => {
+                    allResponses.push({
+                        assessmentId,
+                        uid,
+                        name: userMeta.name || '(no name)',
+                        email: userMeta.email || '(no email)',
+                        organisation: userMeta.organisation || '(not specified)',
+                        ...data
+                    });
+                });
+            });
+
+            // Sort by timestamp, newest first
+            allResponses.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            renderList();
+            showView('list-view');
+        } catch (error) {
+            console.error('Error loading responses:', error);
+            document.getElementById('list-container').innerHTML =
+                '<div class="empty-state">Error loading responses. Check the console.</div>';
+            showView('list-view');
+        }
+    }
+
+    function renderList() {
+        const summary = document.getElementById('summary-row');
+        const total = allResponses.length;
+
+        if (total === 0) {
+            summary.innerHTML = '';
+            document.getElementById('list-container').innerHTML =
+                '<div class="empty-state">No field assessment responses yet. Once testers submit, their responses will appear here.</div>';
+            return;
+        }
+
+        // Aggregate summary
+        const mAvg = (allResponses.reduce((s, r) => s + parseFloat(r.motivationDisplay), 0) / total).toFixed(1);
+        const lAvg = (allResponses.reduce((s, r) => s + parseFloat(r.learningDisplay),   0) / total).toFixed(1);
+        const iAvg = (allResponses.reduce((s, r) => s + parseFloat(r.identityDisplay),   0) / total).toFixed(1);
+
+        const constraintCounts = { motivation: 0, learning: 0, identity: 0 };
+        allResponses.forEach(r => { constraintCounts[r.constraint] = (constraintCounts[r.constraint] || 0) + 1; });
+
+        summary.innerHTML = `
+            <div class="summary-card">
+                <div class="summary-label">Responses</div>
+                <div class="summary-value">${total}</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">M average</div>
+                <div class="summary-value">${mAvg}</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">L average</div>
+                <div class="summary-value">${lAvg}</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">I average</div>
+                <div class="summary-value">${iAvg}</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">M / L / I as constraint</div>
+                <div class="summary-value" style="font-size: 1.05em;">${constraintCounts.motivation} / ${constraintCounts.learning} / ${constraintCounts.identity}</div>
+            </div>
+        `;
+
+        const rows = allResponses.map((r, idx) => `
+            <tr onclick="showDetail(${idx})">
+                <td>${r.name}</td>
+                <td style="color: #666; font-size: 0.88em;">${r.organisation}</td>
+                <td style="color: #666;">${new Date(r.timestamp).toLocaleDateString('en-GB')} ${new Date(r.timestamp).toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'})}</td>
+                <td><span class="score-cell ${scoreClass(r.motivationDisplay)}">${r.motivationDisplay}</span></td>
+                <td><span class="score-cell ${scoreClass(r.learningDisplay)}">${r.learningDisplay}</span></td>
+                <td><span class="score-cell ${scoreClass(r.identityDisplay)}">${r.identityDisplay}</span></td>
+                <td><span class="constraint-tag">${capitalise(r.constraint)}</span></td>
+                <td style="font-weight: 600; color: #1a4d4d;">${r.capacityScore}</td>
+            </tr>
+        `).join('');
+
+        document.getElementById('list-container').innerHTML = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Organisation</th>
+                        <th>Date</th>
+                        <th>M</th>
+                        <th>L</th>
+                        <th>I</th>
+                        <th>Constraint</th>
+                        <th>Capacity</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
+        `;
+    }
+
+    function scoreClass(score) {
+        const n = parseFloat(score);
+        if (n < 4.0) return 'score-red';
+        if (n < 7.0) return 'score-amber';
+        return 'score-green';
+    }
+
+    function capitalise(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+    function showList() {
+        showView('list-view');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showDetail(idx) {
+        const r = allResponses[idx];
+
+        const dims = ['motivation', 'learning', 'identity'];
+        const scoreCards = dims.map(dim => `
+            <div class="detail-score-card ${r.constraint === dim ? 'constraint' : ''}">
+                <div class="label">${capitalise(dim)}</div>
+                <div class="value">${r[dim + 'Display']}/10</div>
+                ${r.constraint === dim ? '<div style="font-size: 0.78em; color: #A32D2D; margin-top: 6px; font-weight: 600;">First casualty</div>' : ''}
+            </div>
+        `).join('');
+
+        // Item-level breakdown
+        let itemRows = '';
+        if (r.itemResponses) {
+            // Re-order by dimension for easier review
+            const byDim = { motivation: [], learning: [], identity: [] };
+            Object.entries(r.itemResponses).forEach(([qid, item]) => {
+                byDim[item.dimension].push({ qid, ...item });
+            });
+
+            ['motivation', 'learning', 'identity'].forEach(dim => {
+                byDim[dim].forEach(item => {
+                    const dimClass = dim === 'motivation' ? 'dim-m' : (dim === 'learning' ? 'dim-l' : 'dim-i');
+                    const dimLabel = dim === 'motivation' ? 'M' : (dim === 'learning' ? 'L' : 'I');
+                    itemRows += `
+                        <tr>
+                            <td><span class="${dimClass}">${dimLabel}</span></td>
+                            <td style="color: #444; line-height: 1.5;">${item.text}${item.reverse ? '<span class="reverse-tag">reverse</span>' : ''}</td>
+                            <td style="text-align: center; color: #666;">${item.raw}</td>
+                            <td style="text-align: center; font-weight: 600;">${item.adjusted}</td>
+                        </tr>
+                    `;
+                });
+            });
+        } else {
+            itemRows = '<tr><td colspan="4" style="text-align: center; color: #888; padding: 20px;">Item-level data not available for this response.</td></tr>';
+        }
+
+        document.getElementById('detail-container').innerHTML = `
+            <div class="detail-meta">
+                <div><strong>Name:</strong> ${r.name}</div>
+                <div><strong>Email:</strong> ${r.email}</div>
+                <div><strong>Organisation:</strong> ${r.organisation}</div>
+                <div><strong>Submitted:</strong> ${new Date(r.timestamp).toLocaleString('en-GB')}</div>
+            </div>
+
+            <h3 style="color: #1a4d4d; margin-bottom: 14px; font-size: 1.1em;">Dimension scores</h3>
+            <div class="detail-scores">
+                ${scoreCards}
+                <div class="detail-score-card">
+                    <div class="label">Capacity</div>
+                    <div class="value">${r.capacityScore}</div>
+                    <div style="font-size: 0.75em; color: #666; margin-top: 6px;">M × L × I</div>
+                </div>
+            </div>
+
+            <h3 style="color: #1a4d4d; margin-bottom: 14px; font-size: 1.1em;">Item-by-item responses</h3>
+            <p style="font-size: 0.85em; color: #666; margin-bottom: 12px;">Raw is the value the respondent selected (0-10). Adjusted is what was used for scoring (reverse-scored items are transformed to 10 minus raw).</p>
+            <table class="item-table">
+                <thead>
+                    <tr>
+                        <th style="width: 40px;">Dim</th>
+                        <th>Statement</th>
+                        <th style="width: 70px; text-align: center;">Raw</th>
+                        <th style="width: 90px; text-align: center;">Adjusted</th>
+                    </tr>
+                </thead>
+                <tbody>${itemRows}</tbody>
+            </table>
+        `;
+
+        showView('detail-view');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
