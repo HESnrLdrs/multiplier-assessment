@@ -66,7 +66,6 @@
 
         .content { padding: 40px; }
 
-        /* Loading screen */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background: linear-gradient(135deg, #1a4d4d 0%, #2d6a6a 100%);
@@ -89,7 +88,6 @@
         .view { display: none; }
         .view.active { display: block; }
 
-        /* Auth */
         .auth-container { max-width: 420px; margin: 0 auto; }
         .auth-tabs {
             display: flex; margin-bottom: 30px;
@@ -133,7 +131,6 @@
         }
         .error-message.show { display: block; }
 
-        /* Dashboard */
         .dashboard-header {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 30px; padding-bottom: 20px;
@@ -192,7 +189,6 @@
             font-size: 1.4em; font-weight: 700; color: #2d6a6a;
         }
 
-        /* Assessment */
         .instructions-card {
             background: #f5f3ed;
             padding: 20px 24px;
@@ -263,7 +259,6 @@
             border: 2px solid #2d6a6a;
         }
 
-        /* Results */
         .dimension-score {
             display: flex; align-items: center; gap: 14px;
             padding: 18px 22px;
@@ -408,9 +403,27 @@
                             <input type="password" id="signup-password" required minlength="6">
                         </div>
                         <p style="font-size: 0.85em; color: #666; margin: 15px 0;">
-                            If you already have an account for the personal assessment, please sign up here with a different email so your organisation assessment data stays separate.
+                            Already used the personal assessment? You can sign in with the same email and password using the Login tab above. You do not need a second email.
                         </p>
                         <button type="submit" class="btn">Sign Up</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Organisation capture (for users who log in without an organisation set) -->
+            <div id="org-capture-view" class="view">
+                <div style="max-width: 460px; margin: 0 auto; padding: 20px 0;">
+                    <h2 style="color: #1a4d4d; font-size: 1.5em; margin-bottom: 16px;">One quick thing</h2>
+                    <p style="font-size: 1em; color: #444; line-height: 1.6; margin-bottom: 24px;">
+                        Which organisation are you assessing? This is the organisation you will have in mind as you answer the 15 items.
+                    </p>
+                    <div id="org-capture-error" class="error-message"></div>
+                    <form onsubmit="saveOrganisation(event)">
+                        <div class="form-group">
+                            <label for="org-capture-input">Organisation</label>
+                            <input type="text" id="org-capture-input" required autocomplete="off">
+                        </div>
+                        <button type="submit" class="btn">Continue</button>
                     </form>
                 </div>
             </div>
@@ -653,7 +666,7 @@
                 });
             } catch (error) {
                 if (error.code === 'auth/email-already-in-use') {
-                    showError('This email is already registered. If you used it for the personal assessment, please sign up here with a different email so your organisation assessment data stays separate.');
+                    showError('This email is already registered. Use the Login tab above to sign in with your existing email and password. You do not need a second email.');
                 } else {
                     showError(error.message);
                 }
@@ -679,20 +692,28 @@
                 const userSnap = await database.ref('field_users/' + currentUser.uid).once('value');
                 let userData = userSnap.val();
 
+                // If user authed but has no field_users record (e.g. they only did the personal
+                // assessment), create a minimal record; the organisation is captured below.
                 if (!userData) {
                     await database.ref('field_users/' + currentUser.uid).set({
-                        name: currentUser.email,
+                        name: currentUser.displayName || currentUser.email,
                         email: currentUser.email,
                         organisation: '',
                         createdAt: new Date().toISOString(),
                         source: 'field_assessment'
                     });
-                    userData = { name: currentUser.email };
+                    userData = { name: currentUser.displayName || currentUser.email, organisation: '' };
+                }
+
+                // If no organisation recorded, capture it before going any further.
+                if (!userData.organisation || userData.organisation.trim() === '') {
+                    showView('org-capture-view');
+                    return;
                 }
 
                 document.getElementById('user-name').textContent = userData.name || currentUser.email;
 
-                // Dynamic header with organisation name
+                // Dynamic header with organisation name (item 4)
                 const orgName = userData.organisation || '';
                 const assessmentHeader = document.getElementById('assessment-header');
                 const resultsHeader = document.getElementById('results-header');
@@ -704,6 +725,7 @@
                     if (resultsHeader)    resultsHeader.textContent    = 'Your Reading';
                 }
 
+                // Check if they have prior organisation assessments
                 const assessmentsSnap = await database.ref('field_assessments/' + currentUser.uid).once('value');
                 const assessments = assessmentsSnap.val();
 
@@ -716,6 +738,22 @@
             } catch (err) {
                 console.error('Error loading user data:', err);
                 showView('dashboard-view');
+            }
+        }
+
+        async function saveOrganisation(event) {
+            event.preventDefault();
+            const org = document.getElementById('org-capture-input').value.trim();
+            const errorEl = document.getElementById('org-capture-error');
+            if (!org) return;
+            try {
+                await database.ref('field_users/' + currentUser.uid + '/organisation').set(org);
+                errorEl.classList.remove('show');
+                loadUserData();
+            } catch (err) {
+                console.error('Error saving organisation:', err);
+                errorEl.textContent = 'Could not save. Please try again.';
+                errorEl.classList.add('show');
             }
         }
 
