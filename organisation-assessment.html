@@ -419,20 +419,11 @@
             <div id="welcome-view" class="view">
                 <div style="max-width: 620px; margin: 0 auto; padding: 20px 0;">
                     <h2 style="color: #1a4d4d; font-size: 1.8em; margin-bottom: 20px;">Welcome to the Organisation Assessment</h2>
-                    <p style="font-size: 1.05em; color: #444; line-height: 1.7; margin-bottom: 18px;">
-                        This is a road-test version of an instrument that reads an organisation through three lenses. Motivation, Learning, and Identity.
-                    </p>
-                    <p style="font-size: 1.05em; color: #444; line-height: 1.7; margin-bottom: 18px;">
-                        Unlike the personal assessment, this one is not about you. It asks you to observe what is happening to people in the organisation you have in mind. You are the instrument. Your responses read what the place is doing.
-                    </p>
-                    <p style="font-size: 1.05em; color: #444; line-height: 1.7; margin-bottom: 18px;">
-                        Fifteen statements. Five to seven minutes. Your responses are confidential. There are no right or wrong answers. Answer honestly based on what you actually see happening around you in the organisation, not what you wish was happening.
-                    </p>
                     <p style="font-size: 1.05em; color: #444; line-height: 1.7; margin-bottom: 30px;">
-                        Detailed interpretation is under development. For this road-test round you will see your three dimension scores and the dimension flagged as the constraint. The richer interpretive material will follow.
+                        The 15 items ask you to think about what is happening to people in your organisation, not what is happening to you personally but in the organisation. Answer honestly based on what you see, not what you wish was happening. Five to ten minutes.
                     </p>
                     <button class="nav-btn" onclick="startAssessment()" style="font-size: 1.05em;">
-                        Begin Assessment
+                        Take the assessment
                     </button>
                 </div>
             </div>
@@ -448,12 +439,11 @@
 
                 <div class="intro-card">
                     <h3>Organisation Assessment — Road Test</h3>
-                    <p>This instrument reads an organisation through three lenses. Motivation, Learning, and Identity. The 15 items ask you to observe what is happening to people in the organisation you have in mind, not what is happening to you personally.</p>
-                    <p>Answer honestly based on what you see, not what you wish was happening. Five to seven minutes.</p>
+                    <p>The 15 items ask you to think about what is happening to people in your organisation, not what is happening to you personally but in the organisation. Answer honestly based on what you see, not what you wish was happening. Five to ten minutes.</p>
                 </div>
 
                 <div class="action-card" onclick="startAssessment()">
-                    <h3>Take Organisation Assessment</h3>
+                    <h3>Take the assessment</h3>
                     <p>Begin a new reading of your organisation</p>
                 </div>
 
@@ -465,7 +455,7 @@
                 <h2 id="assessment-header" style="margin-bottom: 24px; color: #1a4d4d;">Organisation Assessment</h2>
 
                 <div class="instructions-card">
-                    <p>For each statement below, select the number (0–10) that best describes what you observe happening in your organisation, where 0 is "not at all true" and 10 is "completely true". The statements appear in mixed order.</p>
+                    <p>For each statement below, select the number (0–10) that best describes what you observe happening in your organisation, where 0 is "not at all true" and 10 is "completely true".</p>
                 </div>
 
                 <div id="questions-container">
@@ -484,7 +474,7 @@
                 <div id="results-summary"></div>
 
                 <div class="holding-line">
-                    <strong>What you are seeing.</strong> Three scores, one per dimension, on a 0 to 10 scale. The dimension with the lowest score is flagged as the constraint — the place where the field has done its work first. Red below 4.0, amber 4.0 to 6.9, green 7.0 and above. The richer interpretive material that explains what each pattern means is under development and will follow when ready.
+                    <strong>What you are seeing.</strong> Three scores, one per dimension, on a 0 to 10 scale. The dimension with the lowest score is flagged as the constraint, the place where the conditions are most strongly at work. The bands read: 0 to 3, conditions strongly constrain adaptive contribution; 4 to 6, conditions partially support but inconsistently sustain it; 7 to 10, conditions generally support it. The richer interpretive material that explains what each pattern means is under development and will follow when ready.
                 </div>
 
                 <div class="navigation-buttons" style="margin-top: 30px;">
@@ -514,24 +504,24 @@
         let currentUser = null;
         let currentQuestions = [];
 
-        // The 15 field items, with dimension and reverse flag.
-        // Items 1, 4, 8, 12 are reverse-scored (high score = field present).
+        // The 15 organisation items, with dimension and reverse flag.
+        // Items 4, 8, 11 are reverse-scored (agreement indicates constraining conditions).
         const questions = [
-            { id: 'q1',  dimension: 'motivation', reverse: true,  text: "Over time, people can become less clear about why their contribution matters." },
-            { id: 'q2',  dimension: 'learning',   reverse: false, text: "People can raise difficult issues in ways that improve how work is done." },
-            { id: 'q3',  dimension: 'motivation', reverse: false, text: "People here can still connect to the purpose and meaning of their contribution." },
-            { id: 'q4',  dimension: 'identity',   reverse: true,  text: "There are aspects of people's experience that do not always feel speakable here." },
-            { id: 'q5',  dimension: 'learning',   reverse: false, text: "When circumstances change, this organisation can adapt how it works rather than repeating familiar approaches." },
-            { id: 'q6',  dimension: 'identity',   reverse: false, text: "People here still recognise the organisation they believed they were joining." },
+            { id: 'q1',  dimension: 'motivation', reverse: false, text: "People here can still connect to the purpose and meaning of their contribution." },
+            { id: 'q2',  dimension: 'learning',   reverse: false, text: "People can raise difficult issues that improve how work is done." },
+            { id: 'q3',  dimension: 'identity',   reverse: false, text: "People can contribute here without feeling they need to become someone different." },
+            { id: 'q4',  dimension: 'motivation', reverse: true,  text: "Over time, people can become less clear about whether their contribution matters." },
+            { id: 'q5',  dimension: 'learning',   reverse: false, text: "When change happens, the organisation can adapt how it works rather than repeating familiar approaches." },
+            { id: 'q6',  dimension: 'identity',   reverse: false, text: "People here can still recognise the organisation as the one they joined." },
             { id: 'q7',  dimension: 'motivation', reverse: false, text: "People can see how their contribution makes a difference." },
-            { id: 'q8',  dimension: 'learning',   reverse: true,  text: "Over time, people learn which conversations are safe to have." },
+            { id: 'q8',  dimension: 'learning',   reverse: true,  text: "Over time, people learn what it is safe to talk about here." },
             { id: 'q9',  dimension: 'motivation', reverse: false, text: "The organisation's purpose remains believable during periods of change or pressure." },
-            { id: 'q10', dimension: 'identity',   reverse: false, text: "People can contribute here without feeling they need to become someone different." },
-            { id: 'q11', dimension: 'learning',   reverse: false, text: "Different perspectives and challenges are taken seriously here." },
-            { id: 'q12', dimension: 'identity',   reverse: true,  text: "Over time, people can lose a sense of who they are in their professional role." },
-            { id: 'q13', dimension: 'motivation', reverse: false, text: "There is space here for people to care about the meaning and quality of their contribution." },
-            { id: 'q14', dimension: 'learning',   reverse: false, text: "The organisation can learn from problems rather than only managing or containing them." },
-            { id: 'q15', dimension: 'identity',   reverse: false, text: "During periods of change, the organisation remains connected to what it stands for." }
+            { id: 'q10', dimension: 'learning',   reverse: false, text: "Different perspectives and challenges are taken seriously here." },
+            { id: 'q11', dimension: 'identity',   reverse: true,  text: "Over time, people can lose a sense of who they are in their professional role." },
+            { id: 'q12', dimension: 'motivation', reverse: false, text: "There is space here for people to care about the meaning and quality of their contribution." },
+            { id: 'q13', dimension: 'learning',   reverse: false, text: "The organisation can learn from problems rather than only managing or containing them." },
+            { id: 'q14', dimension: 'identity',   reverse: false, text: "During periods of change, the organisation remains connected to what it stands for." },
+            { id: 'q15', dimension: 'identity',   reverse: false, text: "People can continue contributing here without gradually narrowing who they are." }
         ];
 
         function shuffleArray(array) {
@@ -689,7 +679,6 @@
                 const userSnap = await database.ref('field_users/' + currentUser.uid).once('value');
                 let userData = userSnap.val();
 
-                // If user authed but has no field_users record, treat them as new to this assessment
                 if (!userData) {
                     await database.ref('field_users/' + currentUser.uid).set({
                         name: currentUser.email,
@@ -703,7 +692,7 @@
 
                 document.getElementById('user-name').textContent = userData.name || currentUser.email;
 
-                // Dynamic header with organisation name (item 4)
+                // Dynamic header with organisation name
                 const orgName = userData.organisation || '';
                 const assessmentHeader = document.getElementById('assessment-header');
                 const resultsHeader = document.getElementById('results-header');
@@ -715,15 +704,12 @@
                     if (resultsHeader)    resultsHeader.textContent    = 'Your Reading';
                 }
 
-                // Check if they have prior organisation assessments
                 const assessmentsSnap = await database.ref('field_assessments/' + currentUser.uid).once('value');
                 const assessments = assessmentsSnap.val();
 
                 if (!assessments) {
-                    // First time, show welcome
                     showView('welcome-view');
                 } else {
-                    // Show dashboard with previous result
                     renderPreviousResult(assessments);
                     showView('dashboard-view');
                 }
@@ -759,7 +745,9 @@
         }
 
         function startAssessment() {
-            currentQuestions = shuffleArray(questions);
+            // Fixed order (shuffle off) so the deliberate item ordering and reverse-item spacing are preserved,
+            // and tester feedback can be discussed item by item. To re-enable shuffling later, use shuffleArray(questions).
+            currentQuestions = [...questions];
             renderQuestions();
             showView('assessment-view');
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -808,7 +796,7 @@
 
             currentQuestions.forEach(q => {
                 const raw = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value);
-                // Reverse-scoring: for items where high score indicates field presence,
+                // Reverse-scoring: for items where high agreement indicates constraining conditions,
                 // transform value to (10 - raw) so all items align with high = healthy.
                 const adjusted = q.reverse ? (10 - raw) : raw;
 
@@ -836,7 +824,6 @@
                 identity:   getTrafficLight(scores.identity)
             };
 
-            // Capture raw item responses for admin diagnostics
             const itemResponses = {};
             currentQuestions.forEach(q => {
                 const raw = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value);
@@ -870,9 +857,9 @@
         }
 
         function getTrafficLight(score) {
-            if (score < 4.0) return { emoji: '🔴', status: 'Critical priority', color: 'red' };
-            if (score < 7.0) return { emoji: '🟡', status: 'Development opportunity', color: 'amber' };
-            return { emoji: '🟢', status: 'Strength', color: 'green' };
+            if (score < 4.0) return { emoji: '🔴', status: 'Conditions strongly constrain adaptive contribution', color: 'red' };
+            if (score < 7.0) return { emoji: '🟡', status: 'Conditions partially support, but inconsistently sustain, contribution', color: 'amber' };
+            return { emoji: '🟢', status: 'Conditions generally support adaptive contribution', color: 'green' };
         }
 
         function displayResults(data) {
