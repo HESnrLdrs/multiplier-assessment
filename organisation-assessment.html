@@ -66,6 +66,7 @@
 
         .content { padding: 40px; }
 
+        /* Loading screen */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background: linear-gradient(135deg, #1a4d4d 0%, #2d6a6a 100%);
@@ -88,6 +89,7 @@
         .view { display: none; }
         .view.active { display: block; }
 
+        /* Auth */
         .auth-container { max-width: 420px; margin: 0 auto; }
         .auth-tabs {
             display: flex; margin-bottom: 30px;
@@ -131,6 +133,7 @@
         }
         .error-message.show { display: block; }
 
+        /* Dashboard */
         .dashboard-header {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 30px; padding-bottom: 20px;
@@ -189,6 +192,7 @@
             font-size: 1.4em; font-weight: 700; color: #2d6a6a;
         }
 
+        /* Assessment */
         .instructions-card {
             background: #f5f3ed;
             padding: 20px 24px;
@@ -259,6 +263,7 @@
             border: 2px solid #2d6a6a;
         }
 
+        /* Results */
         .dimension-score {
             display: flex; align-items: center; gap: 14px;
             padding: 18px 22px;
@@ -520,21 +525,21 @@
         // The 15 organisation items, with dimension and reverse flag.
         // Items 4, 8, 11 are reverse-scored (agreement indicates constraining conditions).
         const questions = [
-            { id: 'q1',  dimension: 'motivation', reverse: false, text: "People here can still connect to the purpose and meaning of their contribution." },
-            { id: 'q2',  dimension: 'learning',   reverse: false, text: "People can raise difficult issues that improve how work is done." },
-            { id: 'q3',  dimension: 'identity',   reverse: false, text: "People can contribute here without feeling they need to become someone different." },
-            { id: 'q4',  dimension: 'motivation', reverse: true,  text: "Over time, people can become less clear about whether their contribution matters." },
-            { id: 'q5',  dimension: 'learning',   reverse: false, text: "When change happens, the organisation can adapt how it works rather than repeating familiar approaches." },
-            { id: 'q6',  dimension: 'identity',   reverse: false, text: "People here can still recognise the organisation as the one they joined." },
-            { id: 'q7',  dimension: 'motivation', reverse: false, text: "People can see how their contribution makes a difference." },
-            { id: 'q8',  dimension: 'learning',   reverse: true,  text: "Over time, people learn what it is safe to talk about here." },
-            { id: 'q9',  dimension: 'motivation', reverse: false, text: "The organisation's purpose remains believable during periods of change or pressure." },
-            { id: 'q10', dimension: 'learning',   reverse: false, text: "Different perspectives and challenges are taken seriously here." },
-            { id: 'q11', dimension: 'identity',   reverse: true,  text: "Over time, people can lose a sense of who they are in their professional role." },
-            { id: 'q12', dimension: 'motivation', reverse: false, text: "There is space here for people to care about the meaning and quality of their contribution." },
-            { id: 'q13', dimension: 'learning',   reverse: false, text: "The organisation can learn from problems rather than only managing or containing them." },
-            { id: 'q14', dimension: 'identity',   reverse: false, text: "During periods of change, the organisation remains connected to what it stands for." },
-            { id: 'q15', dimension: 'identity',   reverse: false, text: "People can continue contributing here without gradually narrowing who they are." }
+            { id: 'q1',  dimension: 'motivation', reverse: false, text: "People here still feel connected to the purpose of their work." },
+            { id: 'q2',  dimension: 'learning',   reverse: false, text: "People can raise difficult issues in ways that improve how work is done." },
+            { id: 'q3',  dimension: 'identity',   reverse: false, text: "People can contribute here without feeling they need to change who they are." },
+            { id: 'q4',  dimension: 'motivation', reverse: true,  text: "Over time, people can start to wonder whether their work really matters." },
+            { id: 'q5',  dimension: 'learning',   reverse: false, text: "When things change, the organisation adapts instead of falling back on old habits." },
+            { id: 'q6',  dimension: 'identity',   reverse: false, text: "People here still recognise the organisation they originally joined." },
+            { id: 'q7',  dimension: 'motivation', reverse: false, text: "People can see how their work makes a difference." },
+            { id: 'q8',  dimension: 'learning',   reverse: true,  text: "Over time, people learn what feels safe to talk about, and what does not." },
+            { id: 'q9',  dimension: 'motivation', reverse: false, text: "During change or pressure, the organisation still feels connected to its purpose." },
+            { id: 'q10', dimension: 'learning',   reverse: false, text: "Different views and honest challenge are taken seriously here." },
+            { id: 'q11', dimension: 'identity',   reverse: true,  text: "Over time, people can lose a sense of who they are in their role." },
+            { id: 'q12', dimension: 'motivation', reverse: false, text: "People have space to care about doing their work well." },
+            { id: 'q13', dimension: 'learning',   reverse: false, text: "The organisation learns from problems instead of just parking them." },
+            { id: 'q14', dimension: 'identity',   reverse: false, text: "During change, the organisation stays connected to what it stands for." },
+            { id: 'q15', dimension: 'identity',   reverse: false, text: "People can continue contributing here without hiding important parts of themselves." }
         ];
 
         function shuffleArray(array) {
@@ -730,8 +735,10 @@
                 const assessments = assessmentsSnap.val();
 
                 if (!assessments) {
+                    // First time, show welcome
                     showView('welcome-view');
                 } else {
+                    // Show dashboard with previous result
                     renderPreviousResult(assessments);
                     showView('dashboard-view');
                 }
@@ -834,7 +841,7 @@
 
             currentQuestions.forEach(q => {
                 const raw = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value);
-                // Reverse-scoring: for items where high agreement indicates constraining conditions,
+                // Reverse-scoring: for items where high score indicates field presence,
                 // transform value to (10 - raw) so all items align with high = healthy.
                 const adjusted = q.reverse ? (10 - raw) : raw;
 
@@ -854,7 +861,12 @@
                 learning:   parseFloat(learning),
                 identity:   parseFloat(identity)
             };
-            const constraint = Object.keys(scores).reduce((a, b) => scores[a] < scores[b] ? a : b);
+            // Constraint routine. Find the lowest score and every dimension tied at it.
+            // constraints may hold one, two, or three dimensions.
+            const minScore = Math.min(scores.motivation, scores.learning, scores.identity);
+            const constraints = Object.keys(scores).filter(d => scores[d] === minScore);
+            // Keep a single constraint field (first of any tie) for the admin page's existing logic.
+            const constraint = constraints[0];
 
             const trafficLights = {
                 motivation: getTrafficLight(scores.motivation),
@@ -862,6 +874,7 @@
                 identity:   getTrafficLight(scores.identity)
             };
 
+            // Capture raw item responses for admin diagnostics
             const itemResponses = {};
             currentQuestions.forEach(q => {
                 const raw = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value);
@@ -881,6 +894,7 @@
                 identityDisplay: identity,
                 capacityScore,
                 constraint,
+                constraints,
                 trafficLights,
                 itemResponses
             };
@@ -903,19 +917,41 @@
         function displayResults(data) {
             const capitalise = s => s.charAt(0).toUpperCase() + s.slice(1);
 
+            // Tie-aware constraint handling. Fall back to single constraint for older records.
+            const constraints = (data.constraints && data.constraints.length)
+                ? data.constraints
+                : [data.constraint];
+            const allLevel = constraints.length === 3;
+            const tied = constraints.length === 2;
+
+            // Per-dimension marker. No highlight when all three are level.
+            const isConstraint = dim => !allLevel && constraints.includes(dim);
+            const markerLabel = tied ? '← Most constrained (tied)' : '← First casualty';
+
+            // Closing explanation, depending on how many dimensions sit lowest.
+            const names = constraints.map(capitalise);
+            let constraintSentence;
+            if (allLevel) {
+                constraintSentence = 'All three dimensions are level, so the reading is uniform. No single dimension stands out as the constraint.';
+            } else if (tied) {
+                constraintSentence = `${names[0]} and ${names[1]} are equally the most constrained, the place where the conditions are doing their work.`;
+            } else {
+                constraintSentence = `${names[0]} is where the conditions have done their work first.`;
+            }
+
             const dims = ['motivation', 'learning', 'identity'];
             const html = dims.map(dim => `
-                <div class="dimension-score ${data.constraint === dim ? 'constraint' : ''}">
+                <div class="dimension-score ${isConstraint(dim) ? 'constraint' : ''}">
                     <span class="dimension-name">${capitalise(dim)}</span>
                     <span class="score">${data[dim + 'Display']}/10</span>
                     <span class="traffic-light">${data.trafficLights[dim].emoji}</span>
                     <span class="status">${data.trafficLights[dim].status}</span>
-                    ${data.constraint === dim ? '<span class="constraint-marker">← First casualty</span>' : ''}
+                    ${isConstraint(dim) ? `<span class="constraint-marker">${markerLabel}</span>` : ''}
                 </div>
             `).join('') + `
                 <div class="capacity-score">
                     <strong>Capacity Score: ${data.capacityScore}</strong>
-                    <p>Calculated as ${data.motivationDisplay} × ${data.learningDisplay} × ${data.identityDisplay}. Because the three dimensions multiply, the lowest score has the biggest effect on the whole. ${capitalise(data.constraint)} is where the field has done its work first.</p>
+                    <p>Calculated as ${data.motivationDisplay} × ${data.learningDisplay} × ${data.identityDisplay}. Because the three dimensions multiply, the lowest score has the biggest effect on the whole. ${constraintSentence}</p>
                 </div>
             `;
 
