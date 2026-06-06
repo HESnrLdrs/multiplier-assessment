@@ -276,7 +276,7 @@
 
     // Optional admin allow-list. If empty array, any logged-in user can view.
     // Paul: add your email here (lowercase) for a simple admin-only gate.
-    const ADMIN_EMAILS = []; // e.g. ['paul@paulthomascoaching.co.uk']
+    const ADMIN_EMAILS = ['paul@paulthomascoaching.co.uk'];
 
     let allResponses = [];
 
@@ -408,8 +408,8 @@
 
         const rows = allResponses.map((r, idx) => `
             <tr onclick="showDetail(${idx})">
-                <td>${r.name}</td>
-                <td style="color: #666; font-size: 0.88em;">${r.organisation}</td>
+                <td>${escapeHtml(r.name)}</td>
+                <td style="color: #666; font-size: 0.88em;">${escapeHtml(r.organisation)}</td>
                 <td style="color: #666;">${new Date(r.timestamp).toLocaleDateString('en-GB')} ${new Date(r.timestamp).toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'})}</td>
                 <td><span class="score-cell ${scoreClass(r.motivationDisplay)}">${r.motivationDisplay}</span></td>
                 <td><span class="score-cell ${scoreClass(r.learningDisplay)}">${r.learningDisplay}</span></td>
@@ -447,6 +447,15 @@
 
     function capitalise(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
+    function escapeHtml(value) {
+        return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
     function showList() {
         showView('list-view');
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -480,7 +489,7 @@
                     itemRows += `
                         <tr>
                             <td><span class="${dimClass}">${dimLabel}</span></td>
-                            <td style="color: #444; line-height: 1.5;">${item.text}${item.reverse ? '<span class="reverse-tag">reverse</span>' : ''}</td>
+                            <td style="color: #444; line-height: 1.5;">${escapeHtml(item.text)}${item.reverse ? '<span class="reverse-tag">reverse</span>' : ''}</td>
                             <td style="text-align: center; color: #666;">${item.raw}</td>
                             <td style="text-align: center; font-weight: 600;">${item.adjusted}</td>
                         </tr>
@@ -493,9 +502,9 @@
 
         document.getElementById('detail-container').innerHTML = `
             <div class="detail-meta">
-                <div><strong>Name:</strong> ${r.name}</div>
-                <div><strong>Email:</strong> ${r.email}</div>
-                <div><strong>Organisation:</strong> ${r.organisation}</div>
+                <div><strong>Name:</strong> ${escapeHtml(r.name)}</div>
+                <div><strong>Email:</strong> ${escapeHtml(r.email)}</div>
+                <div><strong>Organisation:</strong> ${escapeHtml(r.organisation)}</div>
                 <div><strong>Submitted:</strong> ${new Date(r.timestamp).toLocaleString('en-GB')}</div>
             </div>
 
