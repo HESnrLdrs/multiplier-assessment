@@ -521,6 +521,7 @@
 
         let currentUser = null;
         let currentQuestions = [];
+        let isSigningUp = false;
 
         // The 15 organisation items, with dimension and reverse flag.
         // Items 4, 8, 11 are reverse-scored (agreement indicates constraining conditions).
@@ -572,6 +573,7 @@
             }
 
             if (currentUser) {
+                if (isSigningUp) return; // sign-up handler loads once the record is written
                 loadUserData();
             } else {
                 showView('auth-view');
@@ -660,6 +662,7 @@
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
 
+            isSigningUp = true;
             try {
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 await database.ref('field_users/' + userCredential.user.uid).set({
@@ -669,7 +672,11 @@
                     createdAt: new Date().toISOString(),
                     source: 'field_assessment'
                 });
+                currentUser = userCredential.user;
+                isSigningUp = false;
+                loadUserData();
             } catch (error) {
+                isSigningUp = false;
                 if (error.code === 'auth/email-already-in-use') {
                     showError('This email is already registered. Use the Login tab above to sign in with your existing email and password. You do not need a second email.');
                 } else {
@@ -794,6 +801,7 @@
             // and tester feedback can be discussed item by item. To re-enable shuffling later, use shuffleArray(questions).
             currentQuestions = [...questions];
             renderQuestions();
+            document.getElementById('submit-btn').disabled = false;
             showView('assessment-view');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -899,12 +907,15 @@
                 itemResponses
             };
 
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
             try {
                 await database.ref('field_assessments/' + currentUser.uid).push(assessmentData);
                 displayResults(assessmentData);
             } catch (err) {
                 console.error('Error saving assessment:', err);
                 alert('Error saving assessment. Please try again.');
+                submitBtn.disabled = false;
             }
         }
 
