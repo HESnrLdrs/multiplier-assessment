@@ -521,7 +521,6 @@
 
         let currentUser = null;
         let currentQuestions = [];
-        let isSigningUp = false;
 
         // The 15 organisation items, with dimension and reverse flag.
         // Items 4, 8, 11 are reverse-scored (agreement indicates constraining conditions).
@@ -573,7 +572,6 @@
             }
 
             if (currentUser) {
-                if (isSigningUp) return; // sign-up handler loads once the record is written
                 loadUserData();
             } else {
                 showView('auth-view');
@@ -662,7 +660,6 @@
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
 
-            isSigningUp = true;
             try {
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 await database.ref('field_users/' + userCredential.user.uid).set({
@@ -672,11 +669,7 @@
                     createdAt: new Date().toISOString(),
                     source: 'field_assessment'
                 });
-                currentUser = userCredential.user;
-                isSigningUp = false;
-                loadUserData();
             } catch (error) {
-                isSigningUp = false;
                 if (error.code === 'auth/email-already-in-use') {
                     showError('This email is already registered. Use the Login tab above to sign in with your existing email and password. You do not need a second email.');
                 } else {
@@ -801,7 +794,6 @@
             // and tester feedback can be discussed item by item. To re-enable shuffling later, use shuffleArray(questions).
             currentQuestions = [...questions];
             renderQuestions();
-            document.getElementById('submit-btn').disabled = false;
             showView('assessment-view');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -858,9 +850,12 @@
                 if (q.dimension === 'identity')   { idSum   += adjusted; idCount++; }
             });
 
-            const motivation = (motSum / motCount).toFixed(1);
-            const learning   = (learnSum / learnCount).toFixed(1);
-            const identity   = (idSum   / idCount).toFixed(1);
+            // Raw per-dimension averages run 2 to 8 because of reverse-scoring on items 4, 8, 11.
+            // Renormalise to 0 to 10 so what the user sees lines up with what the items run on.
+            const renormalise = raw => (raw - 2) / 6 * 10;
+            const motivation = renormalise(motSum / motCount).toFixed(1);
+            const learning   = renormalise(learnSum / learnCount).toFixed(1);
+            const identity   = renormalise(idSum   / idCount).toFixed(1);
 
             const capacityScore = Math.round(parseFloat(motivation) * parseFloat(learning) * parseFloat(identity));
 
@@ -907,15 +902,12 @@
                 itemResponses
             };
 
-            const submitBtn = document.getElementById('submit-btn');
-            submitBtn.disabled = true;
             try {
                 await database.ref('field_assessments/' + currentUser.uid).push(assessmentData);
                 displayResults(assessmentData);
             } catch (err) {
                 console.error('Error saving assessment:', err);
                 alert('Error saving assessment. Please try again.');
-                submitBtn.disabled = false;
             }
         }
 
@@ -962,7 +954,7 @@
             `).join('') + `
                 <div class="capacity-score">
                     <strong>Capacity Score: ${data.capacityScore}</strong>
-                    <p>Calculated as ${data.motivationDisplay} × ${data.learningDisplay} × ${data.identityDisplay}. Because the three dimensions multiply, the lowest score has the biggest effect on the whole. ${constraintSentence}</p>
+                    <p>Calculated as ${data.motivationDisplay} × ${data.learningDisplay} × ${data.identityDisplay}. Capacity runs from 0, where conditions strongly constrain across all three dimensions, to 1000, where they generally support across all three. Because the three dimensions multiply, the lowest score has the biggest effect on the whole. ${constraintSentence}</p>
                 </div>
             `;
 
