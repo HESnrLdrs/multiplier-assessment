@@ -559,3 +559,409 @@
                 loadingScreen.classList.add('hidden');
                 setTimeout(() => { loadingScreen.style.display = 'none'; }, 300);
             }
+
+            if (user) {
+                currentUser = user;
+            } else {
+                currentUser = null;
+            }
+
+            if (localStorage.getItem('field_access_granted') !== 'yes') {
+                showView('access-view');
+                return;
+            }
+
+            if (currentUser) {
+                loadUserData();
+            } else {
+                showView('auth-view');
+            }
+        });
+
+        function handleAccess(event) {
+            event.preventDefault();
+            const code = document.getElementById('access-code').value.trim().toLowerCase();
+            const errorEl = document.getElementById('access-error');
+            if (code === ACCESS_CODE) {
+                localStorage.setItem('field_access_granted', 'yes');
+                errorEl.classList.remove('show');
+                if (currentUser) {
+                    loadUserData();
+                } else {
+                    showView('auth-view');
+                }
+            } else {
+                errorEl.textContent = 'That access code is not recognised. Check what you were sent, and try again.';
+                errorEl.classList.add('show');
+            }
+        }
+
+        function switchAuthTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            if (tab === 'login') {
+                document.querySelector('.auth-tab:first-child').classList.add('active');
+                document.getElementById('login-form').classList.add('active');
+            } else {
+                document.querySelector('.auth-tab:last-child').classList.add('active');
+                document.getElementById('signup-form').classList.add('active');
+            }
+            hideError();
+        }
+
+        function showForgotPassword(event) {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value;
+            if (!email) {
+                alert('Please enter your email address first, then click "Forgot Password?"');
+                document.getElementById('login-email').focus();
+                return;
+            }
+            if (confirm(`Send password reset email to ${email}?`)) {
+                auth.sendPasswordResetEmail(email)
+                    .then(() => alert('Password reset email sent. Check your inbox and spam folder.'))
+                    .catch(err => {
+                        if (err.code === 'auth/user-not-found') {
+                            alert('No account found with this email address on the organisation assessment.');
+                        } else {
+                            alert('Error sending reset email: ' + err.message);
+                        }
+                    });
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            hideError();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+            } catch (error) {
+                let msg = 'An error occurred. Please try again.';
+                if (error.code === 'auth/invalid-login-credentials' ||
+                    error.code === 'auth/wrong-password' ||
+                    error.code === 'auth/user-not-found') {
+                    msg = 'Incorrect email or password. Please try again.';
+                } else if (error.code === 'auth/invalid-email') {
+                    msg = 'Please enter a valid email address.';
+                } else if (error.code === 'auth/too-many-requests') {
+                    msg = 'Too many failed attempts. Please wait or reset your password.';
+                }
+                showError(msg);
+            }
+        }
+
+        async function handleSignup(e) {
+            e.preventDefault();
+            hideError();
+            const name = document.getElementById('signup-name').value;
+            const organisation = document.getElementById('signup-organisation').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                await database.ref('field_users/' + userCredential.user.uid).set({
+                    name: name,
+                    email: email,
+                    organisation: organisation,
+                    createdAt: new Date().toISOString(),
+                    source: 'field_assessment'
+                });
+            } catch (error) {
+                if (error.code === 'auth/email-already-in-use') {
+                    showError('This email is already registered. Use the Login tab above to sign in with your existing email and password. You do not need a second email.');
+                } else {
+                    showError(error.message);
+                }
+            }
+        }
+
+        function handleLogout() { auth.signOut(); }
+
+        function showError(msg) {
+            const el = document.getElementById('error-message');
+            el.textContent = msg;
+            el.classList.add('show');
+        }
+        function hideError() { document.getElementById('error-message').classList.remove('show'); }
+
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        async function loadUserData() {
+            try {
+                const userSnap = await database.ref('field_users/' + currentUser.uid).once('value');
+                let userData = userSnap.val();
+
+                // If user authed but has no field_users record (e.g. they only did the personal
+                // assessment), create a minimal record; the organisation is captured below.
+                if (!userData) {
+                    await database.ref('field_users/' + currentUser.uid).set({
+                        name: currentUser.displayName || currentUser.email,
+                        email: currentUser.email,
+                        organisation: '',
+                        createdAt: new Date().toISOString(),
+                        source: 'field_assessment'
+                    });
+                    userData = { name: currentUser.displayName || currentUser.email, organisation: '' };
+                }
+
+                // If no organisation recorded, capture it before going any further.
+                if (!userData.organisation || userData.organisation.trim() === '') {
+                    showView('org-capture-view');
+                    return;
+                }
+
+                document.getElementById('user-name').textContent = userData.name || currentUser.email;
+
+                // Dynamic header with organisation name (item 4)
+                const orgName = userData.organisation || '';
+                const assessmentHeader = document.getElementById('assessment-header');
+                const resultsHeader = document.getElementById('results-header');
+                if (orgName) {
+                    if (assessmentHeader) assessmentHeader.textContent = `Organisation Assessment — ${orgName}`;
+                    if (resultsHeader)    resultsHeader.textContent    = `Your Reading of ${orgName}`;
+                } else {
+                    if (assessmentHeader) assessmentHeader.textContent = 'Organisation Assessment';
+                    if (resultsHeader)    resultsHeader.textContent    = 'Your Reading';
+                }
+
+                // Check if they have prior organisation assessments
+                const assessmentsSnap = await database.ref('field_assessments/' + currentUser.uid).once('value');
+                const assessments = assessmentsSnap.val();
+
+                if (!assessments) {
+                    // First time, show welcome
+                    showView('welcome-view');
+                } else {
+                    // Show dashboard with previous result
+                    renderPreviousResult(assessments);
+                    showView('dashboard-view');
+                }
+            } catch (err) {
+                console.error('Error loading user data:', err);
+                showView('dashboard-view');
+            }
+        }
+
+        async function saveOrganisation(event) {
+            event.preventDefault();
+            const org = document.getElementById('org-capture-input').value.trim();
+            const errorEl = document.getElementById('org-capture-error');
+            if (!org) return;
+            try {
+                await database.ref('field_users/' + currentUser.uid + '/organisation').set(org);
+                errorEl.classList.remove('show');
+                loadUserData();
+            } catch (err) {
+                console.error('Error saving organisation:', err);
+                errorEl.textContent = 'Could not save. Please try again.';
+                errorEl.classList.add('show');
+            }
+        }
+
+        function renderPreviousResult(assessments) {
+            const arr = Object.values(assessments);
+            const latest = arr[arr.length - 1];
+            const container = document.getElementById('previous-result-container');
+            container.innerHTML = `
+                <div class="previous-result">
+                    <h4>Your most recent reading — ${new Date(latest.timestamp).toLocaleDateString()}</h4>
+                    <div class="score-grid">
+                        <div class="score-item">
+                            <div class="score-label">Motivation</div>
+                            <div class="score-value">${latest.motivationDisplay}/10</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-label">Learning</div>
+                            <div class="score-value">${latest.learningDisplay}/10</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-label">Identity</div>
+                            <div class="score-value">${latest.identityDisplay}/10</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function startAssessment() {
+            // Fixed order (shuffle off) so the deliberate item ordering and reverse-item spacing are preserved,
+            // and tester feedback can be discussed item by item. To re-enable shuffling later, use shuffleArray(questions).
+            currentQuestions = [...questions];
+            renderQuestions();
+            showView('assessment-view');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelAssessment() {
+            if (confirm('Cancel this assessment? Your answers will not be saved.')) {
+                showView('dashboard-view');
+            }
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            const options = [0,1,2,3,4,5,6,7,8,9,10];
+            container.innerHTML = currentQuestions.map((q, index) => `
+                <div class="question">
+                    <div class="question-text">${index + 1}. ${q.text}</div>
+                    <div class="likert-scale">
+                        ${options.map(val => `
+                            <div class="likert-option">
+                                <input type="radio" name="${q.id}" value="${val}" id="${q.id}-${val}">
+                                <label for="${q.id}-${val}">${val}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="scale-anchors">
+                        <span>0 — not at all true</span>
+                        <span>10 — completely true</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function submitAssessment() {
+            const allAnswered = currentQuestions.every(q =>
+                document.querySelector(`input[name="${q.id}"]:checked`)
+            );
+            if (!allAnswered) {
+                alert('Please answer all 15 statements before submitting.');
+                return;
+            }
+
+            let motSum = 0, motCount = 0;
+            let learnSum = 0, learnCount = 0;
+            let idSum = 0, idCount = 0;
+
+            currentQuestions.forEach(q => {
+                const raw = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value);
+                // Reverse-scoring: for items where high score indicates field presence,
+                // transform value to (10 - raw) so all items align with high = healthy.
+                const adjusted = q.reverse ? (10 - raw) : raw;
+
+                if (q.dimension === 'motivation') { motSum += adjusted; motCount++; }
+                if (q.dimension === 'learning')   { learnSum += adjusted; learnCount++; }
+                if (q.dimension === 'identity')   { idSum   += adjusted; idCount++; }
+            });
+
+            // Raw per-dimension averages run 2 to 8 because of reverse-scoring on items 4, 8, 11.
+            // Renormalise to 0 to 10 so what the user sees lines up with what the items run on.
+            const renormalise = raw => (raw - 2) / 6 * 10;
+            const motivation = renormalise(motSum / motCount).toFixed(1);
+            const learning   = renormalise(learnSum / learnCount).toFixed(1);
+            const identity   = renormalise(idSum   / idCount).toFixed(1);
+
+            const capacityScore = Math.round(parseFloat(motivation) * parseFloat(learning) * parseFloat(identity));
+
+            const scores = {
+                motivation: parseFloat(motivation),
+                learning:   parseFloat(learning),
+                identity:   parseFloat(identity)
+            };
+            // Constraint routine. Find the lowest score and every dimension tied at it.
+            // constraints may hold one, two, or three dimensions.
+            const minScore = Math.min(scores.motivation, scores.learning, scores.identity);
+            const constraints = Object.keys(scores).filter(d => scores[d] === minScore);
+            // Keep a single constraint field (first of any tie) for the admin page's existing logic.
+            const constraint = constraints[0];
+
+            const trafficLights = {
+                motivation: getTrafficLight(scores.motivation),
+                learning:   getTrafficLight(scores.learning),
+                identity:   getTrafficLight(scores.identity)
+            };
+
+            // Capture raw item responses for admin diagnostics
+            const itemResponses = {};
+            currentQuestions.forEach(q => {
+                const raw = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value);
+                itemResponses[q.id] = {
+                    dimension: q.dimension,
+                    reverse: q.reverse,
+                    raw: raw,
+                    adjusted: q.reverse ? (10 - raw) : raw,
+                    text: q.text
+                };
+            });
+
+            const assessmentData = {
+                timestamp: new Date().toISOString(),
+                motivationDisplay: motivation,
+                learningDisplay: learning,
+                identityDisplay: identity,
+                capacityScore,
+                constraint,
+                constraints,
+                trafficLights,
+                itemResponses
+            };
+
+            try {
+                await database.ref('field_assessments/' + currentUser.uid).push(assessmentData);
+                displayResults(assessmentData);
+            } catch (err) {
+                console.error('Error saving assessment:', err);
+                alert('Error saving assessment. Please try again.');
+            }
+        }
+
+        function getTrafficLight(score) {
+            if (score < 4.0) return { emoji: '🔴', status: 'Conditions strongly constrain adaptive contribution', color: 'red' };
+            if (score < 7.0) return { emoji: '🟡', status: 'Conditions partially support, but inconsistently sustain, contribution', color: 'amber' };
+            return { emoji: '🟢', status: 'Conditions generally support adaptive contribution', color: 'green' };
+        }
+
+        function displayResults(data) {
+            const capitalise = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+            // Tie-aware constraint handling. Fall back to single constraint for older records.
+            const constraints = (data.constraints && data.constraints.length)
+                ? data.constraints
+                : [data.constraint];
+            const allLevel = constraints.length === 3;
+            const tied = constraints.length === 2;
+
+            // Per-dimension marker. No highlight when all three are level.
+            const isConstraint = dim => !allLevel && constraints.includes(dim);
+            const markerLabel = tied ? '← Most constrained (tied)' : '← First casualty';
+
+            // Closing explanation, depending on how many dimensions sit lowest.
+            const names = constraints.map(capitalise);
+            let constraintSentence;
+            if (allLevel) {
+                constraintSentence = 'All three dimensions are level, so the reading is uniform. No single dimension stands out as the constraint.';
+            } else if (tied) {
+                constraintSentence = `${names[0]} and ${names[1]} are equally the most constrained, the place where the conditions are doing their work.`;
+            } else {
+                constraintSentence = `${names[0]} is where the conditions have done their work first.`;
+            }
+
+            const dims = ['motivation', 'learning', 'identity'];
+            const html = dims.map(dim => `
+                <div class="dimension-score ${isConstraint(dim) ? 'constraint' : ''}">
+                    <span class="dimension-name">${capitalise(dim)}</span>
+                    <span class="score">${data[dim + 'Display']}/10</span>
+                    <span class="traffic-light">${data.trafficLights[dim].emoji}</span>
+                    <span class="status">${data.trafficLights[dim].status}</span>
+                    ${isConstraint(dim) ? `<span class="constraint-marker">${markerLabel}</span>` : ''}
+                </div>
+            `).join('') + `
+                <div class="capacity-score">
+                    <strong>Capacity Score: ${data.capacityScore}</strong>
+                    <p>Calculated as ${data.motivationDisplay} × ${data.learningDisplay} × ${data.identityDisplay}. Capacity runs from 0, where conditions strongly constrain across all three dimensions, to 1000, where they generally support across all three. Because the three dimensions multiply, the lowest score has the biggest effect on the whole. ${constraintSentence}</p>
+                </div>
+            `;
+
+            document.getElementById('results-summary').innerHTML = html;
+            showView('results-view');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
