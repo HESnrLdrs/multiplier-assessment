@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Organisation Assessment — Navigate Transition</title>
+    <title>Organisation Admin — Navigate Transition</title>
 
-    <!-- Firebase SDK -->
+    <!-- Firebase SDK (v8 namespaced / compat, matching the road test page) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -22,7 +22,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 940px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -35,11 +35,7 @@
             background: white;
             border-bottom: 1px solid #e0e0e0;
         }
-        .back-link a {
-            color: #2d6a6a;
-            text-decoration: none;
-            font-size: 0.95em;
-        }
+        .back-link a { color: #2d6a6a; text-decoration: none; font-size: 0.95em; }
 
         .header {
             background: linear-gradient(135deg, #1a4d4d 0%, #2d6a6a 100%);
@@ -47,11 +43,8 @@
             padding: 40px;
             text-align: center;
         }
-
         .header h1 { font-size: 2.2em; margin-bottom: 10px; }
-        .header p { font-size: 1.1em; opacity: 0.95; }
-
-        .beta-tag {
+        .admin-tag {
             display: inline-block;
             background: #c9a961;
             color: #1a4d4d;
@@ -66,7 +59,7 @@
 
         .content { padding: 40px; }
 
-        /* Loading screen */
+        /* Loading */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background: linear-gradient(135deg, #1a4d4d 0%, #2d6a6a 100%);
@@ -91,31 +84,14 @@
 
         /* Auth */
         .auth-container { max-width: 420px; margin: 0 auto; }
-        .auth-tabs {
-            display: flex; margin-bottom: 30px;
-            border-bottom: 2px solid #e0e0e0;
-        }
-        .auth-tab {
-            flex: 1; padding: 15px; text-align: center; cursor: pointer;
-            border-bottom: 3px solid transparent; transition: all 0.3s;
-        }
-        .auth-tab.active {
-            border-bottom-color: #2d6a6a; color: #2d6a6a; font-weight: 600;
-        }
-        .auth-form { display: none; }
-        .auth-form.active { display: block; }
-
         .form-group { margin-bottom: 20px; }
-        .form-group label {
-            display: block; margin-bottom: 8px; font-weight: 500; color: #333;
-        }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #333; }
         .form-group input {
             width: 100%; padding: 12px;
             border: 2px solid #e0e0e0; border-radius: 8px;
             font-size: 1em; transition: border-color 0.3s;
         }
         .form-group input:focus { outline: none; border-color: #2d6a6a; }
-
         .btn {
             width: 100%; padding: 15px;
             background: linear-gradient(135deg, #1a4d4d 0%, #2d6a6a 100%);
@@ -124,8 +100,6 @@
             transition: transform 0.2s;
         }
         .btn:hover { transform: translateY(-2px); }
-        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
         .error-message {
             background: #fee; color: #c33;
             padding: 12px; border-radius: 8px;
@@ -133,195 +107,98 @@
         }
         .error-message.show { display: block; }
 
-        /* Dashboard */
+        /* Dashboard header */
         .dashboard-header {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 30px; padding-bottom: 20px;
-            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 24px; padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0; flex-wrap: wrap; gap: 12px;
         }
-        .user-info { font-size: 1.05em; color: #666; }
+        .user-info { font-size: 1.0em; color: #666; }
+        .header-actions { display: flex; gap: 10px; }
+        .ghost-btn {
+            padding: 9px 16px; background: white; color: #2d6a6a;
+            border: 2px solid #2d6a6a; border-radius: 6px; cursor: pointer;
+            font-size: 0.9em; font-weight: 600;
+        }
+        .ghost-btn:hover { background: #f5f3ed; }
         .logout-btn {
-            padding: 10px 20px; background: #666; color: white;
-            border: none; border-radius: 6px; cursor: pointer;
+            padding: 9px 16px; background: #666; color: white;
+            border: none; border-radius: 6px; cursor: pointer; font-size: 0.9em;
         }
 
-        .intro-card {
-            background: #f5f3ed;
-            padding: 24px 28px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            border-left: 4px solid #c9a961;
-        }
-        .intro-card h3 {
-            font-size: 1.15em; color: #1a4d4d; margin-bottom: 10px;
-        }
-        .intro-card p {
-            color: #444; line-height: 1.6; margin-bottom: 8px; font-size: 0.97em;
-        }
-        .intro-card p:last-child { margin-bottom: 0; }
-
-        .action-card {
-            background: linear-gradient(135deg, #1a4d4d 0%, #2d6a6a 100%);
-            color: white; padding: 30px; border-radius: 15px;
-            cursor: pointer; transition: transform 0.3s; text-align: center;
-        }
-        .action-card:hover { transform: translateY(-3px); }
-        .action-card h3 { font-size: 1.4em; margin-bottom: 8px; }
-        .action-card p { opacity: 0.9; }
-
-        .previous-result {
-            background: white; padding: 22px;
-            border: 1px solid #e0e0e0; border-radius: 12px;
-            margin-top: 30px;
-        }
-        .previous-result h4 {
-            color: #2d6a6a; margin-bottom: 14px; font-size: 1.05em;
-        }
-        .score-grid {
+        /* Summary strip */
+        .summary-strip {
             display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 12px; margin-top: 12px;
+            gap: 14px; margin-bottom: 30px;
         }
-        .score-item {
-            text-align: center; padding: 14px;
-            background: #f5f3ed; border-radius: 8px;
+        .summary-card {
+            text-align: center; padding: 18px 14px;
+            background: #f5f3ed; border-radius: 10px;
         }
-        .score-label {
-            font-size: 0.85em; color: #666; margin-bottom: 5px;
-        }
-        .score-value {
-            font-size: 1.4em; font-weight: 700; color: #2d6a6a;
-        }
+        .summary-value { font-size: 1.8em; font-weight: 700; color: #1a4d4d; }
+        .summary-label { font-size: 0.82em; color: #666; margin-top: 4px; }
 
-        /* Assessment */
-        .instructions-card {
-            background: #f5f3ed;
-            padding: 20px 24px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            border-left: 4px solid #2d6a6a;
+        /* Org card */
+        .org-card {
+            border: 1px solid #e0e0e0; border-radius: 12px;
+            margin-bottom: 18px; overflow: hidden;
         }
-        .instructions-card p {
-            margin: 0; color: #333; line-height: 1.6;
+        .org-card-head {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 22px; background: #fafaf8; flex-wrap: wrap; gap: 8px;
         }
+        .org-name { font-size: 1.2em; font-weight: 700; color: #1a4d4d; }
+        .org-count { font-size: 0.9em; color: #666; }
 
-        .question {
-            background: #fafaf8;
-            padding: 22px 24px;
-            margin-bottom: 18px;
-            border-radius: 12px;
-            border-left: 4px solid #2d6a6a;
+        .locked-body { padding: 18px 22px; color: #555; line-height: 1.5; }
+        .progress-track {
+            height: 10px; background: #ececec; border-radius: 6px;
+            margin-top: 12px; overflow: hidden;
         }
-        .question-text {
-            font-size: 1.05em; margin-bottom: 16px;
-            color: #2d2d2d; font-weight: 500; line-height: 1.5;
-        }
+        .progress-fill { height: 100%; background: #c9a961; border-radius: 6px; }
 
-        .likert-scale {
-            display: grid;
-            grid-template-columns: repeat(11, 1fr);
-            gap: 6px;
-            margin-top: 12px;
-        }
-        .likert-option { text-align: center; }
-        .likert-option input[type="radio"] { display: none; }
-        .likert-option label {
-            display: flex; align-items: center; justify-content: center;
-            padding: 10px 4px;
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.9em;
-            min-height: 44px;
-        }
-        .likert-option input[type="radio"]:checked + label {
-            background: #2d6a6a; color: white; border-color: #2d6a6a;
-        }
-        .likert-option label:hover { border-color: #2d6a6a; }
+        .org-body { padding: 16px 22px 8px; }
 
-        .scale-anchors {
-            display: flex; justify-content: space-between;
-            margin-top: 6px;
-            font-size: 0.78em; color: #777;
-        }
-
-        .navigation-buttons {
-            display: flex; justify-content: space-between; margin-top: 30px;
-        }
-        .nav-btn {
-            padding: 14px 36px;
-            background: linear-gradient(135deg, #1a4d4d 0%, #2d6a6a 100%);
-            color: white; border: none; border-radius: 8px;
-            font-size: 1.05em; font-weight: 600; cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .nav-btn:hover:not(:disabled) { transform: translateY(-2px); }
-        .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-        .nav-btn.secondary {
-            background: white; color: #2d6a6a;
-            border: 2px solid #2d6a6a;
-        }
-
-        /* Results */
         .dimension-score {
             display: flex; align-items: center; gap: 14px;
-            padding: 18px 22px;
-            background: white;
-            margin-bottom: 14px;
-            border-radius: 10px;
+            padding: 14px 16px; background: white;
+            margin-bottom: 12px; border-radius: 10px;
             border-left: 5px solid #2d6a6a;
-            border-top: 1px solid #eee;
-            border-right: 1px solid #eee;
-            border-bottom: 1px solid #eee;
+            border-top: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;
         }
-        .dimension-score.constraint {
-            border-left-color: #A32D2D;
-            background: #fff8f6;
-        }
-        .dimension-score .dimension-name {
-            min-width: 130px; font-weight: 600; font-size: 1.05em;
-        }
-        .dimension-score .score {
-            font-size: 1.6em; font-weight: 700;
-            color: #2d6a6a; min-width: 80px;
-        }
-        .dimension-score .traffic-light {
-            font-size: 1.6em; margin: 0 8px;
-        }
-        .dimension-score .status {
-            flex: 1; color: #555; font-size: 0.95em;
-        }
-        .dimension-score .constraint-marker {
-            color: #A32D2D; font-weight: 600; font-size: 0.88em;
-            margin-left: auto;
-        }
+        .dimension-score.constraint { border-left-color: #A32D2D; background: #fff8f6; }
+        .dimension-score .dimension-name { min-width: 120px; font-weight: 600; }
+        .dimension-score .score { font-size: 1.5em; font-weight: 700; color: #2d6a6a; min-width: 74px; }
+        .dimension-score .traffic-light { font-size: 1.5em; }
+        .dimension-score .status { flex: 1; color: #555; font-size: 0.9em; }
+        .dimension-score .constraint-marker { color: #A32D2D; font-weight: 600; font-size: 0.85em; margin-left: auto; }
 
         .capacity-score {
-            text-align: center;
-            padding: 26px;
+            text-align: center; padding: 18px;
             background: linear-gradient(135deg, #1a4d4d 0%, #2d6a6a 100%);
-            color: white;
-            border-radius: 12px;
-            margin: 24px 0;
+            color: white; border-radius: 12px; margin: 8px 0 16px;
         }
-        .capacity-score strong {
-            font-size: 1.8em; display: block; margin-bottom: 10px;
+        .capacity-score strong { font-size: 1.5em; display: block; margin-bottom: 6px; }
+        .capacity-score p { font-size: 0.88em; opacity: 0.95; line-height: 1.5; }
+
+        details.people { margin: 0 0 16px; }
+        details.people summary {
+            cursor: pointer; color: #2d6a6a; font-size: 0.9em;
+            font-weight: 600; padding: 6px 0;
         }
-        .capacity-score p {
-            font-size: 0.92em; opacity: 0.95; line-height: 1.5;
+        table.people-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.88em; }
+        table.people-table th, table.people-table td {
+            text-align: left; padding: 8px 10px; border-bottom: 1px solid #eee;
         }
+        table.people-table th { color: #666; font-weight: 600; }
+        table.people-table td.num { text-align: center; font-variant-numeric: tabular-nums; }
 
         .holding-line {
-            background: #f5f3ed;
-            border-left: 4px solid #c9a961;
-            padding: 18px 22px;
-            border-radius: 8px;
-            margin-top: 24px;
-            color: #555;
-            line-height: 1.6;
-            font-size: 0.95em;
+            background: #f5f3ed; border-left: 4px solid #c9a961;
+            padding: 16px 20px; border-radius: 8px; margin-top: 26px;
+            color: #555; line-height: 1.6; font-size: 0.9em;
         }
+        .empty-note { text-align: center; color: #777; padding: 30px 10px; line-height: 1.6; }
     </style>
 </head>
 <body>
@@ -338,165 +215,60 @@
         </div>
 
         <div class="header">
-            <h1>Organisation Assessment</h1>
-            <span class="beta-tag">Road Test</span>
+            <h1>Organisation Admin</h1>
+            <span class="admin-tag">Aggregate View</span>
         </div>
 
         <div class="content">
 
-            <!-- Access Gate View -->
-            <div id="access-view" class="view">
-                <div style="max-width: 460px; margin: 0 auto; padding: 20px 0;">
-                    <h2 style="color: #1a4d4d; font-size: 1.5em; margin-bottom: 16px;">Invitation-only road test</h2>
-                    <p style="font-size: 1em; color: #444; line-height: 1.6; margin-bottom: 24px;">
-                        This is a sandbox version of a new instrument, shared with a small group of invited testers. Please enter the access code you were given to continue.
-                    </p>
-                    <div id="access-error" class="error-message"></div>
-                    <form onsubmit="handleAccess(event)">
-                        <div class="form-group">
-                            <label for="access-code">Access code</label>
-                            <input type="text" id="access-code" required autocomplete="off">
-                        </div>
-                        <button type="submit" class="btn">Continue</button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Auth View -->
+            <!-- Login -->
             <div id="auth-view" class="view">
                 <div class="auth-container">
-                    <div class="auth-tabs">
-                        <div class="auth-tab active" onclick="switchAuthTab('login')">Login</div>
-                        <div class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</div>
-                    </div>
-
-                    <div id="error-message" class="error-message"></div>
-
-                    <form id="login-form" class="auth-form active" onsubmit="handleLogin(event)">
+                    <h2 style="color:#1a4d4d; font-size:1.4em; margin-bottom:16px;">Administrator sign in</h2>
+                    <p style="color:#444; line-height:1.6; margin-bottom:22px;">
+                        This page shows organisation-level aggregates and is restricted to the administrator account.
+                    </p>
+                    <div id="auth-error" class="error-message"></div>
+                    <form onsubmit="handleLogin(event)">
                         <div class="form-group">
-                            <label for="login-email">Email</label>
-                            <input type="email" id="login-email" required>
+                            <label for="email">Email</label>
+                            <input type="email" id="email" required autocomplete="username">
                         </div>
                         <div class="form-group">
-                            <label for="login-password">Password</label>
-                            <input type="password" id="login-password" required>
+                            <label for="password">Password</label>
+                            <input type="password" id="password" required autocomplete="current-password">
                         </div>
-                        <div style="text-align: right; margin-bottom: 15px;">
-                            <a href="#" onclick="showForgotPassword(event)" style="color: #2d6a6a; text-decoration: none; font-size: 0.9em;">Forgot Password?</a>
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; text-align: center; margin: 15px 0;">
-                            This is a separate sign-in from the personal assessment. Your responses are private and stored securely.
-                        </p>
-                        <button type="submit" class="btn">Login</button>
-                    </form>
-
-                    <form id="signup-form" class="auth-form" onsubmit="handleSignup(event)">
-                        <div class="form-group">
-                            <label for="signup-name">Name</label>
-                            <input type="text" id="signup-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-organisation">Organisation (the one you will be assessing)</label>
-                            <input type="text" id="signup-organisation" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-email">Email</label>
-                            <input type="email" id="signup-email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-password">Password</label>
-                            <input type="password" id="signup-password" required minlength="6">
-                        </div>
-                        <p style="font-size: 0.85em; color: #666; margin: 15px 0;">
-                            Already used the personal assessment? You can sign in with the same email and password using the Login tab above. You do not need a second email.
-                        </p>
-                        <button type="submit" class="btn">Sign Up</button>
+                        <button type="submit" class="btn">Sign in</button>
                     </form>
                 </div>
             </div>
 
-            <!-- Organisation capture (for users who log in without an organisation set) -->
-            <div id="org-capture-view" class="view">
-                <div style="max-width: 460px; margin: 0 auto; padding: 20px 0;">
-                    <h2 style="color: #1a4d4d; font-size: 1.5em; margin-bottom: 16px;">One quick thing</h2>
-                    <p style="font-size: 1em; color: #444; line-height: 1.6; margin-bottom: 24px;">
-                        Which organisation are you assessing? This is the organisation you will have in mind as you answer the 15 items.
+            <!-- Not admin -->
+            <div id="denied-view" class="view">
+                <div style="max-width:460px; margin:0 auto; text-align:center; padding:20px 0;">
+                    <h2 style="color:#1a4d4d; font-size:1.4em; margin-bottom:14px;">Administrator only</h2>
+                    <p style="color:#444; line-height:1.6; margin-bottom:22px;">
+                        You are signed in, but this page is restricted to the administrator account.
                     </p>
-                    <div id="org-capture-error" class="error-message"></div>
-                    <form onsubmit="saveOrganisation(event)">
-                        <div class="form-group">
-                            <label for="org-capture-input">Organisation</label>
-                            <input type="text" id="org-capture-input" required autocomplete="off">
-                        </div>
-                        <button type="submit" class="btn">Continue</button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Welcome (first-time) -->
-            <div id="welcome-view" class="view">
-                <div style="max-width: 620px; margin: 0 auto; padding: 20px 0;">
-                    <h2 style="color: #1a4d4d; font-size: 1.8em; margin-bottom: 20px;">Welcome to the Organisation Assessment</h2>
-                    <p style="font-size: 1.05em; color: #444; line-height: 1.7; margin-bottom: 30px;">
-                        The 15 items ask you to think about what is happening to people in your organisation, not what is happening to you personally but in the organisation. Answer honestly based on what you see, not what you wish was happening. Five to ten minutes.
-                    </p>
-                    <button class="nav-btn" onclick="startAssessment()" style="font-size: 1.05em;">
-                        Take the assessment
-                    </button>
+                    <button class="logout-btn" onclick="handleLogout()">Sign out</button>
                 </div>
             </div>
 
             <!-- Dashboard -->
             <div id="dashboard-view" class="view">
                 <div class="dashboard-header">
-                    <div class="user-info">
-                        Welcome, <span id="user-name"></span>
+                    <div class="user-info">Administrator: <span id="admin-email"></span></div>
+                    <div class="header-actions">
+                        <button class="ghost-btn" onclick="loadDashboard()">Refresh</button>
+                        <button class="logout-btn" onclick="handleLogout()">Sign out</button>
                     </div>
-                    <button class="logout-btn" onclick="handleLogout()">Logout</button>
                 </div>
 
-                <div class="intro-card">
-                    <h3>Organisation Assessment — Road Test</h3>
-                    <p>The 15 items ask you to think about what is happening to people in your organisation, not what is happening to you personally but in the organisation. Answer honestly based on what you see, not what you wish was happening. Five to ten minutes.</p>
-                </div>
-
-                <div class="action-card" onclick="startAssessment()">
-                    <h3>Take the assessment</h3>
-                    <p>Begin a new reading of your organisation</p>
-                </div>
-
-                <div id="previous-result-container"></div>
-            </div>
-
-            <!-- Assessment -->
-            <div id="assessment-view" class="view">
-                <h2 id="assessment-header" style="margin-bottom: 24px; color: #1a4d4d;">Organisation Assessment</h2>
-
-                <div class="instructions-card">
-                    <p>For each statement below, select the number (0–10) that best describes what you observe happening in your organisation, where 0 is "not at all true" and 10 is "completely true".</p>
-                </div>
-
-                <div id="questions-container">
-                    <!-- Questions inserted here -->
-                </div>
-
-                <div class="navigation-buttons">
-                    <button class="nav-btn secondary" onclick="cancelAssessment()">Cancel</button>
-                    <button class="nav-btn" id="submit-btn" onclick="submitAssessment()">Submit</button>
-                </div>
-            </div>
-
-            <!-- Results -->
-            <div id="results-view" class="view">
-                <h2 id="results-header" style="margin-bottom: 26px; color: #1a4d4d;">Your Reading</h2>
-                <div id="results-summary"></div>
+                <div class="summary-strip" id="summary-strip"></div>
+                <div id="orgs-container"></div>
 
                 <div class="holding-line">
-                    <strong>What you are seeing.</strong> Three scores, one per dimension, on a 0 to 10 scale. The dimension with the lowest score is flagged as the constraint, the place where the conditions are most strongly at work. The bands read: 0 to 3, conditions strongly constrain adaptive contribution; 4 to 6, conditions partially support but inconsistently sustain it; 7 to 10, conditions generally support it. The richer interpretive material that explains what each pattern means is under development and will follow when ready.
-                </div>
-
-                <div class="navigation-buttons" style="margin-top: 30px;">
-                    <button class="nav-btn secondary" onclick="showView('dashboard-view')">Back to Dashboard</button>
+                    <strong>How to read this.</strong> Each organisation shows the average Motivation, Learning and Identity across the people who have completed a reading, using each person's most recent reading. An organisation stays locked until at least eight people in it have a reading, so individuals cannot be identified. Bands read: red below 4, amber 4 to 6.9, green 7 and above. The lowest dimension is flagged as the constraint. Organisation names are matched without regard to case.
                 </div>
             </div>
 
@@ -504,7 +276,6 @@
     </div>
 
     <script>
-        // Firebase config (shared project)
         const firebaseConfig = {
             apiKey: "AIzaSyCmnYEq0hf9QyNjbhej6ghdM2LAzWLGaPA",
             authDomain: "multiplier-assessment.firebaseapp.com",
@@ -519,448 +290,221 @@
         const auth = firebase.auth();
         const database = firebase.database();
 
-        let currentUser = null;
-        let currentQuestions = [];
+        const ADMIN_EMAIL = 'paul@paulthomascoaching.co.uk';
+        const MIN_RESPONDENTS = 8;
 
-        // The 15 organisation items, with dimension and reverse flag.
-        // Items 4, 8, 11 are reverse-scored (agreement indicates constraining conditions).
-        const questions = [
-            { id: 'q1',  dimension: 'motivation', reverse: false, text: "People here still feel connected to the purpose of their work." },
-            { id: 'q2',  dimension: 'learning',   reverse: false, text: "People can raise difficult issues in ways that improve how work is done." },
-            { id: 'q3',  dimension: 'identity',   reverse: false, text: "People can contribute here without feeling they need to change who they are." },
-            { id: 'q4',  dimension: 'motivation', reverse: true,  text: "Over time, people can start to wonder whether their work really matters." },
-            { id: 'q5',  dimension: 'learning',   reverse: false, text: "When things change, the organisation adapts instead of falling back on old habits." },
-            { id: 'q6',  dimension: 'identity',   reverse: false, text: "People here still recognise the organisation they originally joined." },
-            { id: 'q7',  dimension: 'motivation', reverse: false, text: "People can see how their work makes a difference." },
-            { id: 'q8',  dimension: 'learning',   reverse: true,  text: "Over time, people learn what feels safe to talk about, and what does not." },
-            { id: 'q9',  dimension: 'motivation', reverse: false, text: "During change or pressure, the organisation still feels connected to its purpose." },
-            { id: 'q10', dimension: 'learning',   reverse: false, text: "Different views and honest challenge are taken seriously here." },
-            { id: 'q11', dimension: 'identity',   reverse: true,  text: "Over time, people can lose a sense of who they are in their role." },
-            { id: 'q12', dimension: 'motivation', reverse: false, text: "People have space to care about doing their work well." },
-            { id: 'q13', dimension: 'learning',   reverse: false, text: "The organisation learns from problems instead of just parking them." },
-            { id: 'q14', dimension: 'identity',   reverse: false, text: "During change, the organisation stays connected to what it stands for." },
-            { id: 'q15', dimension: 'identity',   reverse: false, text: "People can continue contributing here without hiding important parts of themselves." }
-        ];
-
-        function shuffleArray(array) {
-            const shuffled = [...array];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            return shuffled;
+        function showView(id) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
 
-        const ACCESS_CODE = 'fieldtest26';
-
         auth.onAuthStateChanged(user => {
-            const loadingScreen = document.getElementById('loading-screen');
-            if (loadingScreen) {
-                loadingScreen.classList.add('hidden');
-                setTimeout(() => { loadingScreen.style.display = 'none'; }, 300);
-            }
+            const ls = document.getElementById('loading-screen');
+            ls.classList.add('hidden');
+            setTimeout(() => { ls.style.display = 'none'; }, 300);
 
-            if (user) {
-                currentUser = user;
-            } else {
-                currentUser = null;
-            }
-
-            if (localStorage.getItem('field_access_granted') !== 'yes') {
-                showView('access-view');
-                return;
-            }
-
-            if (currentUser) {
-                loadUserData();
-            } else {
+            if (!user) {
                 showView('auth-view');
+            } else if ((user.email || '').toLowerCase() !== ADMIN_EMAIL) {
+                showView('denied-view');
+            } else {
+                document.getElementById('admin-email').textContent = user.email;
+                loadDashboard();
             }
         });
 
-        function handleAccess(event) {
-            event.preventDefault();
-            const code = document.getElementById('access-code').value.trim().toLowerCase();
-            const errorEl = document.getElementById('access-error');
-            if (code === ACCESS_CODE) {
-                localStorage.setItem('field_access_granted', 'yes');
-                errorEl.classList.remove('show');
-                if (currentUser) {
-                    loadUserData();
-                } else {
-                    showView('auth-view');
-                }
-            } else {
-                errorEl.textContent = 'That access code is not recognised. Check what you were sent, and try again.';
-                errorEl.classList.add('show');
-            }
-        }
-
-        function switchAuthTab(tab) {
-            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-            if (tab === 'login') {
-                document.querySelector('.auth-tab:first-child').classList.add('active');
-                document.getElementById('login-form').classList.add('active');
-            } else {
-                document.querySelector('.auth-tab:last-child').classList.add('active');
-                document.getElementById('signup-form').classList.add('active');
-            }
-            hideError();
-        }
-
-        function showForgotPassword(event) {
-            event.preventDefault();
-            const email = document.getElementById('login-email').value;
-            if (!email) {
-                alert('Please enter your email address first, then click "Forgot Password?"');
-                document.getElementById('login-email').focus();
-                return;
-            }
-            if (confirm(`Send password reset email to ${email}?`)) {
-                auth.sendPasswordResetEmail(email)
-                    .then(() => alert('Password reset email sent. Check your inbox and spam folder.'))
-                    .catch(err => {
-                        if (err.code === 'auth/user-not-found') {
-                            alert('No account found with this email address on the organisation assessment.');
-                        } else {
-                            alert('Error sending reset email: ' + err.message);
-                        }
-                    });
-            }
-        }
-
         async function handleLogin(e) {
             e.preventDefault();
-            hideError();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
+            const errEl = document.getElementById('auth-error');
+            errEl.classList.remove('show');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
             try {
                 await auth.signInWithEmailAndPassword(email, password);
-            } catch (error) {
-                let msg = 'An error occurred. Please try again.';
-                if (error.code === 'auth/invalid-login-credentials' ||
-                    error.code === 'auth/wrong-password' ||
-                    error.code === 'auth/user-not-found') {
-                    msg = 'Incorrect email or password. Please try again.';
-                } else if (error.code === 'auth/invalid-email') {
-                    msg = 'Please enter a valid email address.';
-                } else if (error.code === 'auth/too-many-requests') {
-                    msg = 'Too many failed attempts. Please wait or reset your password.';
-                }
-                showError(msg);
-            }
-        }
-
-        async function handleSignup(e) {
-            e.preventDefault();
-            hideError();
-            const name = document.getElementById('signup-name').value;
-            const organisation = document.getElementById('signup-organisation').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-
-            try {
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                await database.ref('field_users/' + userCredential.user.uid).set({
-                    name: name,
-                    email: email,
-                    organisation: organisation,
-                    createdAt: new Date().toISOString(),
-                    source: 'field_assessment'
-                });
-            } catch (error) {
-                if (error.code === 'auth/email-already-in-use') {
-                    showError('This email is already registered. Use the Login tab above to sign in with your existing email and password. You do not need a second email.');
-                } else {
-                    showError(error.message);
-                }
+            } catch (err) {
+                errEl.textContent = 'Sign in failed. Check the email and password and try again.';
+                errEl.classList.add('show');
             }
         }
 
         function handleLogout() { auth.signOut(); }
 
-        function showError(msg) {
-            const el = document.getElementById('error-message');
-            el.textContent = msg;
-            el.classList.add('show');
-        }
-        function hideError() { document.getElementById('error-message').classList.remove('show'); }
-
-        function showView(viewId) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
+        function getTrafficLight(score) {
+            if (score < 4.0) return { emoji: '🔴', status: 'Conditions strongly constrain adaptive contribution' };
+            if (score < 7.0) return { emoji: '🟡', status: 'Conditions partially support, but inconsistently sustain, contribution' };
+            return { emoji: '🟢', status: 'Conditions generally support adaptive contribution' };
         }
 
-        async function loadUserData() {
+        const capitalise = s => s.charAt(0).toUpperCase() + s.slice(1);
+        const fmtDate = ts => { try { return new Date(ts).toLocaleDateString(); } catch (e) { return ''; } };
+
+        async function loadDashboard() {
+            showView('dashboard-view');
+            document.getElementById('summary-strip').innerHTML = '';
+            document.getElementById('orgs-container').innerHTML =
+                '<div class="empty-note">Loading readings…</div>';
+
+            let users = {}, assessments = {};
             try {
-                const userSnap = await database.ref('field_users/' + currentUser.uid).once('value');
-                let userData = userSnap.val();
-
-                // If user authed but has no field_users record (e.g. they only did the personal
-                // assessment), create a minimal record; the organisation is captured below.
-                if (!userData) {
-                    await database.ref('field_users/' + currentUser.uid).set({
-                        name: currentUser.displayName || currentUser.email,
-                        email: currentUser.email,
-                        organisation: '',
-                        createdAt: new Date().toISOString(),
-                        source: 'field_assessment'
-                    });
-                    userData = { name: currentUser.displayName || currentUser.email, organisation: '' };
-                }
-
-                // If no organisation recorded, capture it before going any further.
-                if (!userData.organisation || userData.organisation.trim() === '') {
-                    showView('org-capture-view');
-                    return;
-                }
-
-                document.getElementById('user-name').textContent = userData.name || currentUser.email;
-
-                // Dynamic header with organisation name (item 4)
-                const orgName = userData.organisation || '';
-                const assessmentHeader = document.getElementById('assessment-header');
-                const resultsHeader = document.getElementById('results-header');
-                if (orgName) {
-                    if (assessmentHeader) assessmentHeader.textContent = `Organisation Assessment — ${orgName}`;
-                    if (resultsHeader)    resultsHeader.textContent    = `Your Reading of ${orgName}`;
-                } else {
-                    if (assessmentHeader) assessmentHeader.textContent = 'Organisation Assessment';
-                    if (resultsHeader)    resultsHeader.textContent    = 'Your Reading';
-                }
-
-                // Check if they have prior organisation assessments
-                const assessmentsSnap = await database.ref('field_assessments/' + currentUser.uid).once('value');
-                const assessments = assessmentsSnap.val();
-
-                if (!assessments) {
-                    // First time, show welcome
-                    showView('welcome-view');
-                } else {
-                    // Show dashboard with previous result
-                    renderPreviousResult(assessments);
-                    showView('dashboard-view');
-                }
+                const [uSnap, aSnap] = await Promise.all([
+                    database.ref('field_users').once('value'),
+                    database.ref('field_assessments').once('value')
+                ]);
+                users = uSnap.val() || {};
+                assessments = aSnap.val() || {};
             } catch (err) {
-                console.error('Error loading user data:', err);
-                showView('dashboard-view');
-            }
-        }
-
-        async function saveOrganisation(event) {
-            event.preventDefault();
-            const org = document.getElementById('org-capture-input').value.trim();
-            const errorEl = document.getElementById('org-capture-error');
-            if (!org) return;
-            try {
-                await database.ref('field_users/' + currentUser.uid + '/organisation').set(org);
-                errorEl.classList.remove('show');
-                loadUserData();
-            } catch (err) {
-                console.error('Error saving organisation:', err);
-                errorEl.textContent = 'Could not save. Please try again.';
-                errorEl.classList.add('show');
-            }
-        }
-
-        function renderPreviousResult(assessments) {
-            const arr = Object.values(assessments);
-            const latest = arr[arr.length - 1];
-            const container = document.getElementById('previous-result-container');
-            container.innerHTML = `
-                <div class="previous-result">
-                    <h4>Your most recent reading — ${new Date(latest.timestamp).toLocaleDateString()}</h4>
-                    <div class="score-grid">
-                        <div class="score-item">
-                            <div class="score-label">Motivation</div>
-                            <div class="score-value">${latest.motivationDisplay}/10</div>
-                        </div>
-                        <div class="score-item">
-                            <div class="score-label">Learning</div>
-                            <div class="score-value">${latest.learningDisplay}/10</div>
-                        </div>
-                        <div class="score-item">
-                            <div class="score-label">Identity</div>
-                            <div class="score-value">${latest.identityDisplay}/10</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function startAssessment() {
-            // Fixed order (shuffle off) so the deliberate item ordering and reverse-item spacing are preserved,
-            // and tester feedback can be discussed item by item. To re-enable shuffling later, use shuffleArray(questions).
-            currentQuestions = [...questions];
-            renderQuestions();
-            showView('assessment-view');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function cancelAssessment() {
-            if (confirm('Cancel this assessment? Your answers will not be saved.')) {
-                showView('dashboard-view');
-            }
-        }
-
-        function renderQuestions() {
-            const container = document.getElementById('questions-container');
-            const options = [0,1,2,3,4,5,6,7,8,9,10];
-            container.innerHTML = currentQuestions.map((q, index) => `
-                <div class="question">
-                    <div class="question-text">${index + 1}. ${q.text}</div>
-                    <div class="likert-scale">
-                        ${options.map(val => `
-                            <div class="likert-option">
-                                <input type="radio" name="${q.id}" value="${val}" id="${q.id}-${val}">
-                                <label for="${q.id}-${val}">${val}</label>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div class="scale-anchors">
-                        <span>0 — not at all true</span>
-                        <span>10 — completely true</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        async function submitAssessment() {
-            const allAnswered = currentQuestions.every(q =>
-                document.querySelector(`input[name="${q.id}"]:checked`)
-            );
-            if (!allAnswered) {
-                alert('Please answer all 15 statements before submitting.');
+                document.getElementById('orgs-container').innerHTML =
+                    '<div class="empty-note">Could not read the data. If this persists, check that the database rules grant the admin account read access to field_users and field_assessments.</div>';
                 return;
             }
 
-            let motSum = 0, motCount = 0;
-            let learnSum = 0, learnCount = 0;
-            let idSum = 0, idCount = 0;
-
-            currentQuestions.forEach(q => {
-                const raw = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value);
-                // Reverse-scoring: for items where high score indicates field presence,
-                // transform value to (10 - raw) so all items align with high = healthy.
-                const adjusted = q.reverse ? (10 - raw) : raw;
-
-                if (q.dimension === 'motivation') { motSum += adjusted; motCount++; }
-                if (q.dimension === 'learning')   { learnSum += adjusted; learnCount++; }
-                if (q.dimension === 'identity')   { idSum   += adjusted; idCount++; }
+            // Most recent reading per person, joined to their organisation.
+            const people = [];
+            Object.keys(assessments).forEach(uid => {
+                const readings = Object.values(assessments[uid] || {});
+                if (!readings.length) return;
+                readings.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                const latest = readings[0];
+                const u = users[uid] || {};
+                const org = (u.organisation || '').trim();
+                const mot = parseFloat(latest.motivationDisplay);
+                const learn = parseFloat(latest.learningDisplay);
+                const iden = parseFloat(latest.identityDisplay);
+                if ([mot, learn, iden].some(n => isNaN(n))) return;
+                people.push({
+                    name: u.name || u.email || '(unknown)',
+                    org: org,
+                    orgKey: org.toLowerCase(),
+                    mot, learn, iden,
+                    capacity: latest.capacityScore,
+                    timestamp: latest.timestamp
+                });
             });
 
-            // Raw per-dimension averages run 2 to 8 because of reverse-scoring on items 4, 8, 11.
-            // Renormalise to 0 to 10 so what the user sees lines up with what the items run on.
-            const renormalise = raw => (raw - 2) / 6 * 10;
-            const motivation = renormalise(motSum / motCount).toFixed(1);
-            const learning   = renormalise(learnSum / learnCount).toFixed(1);
-            const identity   = renormalise(idSum   / idCount).toFixed(1);
+            // Group by organisation (case-insensitive).
+            const groups = {};
+            people.forEach(p => {
+                const key = p.orgKey || '(unassigned)';
+                if (!groups[key]) groups[key] = { display: p.org || 'Unassigned (no organisation set)', members: [] };
+                groups[key].members.push(p);
+            });
 
-            const capacityScore = Math.round(parseFloat(motivation) * parseFloat(learning) * parseFloat(identity));
+            renderSummary(groups, people.length);
+            renderOrgs(groups);
+        }
 
+        function renderSummary(groups, totalPeople) {
+            const orgKeys = Object.keys(groups);
+            const unlocked = orgKeys.filter(k => groups[k].members.length >= MIN_RESPONDENTS).length;
+            document.getElementById('summary-strip').innerHTML = `
+                <div class="summary-card"><div class="summary-value">${totalPeople}</div><div class="summary-label">People with a reading</div></div>
+                <div class="summary-card"><div class="summary-value">${orgKeys.length}</div><div class="summary-label">Organisations</div></div>
+                <div class="summary-card"><div class="summary-value">${unlocked}</div><div class="summary-label">Unlocked (8+ readings)</div></div>
+            `;
+        }
+
+        function renderOrgs(groups) {
+            const container = document.getElementById('orgs-container');
+            const keys = Object.keys(groups);
+            if (!keys.length) {
+                container.innerHTML = '<div class="empty-note">No readings yet. Once people complete the organisation road test, they will appear here.</div>';
+                return;
+            }
+            // Unlocked first, then by number of respondents.
+            keys.sort((a, b) => {
+                const la = groups[a].members.length >= MIN_RESPONDENTS ? 1 : 0;
+                const lb = groups[b].members.length >= MIN_RESPONDENTS ? 1 : 0;
+                if (la !== lb) return lb - la;
+                return groups[b].members.length - groups[a].members.length;
+            });
+            container.innerHTML = keys.map(k => renderOrgCard(groups[k])).join('');
+        }
+
+        function renderOrgCard(group) {
+            const m = group.members;
+            const n = m.length;
+            const head = `
+                <div class="org-card-head">
+                    <span class="org-name">${escapeHtml(group.display)}</span>
+                    <span class="org-count">${n} ${n === 1 ? 'reading' : 'readings'}</span>
+                </div>`;
+
+            if (n < MIN_RESPONDENTS) {
+                const pct = Math.round((n / MIN_RESPONDENTS) * 100);
+                return `<div class="org-card">${head}
+                    <div class="locked-body">
+                        Locked. ${n} of ${MIN_RESPONDENTS} readings so far. The aggregate unlocks at ${MIN_RESPONDENTS}.
+                        <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+                    </div>
+                </div>`;
+            }
+
+            const avg = arr => arr.reduce((s, x) => s + x, 0) / arr.length;
             const scores = {
-                motivation: parseFloat(motivation),
-                learning:   parseFloat(learning),
-                identity:   parseFloat(identity)
+                motivation: +avg(m.map(p => p.mot)).toFixed(1),
+                learning:   +avg(m.map(p => p.learn)).toFixed(1),
+                identity:   +avg(m.map(p => p.iden)).toFixed(1)
             };
-            // Constraint routine. Find the lowest score and every dimension tied at it.
-            // constraints may hold one, two, or three dimensions.
+            const capacity = Math.round(scores.motivation * scores.learning * scores.identity);
             const minScore = Math.min(scores.motivation, scores.learning, scores.identity);
             const constraints = Object.keys(scores).filter(d => scores[d] === minScore);
-            // Keep a single constraint field (first of any tie) for the admin page's existing logic.
-            const constraint = constraints[0];
-
-            const trafficLights = {
-                motivation: getTrafficLight(scores.motivation),
-                learning:   getTrafficLight(scores.learning),
-                identity:   getTrafficLight(scores.identity)
-            };
-
-            // Capture raw item responses for admin diagnostics
-            const itemResponses = {};
-            currentQuestions.forEach(q => {
-                const raw = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value);
-                itemResponses[q.id] = {
-                    dimension: q.dimension,
-                    reverse: q.reverse,
-                    raw: raw,
-                    adjusted: q.reverse ? (10 - raw) : raw,
-                    text: q.text
-                };
-            });
-
-            const assessmentData = {
-                timestamp: new Date().toISOString(),
-                motivationDisplay: motivation,
-                learningDisplay: learning,
-                identityDisplay: identity,
-                capacityScore,
-                constraint,
-                constraints,
-                trafficLights,
-                itemResponses
-            };
-
-            try {
-                await database.ref('field_assessments/' + currentUser.uid).push(assessmentData);
-                displayResults(assessmentData);
-            } catch (err) {
-                console.error('Error saving assessment:', err);
-                alert('Error saving assessment. Please try again.');
-            }
-        }
-
-        function getTrafficLight(score) {
-            if (score < 4.0) return { emoji: '🔴', status: 'Conditions strongly constrain adaptive contribution', color: 'red' };
-            if (score < 7.0) return { emoji: '🟡', status: 'Conditions partially support, but inconsistently sustain, contribution', color: 'amber' };
-            return { emoji: '🟢', status: 'Conditions generally support adaptive contribution', color: 'green' };
-        }
-
-        function displayResults(data) {
-            const capitalise = s => s.charAt(0).toUpperCase() + s.slice(1);
-
-            // Tie-aware constraint handling. Fall back to single constraint for older records.
-            const constraints = (data.constraints && data.constraints.length)
-                ? data.constraints
-                : [data.constraint];
             const allLevel = constraints.length === 3;
             const tied = constraints.length === 2;
-
-            // Per-dimension marker. No highlight when all three are level.
-            const isConstraint = dim => !allLevel && constraints.includes(dim);
-            const markerLabel = tied ? '← Most constrained (tied)' : '← First casualty';
-
-            // Closing explanation, depending on how many dimensions sit lowest.
-            const names = constraints.map(capitalise);
-            let constraintSentence;
-            if (allLevel) {
-                constraintSentence = 'All three dimensions are level, so the reading is uniform. No single dimension stands out as the constraint.';
-            } else if (tied) {
-                constraintSentence = `${names[0]} and ${names[1]} are equally the most constrained, the place where the conditions are doing their work.`;
-            } else {
-                constraintSentence = `${names[0]} is where the conditions have done their work first.`;
-            }
+            const markerLabel = tied ? '← Most constrained (tied)' : '← Constraint';
 
             const dims = ['motivation', 'learning', 'identity'];
-            const html = dims.map(dim => `
-                <div class="dimension-score ${isConstraint(dim) ? 'constraint' : ''}">
-                    <span class="dimension-name">${capitalise(dim)}</span>
-                    <span class="score">${data[dim + 'Display']}/10</span>
-                    <span class="traffic-light">${data.trafficLights[dim].emoji}</span>
-                    <span class="status">${data.trafficLights[dim].status}</span>
-                    ${isConstraint(dim) ? `<span class="constraint-marker">${markerLabel}</span>` : ''}
-                </div>
-            `).join('') + `
-                <div class="capacity-score">
-                    <strong>Capacity Score: ${data.capacityScore}</strong>
-                    <p>Calculated as ${data.motivationDisplay} × ${data.learningDisplay} × ${data.identityDisplay}. Capacity runs from 0, where conditions strongly constrain across all three dimensions, to 1000, where they generally support across all three. Because the three dimensions multiply, the lowest score has the biggest effect on the whole. ${constraintSentence}</p>
-                </div>
-            `;
+            const rows = dims.map(d => {
+                const tl = getTrafficLight(scores[d]);
+                const isC = !allLevel && constraints.includes(d);
+                return `<div class="dimension-score ${isC ? 'constraint' : ''}">
+                    <span class="dimension-name">${capitalise(d)}</span>
+                    <span class="score">${scores[d].toFixed(1)}/10</span>
+                    <span class="traffic-light">${tl.emoji}</span>
+                    <span class="status">${tl.status}</span>
+                    ${isC ? `<span class="constraint-marker">${markerLabel}</span>` : ''}
+                </div>`;
+            }).join('');
 
-            document.getElementById('results-summary').innerHTML = html;
-            showView('results-view');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            let constraintSentence;
+            const names = constraints.map(capitalise);
+            if (allLevel) constraintSentence = 'All three dimensions are level, so no single one stands out as the constraint.';
+            else if (tied) constraintSentence = `${names[0]} and ${names[1]} are equally the most constrained.`;
+            else constraintSentence = `${names[0]} is the constraint, the dimension to address first.`;
+
+            const peopleRows = m
+                .slice()
+                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                .map(p => `<tr>
+                    <td>${escapeHtml(p.name)}</td>
+                    <td class="num">${p.mot.toFixed(1)}</td>
+                    <td class="num">${p.learn.toFixed(1)}</td>
+                    <td class="num">${p.iden.toFixed(1)}</td>
+                    <td class="num">${p.capacity}</td>
+                    <td>${fmtDate(p.timestamp)}</td>
+                </tr>`).join('');
+
+            return `<div class="org-card">${head}
+                <div class="org-body">
+                    ${rows}
+                    <div class="capacity-score">
+                        <strong>Capacity Score: ${capacity}</strong>
+                        <p>From the organisation averages, ${scores.motivation.toFixed(1)} × ${scores.learning.toFixed(1)} × ${scores.identity.toFixed(1)}. Runs 0 to 1000. Because the three multiply, the lowest dimension has the biggest effect. ${constraintSentence}</p>
+                    </div>
+                    <details class="people">
+                        <summary>Show the ${n} individual readings</summary>
+                        <table class="people-table">
+                            <thead><tr><th>Name</th><th>Mot</th><th>Learn</th><th>Iden</th><th>Cap</th><th>Most recent</th></tr></thead>
+                            <tbody>${peopleRows}</tbody>
+                        </table>
+                    </details>
+                </div>
+            </div>`;
+        }
+
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
         }
     </script>
 </body>
