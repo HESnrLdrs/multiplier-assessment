@@ -129,7 +129,7 @@
         /* Summary strip */
         .summary-strip {
             display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 14px; margin-bottom: 30px;
+            gap: 14px; margin-bottom: 26px;
         }
         .summary-card {
             text-align: center; padding: 18px 14px;
@@ -137,6 +137,22 @@
         }
         .summary-value { font-size: 1.8em; font-weight: 700; color: #1a4d4d; }
         .summary-label { font-size: 0.82em; color: #666; margin-top: 4px; }
+
+        /* Tabs */
+        .tab-bar {
+            display: flex; gap: 6px;
+            border-bottom: 2px solid #e0e0e0; margin-bottom: 24px;
+        }
+        .tab-btn {
+            padding: 12px 22px; background: none; border: none;
+            border-bottom: 3px solid transparent; margin-bottom: -2px;
+            cursor: pointer; font-size: 1em; font-weight: 600; color: #888;
+            transition: color 0.2s;
+        }
+        .tab-btn:hover { color: #1a4d4d; }
+        .tab-btn.active { color: #1a4d4d; border-bottom-color: #c9a961; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
 
         /* Org card */
         .org-card {
@@ -181,17 +197,15 @@
         .capacity-score strong { font-size: 1.5em; display: block; margin-bottom: 6px; }
         .capacity-score p { font-size: 0.88em; opacity: 0.95; line-height: 1.5; }
 
-        details.people { margin: 0 0 16px; }
-        details.people summary {
-            cursor: pointer; color: #2d6a6a; font-size: 0.9em;
-            font-weight: 600; padding: 6px 0;
-        }
-        table.people-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.88em; }
+        /* People tables */
+        table.people-table { width: 100%; border-collapse: collapse; margin-top: 4px; font-size: 0.9em; }
         table.people-table th, table.people-table td {
-            text-align: left; padding: 8px 10px; border-bottom: 1px solid #eee;
+            text-align: left; padding: 9px 10px; border-bottom: 1px solid #eee;
         }
         table.people-table th { color: #666; font-weight: 600; }
         table.people-table td.num { text-align: center; font-variant-numeric: tabular-nums; }
+        table.people-table td.dim { text-align: center; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        table.people-table td.constraint-cell { background: #fff8f6; color: #A32D2D; font-weight: 700; }
 
         .holding-line {
             background: #f5f3ed; border-left: 4px solid #c9a961;
@@ -216,7 +230,7 @@
 
         <div class="header">
             <h1>Organisation Admin</h1>
-            <span class="admin-tag">Aggregate View</span>
+            <span class="admin-tag">Individual Readings</span>
         </div>
 
         <div class="content">
@@ -226,7 +240,7 @@
                 <div class="auth-container">
                     <h2 style="color:#1a4d4d; font-size:1.4em; margin-bottom:16px;">Administrator sign in</h2>
                     <p style="color:#444; line-height:1.6; margin-bottom:22px;">
-                        This page shows organisation-level aggregates and is restricted to the administrator account.
+                        This page shows individual and organisation-level results and is restricted to the administrator account.
                     </p>
                     <div id="auth-error" class="error-message"></div>
                     <form onsubmit="handleLogin(event)">
@@ -265,11 +279,28 @@
                 </div>
 
                 <div class="summary-strip" id="summary-strip"></div>
-                <div id="orgs-container"></div>
 
-                <div class="holding-line">
-                    <strong>How to read this.</strong> Each organisation shows the average Motivation, Learning and Identity across the people who have completed a reading, using each person's most recent reading. An organisation stays locked until at least eight people in it have a reading, so individuals cannot be identified. Bands read: red below 4, amber 4 to 6.9, green 7 and above. The lowest dimension is flagged as the constraint. Organisation names are matched without regard to case.
+                <div class="tab-bar">
+                    <button class="tab-btn active" data-tab="individuals" onclick="switchTab('individuals')">Individuals</button>
+                    <button class="tab-btn" data-tab="corporate" onclick="switchTab('corporate')">Corporate</button>
                 </div>
+
+                <!-- Individuals -->
+                <div id="individuals-panel" class="tab-panel active">
+                    <div id="individuals-container"></div>
+                    <div class="holding-line">
+                        <strong>How to read this.</strong> Every person who has completed a reading appears here under their organisation, using their most recent reading. This view is not gated, so you can see individuals whatever the size of the group. It is the screen to open when you want to discuss someone's result with them. Each dimension shows a light: red below 4, amber 4 to 6.9, green 7 and above. A person's lowest dimension is shaded as their constraint, the one to look at first.
+                    </div>
+                </div>
+
+                <!-- Corporate -->
+                <div id="corporate-panel" class="tab-panel">
+                    <div id="orgs-container"></div>
+                    <div class="holding-line">
+                        <strong>How to read this.</strong> Each organisation shows the average Motivation, Learning and Identity across the people in it, using each person's most recent reading. An organisation stays locked until at least four people in it have a reading, so the average is not carried by one or two voices. Bands read: red below 4, amber 4 to 6.9, green 7 and above. The lowest dimension is flagged as the constraint. Organisation names are matched without regard to case.
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -291,11 +322,18 @@
         const database = firebase.database();
 
         const ADMIN_EMAIL = 'paul@paulthomascoaching.co.uk';
-        const MIN_RESPONDENTS = 8;
+        const MIN_RESPONDENTS = 4;
 
         function showView(id) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+        }
+
+        function switchTab(name) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === name + '-panel'));
+            const tag = document.querySelector('.admin-tag');
+            if (tag) tag.textContent = name === 'individuals' ? 'Individual Readings' : 'Corporate Aggregate';
         }
 
         auth.onAuthStateChanged(user => {
@@ -341,6 +379,8 @@
         async function loadDashboard() {
             showView('dashboard-view');
             document.getElementById('summary-strip').innerHTML = '';
+            document.getElementById('individuals-container').innerHTML =
+                '<div class="empty-note">Loading readings…</div>';
             document.getElementById('orgs-container').innerHTML =
                 '<div class="empty-note">Loading readings…</div>';
 
@@ -353,8 +393,9 @@
                 users = uSnap.val() || {};
                 assessments = aSnap.val() || {};
             } catch (err) {
-                document.getElementById('orgs-container').innerHTML =
-                    '<div class="empty-note">Could not read the data. If this persists, check that the database rules grant the admin account read access to field_users and field_assessments.</div>';
+                const msg = '<div class="empty-note">Could not read the data. If this persists, check that the database rules grant the admin account read access to field_users and field_assessments.</div>';
+                document.getElementById('individuals-container').innerHTML = msg;
+                document.getElementById('orgs-container').innerHTML = msg;
                 return;
             }
 
@@ -390,6 +431,7 @@
             });
 
             renderSummary(groups, people.length);
+            renderIndividuals(groups);
             renderOrgs(groups);
         }
 
@@ -399,10 +441,61 @@
             document.getElementById('summary-strip').innerHTML = `
                 <div class="summary-card"><div class="summary-value">${totalPeople}</div><div class="summary-label">People with a reading</div></div>
                 <div class="summary-card"><div class="summary-value">${orgKeys.length}</div><div class="summary-label">Organisations</div></div>
-                <div class="summary-card"><div class="summary-value">${unlocked}</div><div class="summary-label">Unlocked (8+ readings)</div></div>
+                <div class="summary-card"><div class="summary-value">${unlocked}</div><div class="summary-label">Unlocked (${MIN_RESPONDENTS}+ readings)</div></div>
             `;
         }
 
+        /* ---------- Individuals view ---------- */
+        function renderIndividuals(groups) {
+            const container = document.getElementById('individuals-container');
+            const keys = Object.keys(groups);
+            if (!keys.length) {
+                container.innerHTML = '<div class="empty-note">No readings yet. Once people complete a reading, they will appear here.</div>';
+                return;
+            }
+            keys.sort((a, b) => groups[a].display.localeCompare(groups[b].display));
+            container.innerHTML = keys.map(k => renderIndividualGroup(groups[k])).join('');
+        }
+
+        function renderIndividualGroup(group) {
+            const n = group.members.length;
+            const rows = group.members
+                .slice()
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map(renderIndividualRow).join('');
+            return `<div class="org-card">
+                <div class="org-card-head">
+                    <span class="org-name">${escapeHtml(group.display)}</span>
+                    <span class="org-count">${n} ${n === 1 ? 'person' : 'people'}</span>
+                </div>
+                <div class="org-body">
+                    <table class="people-table">
+                        <thead><tr><th>Name</th><th>Motivation</th><th>Learning</th><th>Identity</th><th>Capacity</th><th>Most recent</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            </div>`;
+        }
+
+        function renderIndividualRow(p) {
+            const minVal = Math.min(p.mot, p.learn, p.iden);
+            const allEqual = (p.mot === p.learn && p.learn === p.iden);
+            const cell = val => {
+                const tl = getTrafficLight(val);
+                const isC = !allEqual && val === minVal;
+                return `<td class="dim ${isC ? 'constraint-cell' : ''}">${tl.emoji} ${val.toFixed(1)}</td>`;
+            };
+            return `<tr>
+                <td>${escapeHtml(p.name)}</td>
+                ${cell(p.mot)}
+                ${cell(p.learn)}
+                ${cell(p.iden)}
+                <td class="num">${p.capacity}</td>
+                <td>${fmtDate(p.timestamp)}</td>
+            </tr>`;
+        }
+
+        /* ---------- Corporate view ---------- */
         function renderOrgs(groups) {
             const container = document.getElementById('orgs-container');
             const keys = Object.keys(groups);
@@ -433,7 +526,7 @@
                 const pct = Math.round((n / MIN_RESPONDENTS) * 100);
                 return `<div class="org-card">${head}
                     <div class="locked-body">
-                        Locked. ${n} of ${MIN_RESPONDENTS} readings so far. The aggregate unlocks at ${MIN_RESPONDENTS}.
+                        Locked. ${n} of ${MIN_RESPONDENTS} readings so far. The aggregate unlocks at ${MIN_RESPONDENTS}. Individual readings are on the Individuals tab.
                         <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
                     </div>
                 </div>`;
@@ -471,18 +564,6 @@
             else if (tied) constraintSentence = `${names[0]} and ${names[1]} are equally the most constrained.`;
             else constraintSentence = `${names[0]} is the constraint, the dimension to address first.`;
 
-            const peopleRows = m
-                .slice()
-                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-                .map(p => `<tr>
-                    <td>${escapeHtml(p.name)}</td>
-                    <td class="num">${p.mot.toFixed(1)}</td>
-                    <td class="num">${p.learn.toFixed(1)}</td>
-                    <td class="num">${p.iden.toFixed(1)}</td>
-                    <td class="num">${p.capacity}</td>
-                    <td>${fmtDate(p.timestamp)}</td>
-                </tr>`).join('');
-
             return `<div class="org-card">${head}
                 <div class="org-body">
                     ${rows}
@@ -490,13 +571,6 @@
                         <strong>Capacity Score: ${capacity}</strong>
                         <p>From the organisation averages, ${scores.motivation.toFixed(1)} × ${scores.learning.toFixed(1)} × ${scores.identity.toFixed(1)}. Runs 0 to 1000. Because the three multiply, the lowest dimension has the biggest effect. ${constraintSentence}</p>
                     </div>
-                    <details class="people">
-                        <summary>Show the ${n} individual readings</summary>
-                        <table class="people-table">
-                            <thead><tr><th>Name</th><th>Mot</th><th>Learn</th><th>Iden</th><th>Cap</th><th>Most recent</th></tr></thead>
-                            <tbody>${peopleRows}</tbody>
-                        </table>
-                    </details>
                 </div>
             </div>`;
         }
