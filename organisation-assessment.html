@@ -316,6 +316,24 @@
             font-size: 0.92em; opacity: 0.95; line-height: 1.5;
         }
 
+        .zone-note {
+            margin: -8px 0 18px;
+            padding: 15px 20px;
+            background: #f7f6f1;
+            border-left: 3px solid #c9a961;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.92em;
+            color: #555;
+            line-height: 1.65;
+        }
+        .zone-note .zone-intro {
+            font-weight: 600;
+            color: #1a4d4d;
+            margin-bottom: 6px;
+        }
+        .zone-note p { margin: 0; }
+        .zone-note p + p { margin-top: 6px; }
+
         .holding-line {
             background: #f5f3ed;
             border-left: 4px solid #c9a961;
@@ -931,6 +949,33 @@
             return { emoji: '🟢', status: 'Conditions generally support adaptive contribution', color: 'green' };
         }
 
+        // Plain-English explanation of each dimension's zone, in Paul's voice.
+        // Shown on the results screen for the band the reading lands in.
+        function bandOf(score) {
+            return score < 4.0 ? 'red' : (score < 7.0 ? 'amber' : 'green');
+        }
+
+        const zoneNotes = {
+            motivation: {
+                intro: "This dimension is about whether the work still connects to a purpose people believe in.",
+                green: "There's a real sense here of why the work matters, and people carry it with them. Effort is given gladly rather than squeezed out, and when things get hard, people still reach for the point of it all. That's a good place to be.",
+                amber: "The sense of purpose is still here, but it comes and goes. People are caught up in it on the good days and quietly going through the motions on the others. Often it's a particular manager or team holding it together rather than the organisation itself, and that's worth keeping an eye on.",
+                red: "The work has slipped into task without much meaning behind it. People do what's asked and not a great deal more, and the quiet question, does any of this matter, has been answered no. The effort has pulled back to match. It's a hard place to be, and it's usually trying to tell you something."
+            },
+            learning: {
+                intro: "This dimension is about whether people can speak up, and whether the place truly learns.",
+                green: "People here can say the difficult thing and trust it'll be taken in good part. Problems get looked at honestly rather than tidied away, and the organisation is willing to change its mind when the evidence asks it to. That openness is quietly powerful.",
+                amber: "People will speak up, but they choose their moments. Some things get aired and others stay unsaid, and you can sense people weighing up what's safe before they offer it. The learning does happen, but in patches, and it leans on who's in the room.",
+                red: "People have learned that it's safer to stay quiet. The difficult things go unsaid, problems get parked rather than faced, and the same issues keep coming round because no one felt able to name them. When a place stops hearing itself, it stops learning, and that's what this is pointing to."
+            },
+            identity: {
+                intro: "This dimension is about whether people can be themselves here, and whether the organisation still knows what it is.",
+                green: "People can do good work here without leaving part of themselves at the door. They still recognise the organisation they joined, and it holds on to what it stands for even when things change. That steadiness is worth a great deal.",
+                amber: "People mostly fit in, but it costs them a little. Bits of who they are get tucked away to keep things smooth, and the organisation's sense of itself wobbles when the pressure is on. It hasn't lost its way, but it's having to work to remember it.",
+                red: "People feel they have to hide important parts of themselves to get along here, and over time that wears them down. The organisation has drifted from what it once stood for, and people struggle to recognise the place they joined. When people can't be themselves, something quietly goes out of the work."
+            }
+        };
+
         function displayResults(data) {
             const capitalise = s => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -957,7 +1002,10 @@
             }
 
             const dims = ['motivation', 'learning', 'identity'];
-            const html = dims.map(dim => `
+            const html = dims.map(dim => {
+                const band = bandOf(parseFloat(data[dim + 'Display']));
+                const note = zoneNotes[dim];
+                return `
                 <div class="dimension-score ${isConstraint(dim) ? 'constraint' : ''}">
                     <span class="dimension-name">${capitalise(dim)}</span>
                     <span class="score">${data[dim + 'Display']}/10</span>
@@ -965,7 +1013,11 @@
                     <span class="status">${data.trafficLights[dim].status}</span>
                     ${isConstraint(dim) ? `<span class="constraint-marker">${markerLabel}</span>` : ''}
                 </div>
-            `).join('') + `
+                <div class="zone-note">
+                    <p class="zone-intro">${note.intro}</p>
+                    <p>${note[band]}</p>
+                </div>`;
+            }).join('') + `
                 <div class="capacity-score">
                     <strong>Capacity Score: ${data.capacityScore}</strong>
                     <p>Calculated as ${data.motivationDisplay} × ${data.learningDisplay} × ${data.identityDisplay}. Capacity runs from 0, where conditions strongly constrain across all three dimensions, to 1000, where they generally support across all three. Because the three dimensions multiply, the lowest score has the biggest effect on the whole. ${constraintSentence}</p>
