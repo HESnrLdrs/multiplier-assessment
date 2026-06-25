@@ -369,7 +369,7 @@
 
         function getTrafficLight(score) {
             if (score < 4.0) return { emoji: '🔴', status: 'Conditions strongly constrain adaptive contribution' };
-            if (score < 7.0) return { emoji: '🟡', status: 'Conditions partially support, but inconsistently sustain, contribution' };
+            if (score < 7.0) return { emoji: '🟡', status: 'Conditions support adaptive contribution at times, but not consistently' };
             return { emoji: '🟢', status: 'Conditions generally support adaptive contribution' };
         }
 
