@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Your Reading — Navigate Transition</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a4d4d 0%, #2d6a6a 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #2d2d2d;
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .back-link {
+            padding: 20px 40px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .back-link a { color: #2d6a6a; text-decoration: none; font-size: 0.95em; }
+
+        .header {
+            background: linear-gradient(135deg, #1a4d4d 0%, #2d6a6a 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.1em; margin-bottom: 10px; }
+        .header p { font-size: 1.05em; opacity: 0.95; }
+
+        .content { padding: 40px; }
+
+        .lead {
+            font-size: 1.05em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 28px;
+        }
+
+        h2.section {
+            font-size: 1.35em;
+            color: #1a4d4d;
+            margin: 34px 0 14px;
+        }
+
+        /* Bands legend */
+        .bands {
+            background: #f5f3ed;
+            border-radius: 12px;
+            padding: 22px 26px;
+            margin-bottom: 10px;
+        }
+        .band-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            line-height: 1.6;
+            color: #444;
+        }
+        .band-row + .band-row { border-top: 1px solid #e6e3da; }
+        .band-row .dot { font-size: 1.2em; line-height: 1.4; }
+        .band-row .band-label { font-weight: 600; color: #1a4d4d; min-width: 130px; }
+
+        /* Dimension cards */
+        .dimension {
+            border: 1px solid #e6e6e6;
+            border-radius: 14px;
+            padding: 24px 26px;
+            margin-bottom: 22px;
+        }
+        .dimension h3 {
+            font-size: 1.3em;
+            color: #1a4d4d;
+            margin-bottom: 6px;
+        }
+        .dimension .intro {
+            color: #555;
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .zone {
+            padding: 14px 18px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 12px;
+            line-height: 1.65;
+            color: #444;
+            background: #fafaf8;
+            border-left: 4px solid #ccc;
+        }
+        .zone:last-child { margin-bottom: 0; }
+        .zone.green { border-left-color: #3a7d44; background: #f4f8f4; }
+        .zone.amber { border-left-color: #cc8a00; background: #fbf7ee; }
+        .zone.red   { border-left-color: #A32D2D; background: #fdf5f4; }
+        .zone .zone-head {
+            font-weight: 600;
+            color: #1a4d4d;
+            margin-bottom: 5px;
+        }
+
+        /* Capacity */
+        .capacity {
+            background: linear-gradient(135deg, #1a4d4d 0%, #2d6a6a 100%);
+            color: white;
+            border-radius: 14px;
+            padding: 26px 28px;
+            margin-top: 8px;
+            line-height: 1.7;
+        }
+        .capacity h3 { font-size: 1.25em; margin-bottom: 10px; }
+        .capacity p { opacity: 0.96; }
+
+        .closing {
+            background: #f5f3ed;
+            border-left: 4px solid #c9a961;
+            padding: 18px 22px;
+            border-radius: 8px;
+            margin-top: 26px;
+            color: #555;
+            line-height: 1.65;
+            font-size: 0.96em;
+        }
+
+        .foot-link { text-align: center; margin-top: 30px; }
+        .foot-link a {
+            display: inline-block;
+            padding: 13px 30px;
+            background: white;
+            color: #2d6a6a;
+            border: 2px solid #2d6a6a;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .foot-link a:hover { background: #2d6a6a; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="back-link">
+            <a href="index.html">← Back to Navigate Transition</a>
+        </div>
+
+        <div class="header">
+            <h1>Understanding Your Reading</h1>
+            <p>How to make sense of the three scores</p>
+        </div>
+
+        <div class="content">
+
+            <p class="lead">
+                Your reading looks at three things that shape whether people can do their best work here: Motivation, Learning and Identity. Each one is scored from 0 to 10, based on what you said you see happening in your organisation. None of it is a test of you. It is a picture of the conditions people are working in.
+            </p>
+
+            <h2 class="section">The three colours</h2>
+            <div class="bands">
+                <div class="band-row">
+                    <span class="dot">🟢</span>
+                    <span class="band-label">Green, 7 to 10</span>
+                    <span>The conditions are generally helping. People can get on and contribute.</span>
+                </div>
+                <div class="band-row">
+                    <span class="dot">🟡</span>
+                    <span class="band-label">Amber, 4 to 6</span>
+                    <span>The conditions help in places, but not dependably. It comes and goes.</span>
+                </div>
+                <div class="band-row">
+                    <span class="dot">🔴</span>
+                    <span class="band-label">Red, 0 to 3</span>
+                    <span>The conditions are getting in the way of people doing their best work.</span>
+                </div>
+            </div>
+            <p class="lead" style="margin-top:16px;">
+                The lowest of your three scores is marked as the constraint. That is the place where the conditions are doing the most to hold people back, and usually the first thing worth looking at.
+            </p>
+
+            <h2 class="section">The three dimensions</h2>
+
+            <div class="dimension">
+                <h3>Motivation</h3>
+                <p class="intro">This dimension is about whether the work still connects to a purpose people believe in.</p>
+                <div class="zone green">
+                    <div class="zone-head">🟢 Green</div>
+                    There is a real sense here of why the work matters, and people carry it with them. Effort is given gladly rather than squeezed out, and when things get hard, people still reach for the point of it all. That is a good place to be.
+                </div>
+                <div class="zone amber">
+                    <div class="zone-head">🟡 Amber</div>
+                    The sense of purpose is still here, but it comes and goes. People are caught up in it on the good days and quietly going through the motions on the others. Often it is a particular manager or team holding it together rather than the organisation itself, and that is worth keeping an eye on.
+                </div>
+                <div class="zone red">
+                    <div class="zone-head">🔴 Red</div>
+                    The work has slipped into task without much meaning behind it. People do what is asked and not a great deal more, and the quiet question, does any of this matter, has been answered no. The effort has pulled back to match. It is a hard place to be, and it is usually trying to tell you something.
+                </div>
+            </div>
+
+            <div class="dimension">
+                <h3>Learning</h3>
+                <p class="intro">This dimension is about whether people can speak up, and whether the place truly learns.</p>
+                <div class="zone green">
+                    <div class="zone-head">🟢 Green</div>
+                    People here can say the difficult thing and trust it will be taken in good part. Problems get looked at honestly rather than tidied away, and the organisation is willing to change its mind when the evidence asks it to. That openness is quietly powerful.
+                </div>
+                <div class="zone amber">
+                    <div class="zone-head">🟡 Amber</div>
+                    People will speak up, but they choose their moments. Some things get aired and others stay unsaid, and you can sense people weighing up what is safe before they offer it. The learning does happen, but in patches, and it leans on who is in the room.
+                </div>
+                <div class="zone red">
+                    <div class="zone-head">🔴 Red</div>
+                    People have learned that it is safer to stay quiet. The difficult things go unsaid, problems get parked rather than faced, and the same issues keep coming round because no one felt able to name them. When a place stops hearing itself, it stops learning, and that is what this is pointing to.
+                </div>
+            </div>
+
+            <div class="dimension">
+                <h3>Identity</h3>
+                <p class="intro">This dimension is about whether people can be themselves here, and whether the organisation still knows what it is.</p>
+                <div class="zone green">
+                    <div class="zone-head">🟢 Green</div>
+                    People can do good work here without leaving part of themselves at the door. They still recognise the organisation they joined, and it holds on to what it stands for even when things change. That steadiness is worth a great deal.
+                </div>
+                <div class="zone amber">
+                    <div class="zone-head">🟡 Amber</div>
+                    People mostly fit in, but it costs them a little. Bits of who they are get tucked away to keep things smooth, and the organisation's sense of itself wobbles when the pressure is on. It has not lost its way, but it is having to work to remember it.
+                </div>
+                <div class="zone red">
+                    <div class="zone-head">🔴 Red</div>
+                    People feel they have to hide important parts of themselves to get along here, and over time that wears them down. The organisation has drifted from what it once stood for, and people struggle to recognise the place they joined. When people cannot be themselves, something quietly goes out of the work.
+                </div>
+            </div>
+
+            <h2 class="section">The Capacity Score</h2>
+            <div class="capacity">
+                <h3>The single number at the foot of your reading</h3>
+                <p>
+                    Under the three dimensions there is one Capacity Score, somewhere between 0 and 1000. It is the three dimension scores multiplied together. Multiplying matters, because it means the three depend on each other. A strong score in two dimensions cannot make up for a weak one in the third. The low score pulls the whole number down. So the Capacity Score is not a mark out of 1000 to chase. It is a reminder that people need all three, a purpose to believe in, the freedom to speak and learn, and room to be themselves, and that the weakest of the three is where the work is.
+                </p>
+            </div>
+
+            <div class="closing">
+                This instrument is still in road test, so the wording will keep improving as we learn from people using it. If a zone does not quite match what you see in your own organisation, that is genuinely useful to know, so please do say.
+            </div>
+
+            <div class="foot-link">
+                <a href="organisation-assessment.html">← Back to your reading</a>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
