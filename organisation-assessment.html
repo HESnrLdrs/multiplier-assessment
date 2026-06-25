@@ -215,6 +215,10 @@
             font-size: 1.05em; margin-bottom: 16px;
             color: #2d2d2d; font-weight: 500; line-height: 1.5;
         }
+        .question-example {
+            font-size: 0.9em; color: #777; font-style: italic;
+            margin-top: -8px; margin-bottom: 16px; line-height: 1.5;
+        }
 
         .likert-scale {
             display: grid;
@@ -492,7 +496,7 @@
                 <div id="results-summary"></div>
 
                 <div class="holding-line">
-                    <strong>What you are seeing.</strong> Three scores, one per dimension, on a 0 to 10 scale. The dimension with the lowest score is flagged as the constraint, the place where the conditions are most strongly at work. The bands read: 0 to 3, conditions strongly constrain adaptive contribution; 4 to 6, conditions partially support but inconsistently sustain it; 7 to 10, conditions generally support it. The richer interpretive material that explains what each pattern means is under development and will follow when ready.
+                    <strong>What you are seeing.</strong> Three scores, one per dimension, on a 0 to 10 scale. The dimension with the lowest score is flagged as the constraint, the place where the conditions are most strongly at work. The bands read: 0 to 3, conditions strongly constrain adaptive contribution; 4 to 6, conditions support it at times but not consistently; 7 to 10, conditions generally support it. The richer interpretive material that explains what each pattern means is under development and will follow when ready.
                 </div>
 
                 <div class="navigation-buttons" style="margin-top: 30px;">
@@ -539,7 +543,7 @@
             { id: 'q12', dimension: 'motivation', reverse: false, text: "People have space to care about doing their work well." },
             { id: 'q13', dimension: 'learning',   reverse: false, text: "The organisation learns from problems instead of just parking them." },
             { id: 'q14', dimension: 'identity',   reverse: false, text: "During change, the organisation stays connected to what it stands for." },
-            { id: 'q15', dimension: 'identity',   reverse: false, text: "People can continue contributing here without hiding important parts of themselves." }
+            { id: 'q15', dimension: 'identity',   reverse: false, text: "People can continue contributing here without hiding important parts of themselves.", example: "For example, their values, background, or honest opinions." }
         ];
 
         function shuffleArray(array) {
@@ -819,6 +823,7 @@
             container.innerHTML = currentQuestions.map((q, index) => `
                 <div class="question">
                     <div class="question-text">${index + 1}. ${q.text}</div>
+                    ${q.example ? `<div class="question-example">${q.example}</div>` : ''}
                     <div class="likert-scale">
                         ${options.map(val => `
                             <div class="likert-option">
@@ -922,7 +927,7 @@
 
         function getTrafficLight(score) {
             if (score < 4.0) return { emoji: '🔴', status: 'Conditions strongly constrain adaptive contribution', color: 'red' };
-            if (score < 7.0) return { emoji: '🟡', status: 'Conditions partially support, but inconsistently sustain, contribution', color: 'amber' };
+            if (score < 7.0) return { emoji: '🟡', status: 'Conditions support adaptive contribution at times, but not consistently', color: 'amber' };
             return { emoji: '🟢', status: 'Conditions generally support adaptive contribution', color: 'green' };
         }
 
